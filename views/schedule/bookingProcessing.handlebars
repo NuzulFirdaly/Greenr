@@ -1,0 +1,47 @@
+
+<div class="container padding-y row">
+    <div class="col-md-8 padding-y" >
+        <h1>1. Confirm Booking</h1>
+                <br>
+
+        <h6>Course Booked: </h6>
+        <p>{{courseName}}</p>
+        <h6>Session Booked: </h6>
+        <p>{{sessionName}}</p>
+        <h6>Description:</h6>
+        <p>{{sessionDescription}}</p>
+        <h6>Date &#38 Time:</h6>
+        <h3>{{bookDate}}</h3>
+        <br>
+        <button  onclick="goBack()" class="btn rounded-pill btn-warning"> <i class="far fa-arrow-alt-circle-left"></i> Change Booking </button>
+    </div>
+    <div class="col-md-4 padding-y">
+        <h1>2. Make Payment</h1>
+        <div class="card card-body">
+            <div style="display: grid; grid-template-columns: 2fr 3fr;
+        column-gap: 1rem;">
+                <p>Session Name:</p>
+                <h5>{{sessionName}}</h5>
+                <p>Hours Approximate:</p>
+                <h5>{{sessionHours}}</h5>
+                <p>Hourly Charge</p>
+                <h5>${{HourlyRate}}</h5>
+            </div>
+            <hr>
+            <div style="display: grid; grid-template-columns: 2fr 3fr; column-gap: 1rem;">
+                <h3>Total:</h3>
+                <h1>${{totalPrice}}</h1>
+            </div>
+        </div>
+        <br>
+
+        <form action="/payment/bookingPayment/{{bookingID}}" method="POST">
+            <button class="btn rounded-pill btn-info float-right">Payment <i class="far fa-arrow-alt-circle-right"></i></button>
+        </form>
+    </div>
+</div>
+<script>
+function goBack() {
+  window.history.back();
+}
+</script>

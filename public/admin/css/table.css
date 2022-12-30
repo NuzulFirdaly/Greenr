@@ -1,0 +1,33 @@
+.select {
+    width: 100%;
+}
+
+.fixed-table-body {
+    max-height: 251px;
+}
+
+.fixed-table-footer {
+    height: 1px;
+}
+
+.fixed-table-container {
+    padding-bottom: 100px;
+}
+
+.like {
+    margin-right: 10px;
+}
+
+button.btn.btn-secondary.dropdown-toggle::after {
+    margin-right: 3px;
+}
+
+span.page-size {
+    font-size: 14px;
+}
+
+span.page-size,
+i.fa.fa-th-list::before,
+i.fa.fa-download::before {
+    padding-right: 8px;
+}

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TutorHub - Main</title>
+    <link rel="shortcut icon" href="/images/favicon.ico">
+  
+     
+    <!-- Bootstrap4 files-->
+    <link href="/css/bootstrap.css" rel="stylesheet"/>
+
+    <!-- Font awesome 5 -->
+    <link href="/fonts/fontawesome/css/all.min.css" type="text/css" rel="stylesheet">
+
+    <!-- custom style -->
+    <link href="/css/ui.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/responsive.css" rel="stylesheet" media="only screen and (max-width: 1200px)" />
+
+    <!-- custom javascript -->
+    <script href="/js/script.js" type="text/javascript"></script>
+    <!-- plugin: slickslider -->
+    <link href="/plugins/slickslider/slick.css" rel="stylesheet" type="text/css" />
+    <link href="/plugins/slickslider/slick-theme.css" rel="stylesheet" type="text/css" />
+    
+
+    <!-- plugin: owl carousel  -->
+    <link href="/plugins/owlcarousel/assets/owl.carousel.css" rel="stylesheet">
+    <link href="/plugins/owlcarousel/assets/owl.theme.default.css" rel="stylesheet">
+    <link rel="stylesheet" href="/chat/chatbutton.css">
+    
+</head>
+<body>
+  <!-- jQuery  -->
+ <!-- i fixed the weird thingy by moving both this files here and changing back to src tag. idk why it works please explain to me -->
+  <script src="/js/jquery-2.0.0.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+
+  <!-- bootstrap -->
+  <script src="/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+  <script src="/plugins/slickslider/slick.min.js" type="text/javascript"></script>
+  <script src="/plugins/owlcarousel/owl.carousel.min.js" type="text/javascript"></script>
+    {{>_navbar}}
+
+    <div class="container">
+      {{>_flashmsg}} {{!-- views/partials/_flashmsg.handlebars --}}
+      {{>_msg}} {{!-- views/partials/_msg.handlebars --}}
+      {{!-- {{>_errors}} views/partials/_errors.handlebars --}}
+      {{{body}}}
+	  </div>
+    {{#if user}}
+    <div class="chat">
+      {{>_chat}}
+    </div>
+  {{/if}}
+
+<script>
+  function courseNameSearch(){
+    input = document.getElementById("searchInput")
+    filter = input.value.toUpperCase()
+    courseCarousel = document.getElementById("courseCarousel")
+    courses = courseCarousel.getElementsByClassName("item-slide");
+    console.log("this is search courses", courses)
+
+    for (i = 0; i < courses.length; i++) {
+      txtValue = courses[i].id;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        courses[i].style.display = "";
+      } else {
+        courses[i].style.display = "none";
+      }
+  }
+  $('.slider-items-owl').owlCarousel('refresh');
+
+
+
+  }
+</script>
+</body>
+</html>

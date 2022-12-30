@@ -1,0 +1,71 @@
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content padding-y">
+
+<!-- ============================ COMPONENT REGISTER   ================================= -->
+	<div class="card mx-auto" style="max-width:520px; margin-top:40px;">
+
+      <article class="card-body">
+		<header class="mb-4"><h4 class="card-title">Sign up</h4></header>
+		<form method="POST" action="/registerPost">
+                <div class="form-group">
+                    <label class="col-form-label">First Name</label>
+
+                    <input class="form-control" type="text" id="FirstName" name="FirstName" value="{{FirstName}}" required>        
+                </div> <!-- form-group end.// -->
+                <div class="form-group">
+                    <label class="col-form-label">Last Name</label>
+
+                    <input class="form-control" type="text" id="LastName" name="LastName" value="{{LastName}}" required>        
+                </div> <!-- form-group end.// -->
+				<div class="form-group">
+					<label class="col-form-label">Username</label>
+                    <input class="form-control" type="text" id="Username" name="Username" value="{{Username}}" required>        
+				</div> <!-- form-group end.// -->
+
+
+				<div class="form-group">
+						{{!-- {{ render_field(form.email, class="form-control") }}
+						{% if emailerror %}
+							<p  style="color:red;" class="error"><strong>Error:</strong> {{ emailerror }}
+						{% endif %} --}}
+                        <label class="col-form-label">Email</label>
+
+                        <input class="form-control" type="text" id="Email" name="Email" value="{{Email}}" required>   
+					<small class="form-text text-muted">We'll never share your email with anyone else.</small>
+				</div> <!-- form-group end.// -->
+				<div class="form-row">
+					<div class="form-group col-md-6">
+                        <label class="col-form-label">Password</label>
+                        <input class="form-control" type="password" id="Password" name="Password" value="{{Password}}" required >
+					    {{!-- {{ render_field(form.password, class="form-control") }} --}}
+					</div> <!-- form-group end.// -->
+					<div class="form-group col-md-6">
+                        <label class="col-form-label">Confirm Password</label>
+
+                        <input class="form-control" type="password" id="ConfirmPassword" name="ConfirmPassword" value ="{{ConfirmPassword}}" required>
+					    {{!-- {{ render_field(form.confirm, class="form-control") }} --}}
+					</div> <!-- form-group end.// -->
+				</div>
+				{{>_errors}} {{!-- views/partials/_errors.handlebars --}}
+
+			    <div class="form-group">
+			        <button type="submit" value="submit" class="btn btn-primary btn-block"> Register  </button>
+			    </div> <!-- form-group// -->
+			    <div class="form-group">
+		            <label class="custom-control custom-checkbox"> <input type="checkbox" class="custom-control-input" checked=""> <div class="custom-control-label"> I agree with the <a href="#">terms and conditions</a>  </div> </label>
+		        </div> <!-- form-group end.// -->
+				{{!-- {% if similarerror %}
+                    <p  style="color:red;" class="error"><strong>Error:</strong> {{ similarerror }}
+                {% elif sameerror %}
+                    <p  style="color:red;" class="error"><strong>Error:</strong> {{ sameerror }}
+                {% endif %} --}}
+			</form>
+		</article><!-- card-body.// -->
+    </div> <!-- card .// -->
+    <p class="text-center mt-4">Have an account? <a href="/login">Log In</a></p>
+    <br><br>
+<!-- ============================ COMPONENT REGISTER  END.// ================================= -->
+
+
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->

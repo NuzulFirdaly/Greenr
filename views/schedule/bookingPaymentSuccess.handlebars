@@ -1,0 +1,42 @@
+{{!-- 
+tutor_id: tutor_id,
+courseid: courseid,
+startTime,
+endTime,
+sessionId,
+courseName,
+HourlyRate,
+sessionName,
+sessionDescription,
+sessionHours,
+bookDate,
+totalPrice,
+bookingID: req.params.bookingID
+})
+ --}}
+<div class="container padding-y">
+    <div class="card text-center">
+        <div class="card-header">
+            <h4>Payment Successful!</h4>
+        </div>
+        <div class="card-body">
+            <span style="color: greenyellow;"><i class="far fa-check-circle fa-10x"></i></span>
+            <br><br>
+            <h3 class="card-title">Booking Confirmed</h3>
+            <h2 class="card-text">{{bookDate}}</h2>
+                <h5>Course Name: </h5>
+                <p>{{courseName}}</p>
+                <h5>Session Name:</h5>
+                <p>{{sessionName}}</p>
+                <br>
+        </div>
+    </div>
+    <br>
+    <div style="display: grid; grid-template-columns: 3fr 3fr 3fr; column-gap: 4rem;">
+            <a href="/" class="btn rounded-pill btn-warning"><i class="far fa-arrow-alt-circle-left"></i> Home</a>
+            <span></span>
+            <a href="/myschedule/user/{{user.user_id}}" class="btn rounded-pill btn-info">Calendar <i class="far fa-arrow-alt-circle-right"></i></a>
+
+    </div>
+
+</div>

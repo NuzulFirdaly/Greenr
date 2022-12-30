@@ -1,0 +1,81 @@
+{{!-- hjahahaha --}}
+{{!-- {{flashMessenger.alertsBeforeFlush}} --}}
+{{!-- {{flashMessenger.alertsBeforeFlush}} --}}
+{{!-- {{#printToConsole this}}{{/printToConsole}} --}}
+{{#with flashMessenger.alertsBeforeFlush }}
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Alert!!!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          {{!-- walao
+         to console.log {{this}}
+        {{this.type}}
+          walaosda as{{flashMessenger.alertsBeforeFlush}}
+          wtff is going on {{#printToConsole this}}{{/printToConsole}} --}}
+        {{#each this}}
+        {{!-- errr {{this}} --}}
+         <div class="alert alert-{{this.type}} {{#if this.canBeDismissed}}alertdismissible{{/if}} z-index:9999">
+            <h6>
+                {{#if this.titleIcon}}
+                <i class="{{this.titleIcon}}"></i>
+                {{/if}}
+                {{this.title}}
+            </h6>
+            {{#if this.messages}}
+            <ol>
+                {{#each this.messages}}
+                <li>{{this}}</li>
+                {{/each}}
+            </ol>
+            {{/if}}
+        </div> 
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+    $(window).on('load', function() {
+        $('#exampleModalCenter').modal('show');
+    });
+</script>
+{{/with}}
+
+
+
+
+
+
+
+
+
+
+{{!-- {{#if flashMessenger }}
+{{#each flashMessenger.alertsBeforeFlush}}
+<div class="alert alert-{{this.type}} {{#if this.canBeDismissed}}alertdismissible{{/if}} z-index:9999">
+    {{#if this.canBeDismissed}}
+    <a href="#" class="close" data-dismiss="alert" arialabel="close">&times;</a>
+    {{/if}}
+    <h6>
+        {{#if this.titleIcon}}
+        <i class="{{this.titleIcon}}"></i>
+        {{/if}}
+        {{this.title}}
+    </h6>
+    {{#if this.messages}}
+    <ol>
+        {{#each this.messages}}
+        <li>{{this}}</li>
+        {{/each}}
+    </ol>
+    {{/if}}
+</div>
+{{/each}}
+{{/if}} --}}

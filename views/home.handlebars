@@ -1,0 +1,95 @@
+
+
+<script type="text/javascript">
+/// some script
+
+// jquery ready start
+$(document).ready(function() {
+	// jQuery code
+
+
+    /////////////////  items slider. /plugins/owlslider/
+    if ($('.slider-items-owl').length > 0) { // check if element exists
+        $('.slider-items-owl').owlCarousel({
+        //change the loop daddy
+            loop:false,
+            margin:15,
+            nav:true,
+            autoWidth:true,
+            navText: ["<i class='fa fa-chevron-left'></i>", "<i class='fa fa-chevron-right'></i>"],
+            responsive:{
+                0:{
+                    items:1
+                },
+                640:{
+                    items:3
+                },
+                1024:{
+                    items: 3
+                }
+            }
+        })
+    } // end if
+
+
+
+
+});
+// jquery end
+</script>
+
+<!-- ========================= SECTION INTRO ========================= -->
+<section class="section-intro padding-y-sm">
+<div class="container">
+<div class="card-banner" style="min-height:230px; background-image: url('/images/banners/yourcourseawaits.jpg');">
+  <div class="card-img-overlay bg-gradient-red text-white">
+    <h1 class="card-title">Your first course awaits</h1>
+    <p class="card-text" style="max-width: 400px">Get started with these recommended courses. </p>
+  </div>
+</div>
+
+</div> <!-- container //  -->
+</section>
+<!-- ========================= SECTION INTRO END// ========================= -->
+
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content">
+<div class="container">
+
+<header class="section-heading">
+	<h3 class="section-title">All Courses</h3>
+</header><!-- sect-heading -->
+
+
+<div class="row">
+	<div id="courseCarousel" class="slider-items-owl owl-carousel owl-theme">
+  {{#each courseArray }}
+    <div id="{{Title}}" class="item-slide">
+        <figure class="card card-product-grid" style="height:450px; width:390px;">
+            <div class="img-wrap" >
+                <img src="/images/coursethumbnails/{{Course_thumbnail}}"height="140" width="240">
+            </div>
+            <div class="widget-header">
+                <a href="#" class="ml-3 icontext" data-toggle="dropdown" data-offset="20,10">
+                  <div class="icon"><img class="icon icon-xs rounded-circle" src="/images/profilepictures/{{user.Profile_pic}}"></div>
+                  <div class="text">
+                    <small id="courseTutorName" class="text-muted">{{user.FirstName}} {{user.LastName}}</small> <br>
+                  </div>
+                </a>
+            </div>
+            <figcaption class="info-wrap">
+                <h4 class="title" style="height:58px"><a href="/course/viewcourse/{{course_id}}">{{Title}}</a></h4>
+                <p class="text-muted"style="height:58px">{{Short_description}}</p>
+                <br>
+                <h5>${{Hourlyrate}}/Hour</h5>
+            </figcaption>
+        </figure> <!-- card // -->
+    </div>
+  {{/each}}
+	</div>
+</div> <!-- row.// -->
+
+</div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->

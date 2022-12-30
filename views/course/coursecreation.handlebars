@@ -1,0 +1,107 @@
+<div class="container padding-y">
+   <h1>Create Course</h1>
+   <hr>
+
+<!-- ============================ COMPONENT SIGNUP 2  ================================= -->
+<div class="card">
+<article class="card-body">
+    {{>_errors}}
+<form class="block-register" method="POST" action="" >
+  <div class="form-group form-row">
+    <label class="col-md-3 col-form-label">Course Title</label>
+    <div class="col">
+        <input class="form-control" type="text" id="coursetitle" name="coursetitle" value="{{coursetitle}}" placeholder="Enter Something Eye-Catching" required>    
+    </div>
+  </div>
+  <div class="form-group form-row">
+    <label class="col-md-3 col-form-label">Course Thumbnail</label>
+    <div class="col-md-3">
+      <img id='courseThumbnail'  src="\images\coursethumbnails\default.jpg" width="240" height="135" class="border">
+        <div style="position:relative; ">
+        </div>
+        <input type="file" name="courseThumbnailUpload" id="courseThumbnailUpload">
+        <input type="hidden" id='trueFileName' name="trueFileName">
+        <div class="font-weight-bold text-danger small" id="thumbnailErr" style="display:none"></div>
+
+
+    </div>
+  </div>
+  <div class="form-group form-row">
+    <label class="col-md-3 col-form-label">Categories</label>
+    <div class="col">
+        <select class="form-control" id="category" name="category" value="{{category}}" required>
+          <option disabled selected>CATEGORIES</option>
+          <option value="GRAPHIC DESIGN">GRAPHICS &#38; DESIGN</option>
+          <option value="DIGITAL MARKETING">DIGITAL MARKETING</option>
+        </select>
+    </div>
+      <div class="col">
+            <select class="form-control" id="subcategory" name="subcategory" value="{{subcategory}}" required></select>
+    </div>
+    <div>
+    </div>
+  </div>
+     <div class="form-group form-row">
+    <label class="col-md-3 col-form-label">Short Description</label>
+     <div class="col-9">
+         <input class="form-control" type="text" id="short_description" name="short_description" value="{{short_description}}" placeholder="Brief summary of what will be taught" required>    
+     </div>
+  </div>
+  <div class="form-group form-row">
+    <label class="col-md-3 col-form-label">Description</label>
+     <div class="col-9">
+         <textarea class="form-control" type="text" id="description" name="description">{{description}}</textarea>
+     </div>
+  </div>
+  <button class="btn btn-primary float-right" type="submit">Continue</button>
+
+</form>
+</article> <!-- card-body end .// -->
+</div> <!-- card.// -->
+<!-- ============================ COMPONENT SIGNUP 2 END.// ================================= -->
+ </div>
+<script>
+    let category_select = document.getElementById('category');
+    let subcategory_select = document.getElementById('subcategory');
+
+    category_select.onchange = function() {
+        category = category_select.value;
+        console.log('/course/category/' + category)
+
+        fetch('/course/category/' + category).then(function(response){
+            response.json().then(function(data) {
+                console.table(data);
+                let optionHTML = '';
+                for(let subcategories in data.subcategories){
+
+                    optionHTML += '<option value ="' + data.subcategories[subcategories] + '">' + data.subcategories[subcategories] + '</option>';
+                }
+                subcategory_select.innerHTML = optionHTML;
+            });
+        });
+    }
+  $('#courseThumbnailUpload').on('change', function () {
+    let file = $("#courseThumbnailUpload")[0].files[0];
+    let formdata = new FormData();
+    formdata.append('courseThumbnailUpload', file);
+    $.ajax({
+      url: '/course/courseThumbnailUpload',
+      data: formdata,
+      contentType: false,
+      processData: false,
+      type: 'POST',
+      'success': (data) => {
+        console.log(data)
+        console.log(data.path);
+        $('#courseThumbnail').attr('src', data.path);
+        $('#trueFileName').attr('value', data.file);
+        if (data.err) {
+          $('#thumbnailErr').show();
+          $('#thumbnailErr').text(data.err.message);
+        } else {
+          $('#thumbnailErr').hide();
+        }
+      }
+    });
+  });  
+</script>

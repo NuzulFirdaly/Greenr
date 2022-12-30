@@ -1,0 +1,128 @@
+<link rel="stylesheet" href="/chat/chatbox.css">
+<div id="emptyspace_1"></div>
+{{!-- <p>{{user.Username}}</p> --}}
+<div class="chatbox">
+    {{!-- id below is myForm, removed due to bug --}}
+    <div class="collapse show" id="">
+        <div class="container-fluid h-100">
+            <div class="row justify-content-center h-100">
+                <div class="col-md-4 col-xl-3 chat">
+                    <div class="card mb-sm-3 mb-md-0 contacts_card">
+
+
+                        <div class="card-header">
+                            <form action="/chat/searchChat" method="post" id="chatSearch">
+                                <input type="hidden" id='receiverBOI' name='receiverBOI' value="{{receiverBOI}}">
+                                <div class="input-group">
+                                    <input type="text" placeholder="Search..." name="searchedUser"
+                                        class="form-control search">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+
+                        <div class="card-body contacts_body">
+                            <ui class="contacts">
+                                {{!-- to show that it is active, class="active" --}}
+                                {{#each users}}
+
+                                {{#if (ifSame this.Username ../user.Username)}}
+                                {{else}}
+                                <form action="/chat/systemNotMain" method="post">
+                                    <li class="active">
+                                        <div class="d-flex bd-highlight">
+                                            <div class="user_info">
+                                                <button id="" type="submit"
+                                                    style="background-color: transparent; border: none; color: white;">
+                                                    <span>{{this.Username}}</span>
+                                                    <p id="word_invis">Hello there</p>
+                                                    <input type="hidden" id='receiverid' name='receiverid'
+                                                        value="{{this.user_id}}">
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </form>
+                                {{/if}}
+
+                                {{/each}}
+
+                            </ui>
+                        </div>
+                        <div class="card-footer"></div>
+                    </div>
+                </div>
+
+
+
+
+                <div class="col-md-8 col-xl-6 chat">
+                    <div class="card">
+                        <form action="/chat/broadcastsend" method="post" id="broadcastform"></form>
+                        <div class="card-header msg_head">
+                            <div class="d-flex bd-highlight">
+
+                                <div class="user_info">
+                                    <span>Broadcast</span>
+                                    {{!-- {{receiver_name.ReceiverName}} --}}
+                                    <p>Broadcast to ALL</p>
+                                </div>
+                            </div>
+                            <span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
+                            <div class="action_menu">
+
+
+                            </div>
+                        </div>
+                        <div class="card-body msg_card_body">
+                  
+                            
+                        </div>
+                        <div class="card-footer">
+                            <div class="input-group">
+
+
+                                <div class="input-group-append">
+                                    <span class="input-group-text attach_btn"></span>
+                                </div>
+                                <textarea name="txt" class="form-control type_msg" placeholder="Type your message..."
+                                    form="broadcastform" required></textarea>
+                                <div class="input-group-append">
+                                    {{!-- <span type="submit" class="input-group-text send_btn" form="chatForm"><i
+                                            class="fas fa-location-arrow"></i></span> --}}
+                                    <button type="submit" class="btn btn-primary" form="broadcastform"><i
+                                            class="fas fa-location-arrow"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{!-- <div class="chatbox__button">
+        <button id="myButton" data-toggle="collapse" href="#myForm">button</button>
+    </div> --}}
+</div>
+<div class="emptyspaceEnd"></div>
+
+{{!-- <form action="/chat/delete" method="POST">
+    <button type="submit" class="btn btn-primary">Delete</button>
+</form> --}}
+{{!--
+<script>
+    $("#clearchat").on("submit", (e) => {
+        e.preventDefault()
+        $.ajax({
+            url: '/chat/delete',
+            type: 'POST',
+        })
+    })
+</script> --}}
+<div class="emptyspaceEnd"></div>
+<script src="/chat/main.js"></script>
+<script src="/chat/app.js"></script>
+<script src="/chat/chatbox.js"></script>

@@ -1,0 +1,32 @@
+<br>
+<table style="width:100%">
+    <tr>
+        <th>Chat ID</th>
+        <th>Sender ID</th>
+        <th>Receiver ID</th>
+        <th>Message Text</th>
+        <th>Status</th>
+        <th>TimeStamp</th>
+    </tr>
+    <tbody>
+        {{#each chatData}} 
+        <tr>
+            <td>{{this.Chat_id}}</td>
+            <td>{{this.SenderName}}</td>
+            <td>{{this.ReceiverName}}</td>
+            <td>{{this.Txt_msg}}</td>
+            <td>{{this.Status}}</td>
+            <td>{{this.TimeStamp}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+<br>
+<form action="/chat/chatsystem" method="post">
+    <div class="form-group">
+        <label for="txt_msg">Text Message</label>
+        <input type="text" class="form-control" name="txt" value="" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+

@@ -1,0 +1,17 @@
+.mfu-file-list {
+    list-style: none;
+    width: 500px;
+    .file-field,
+    .remove-row-link,
+    input[type="file"] {
+        display: inline-block;
+    }
+    .remove-row-link {
+        position: relative;
+        top: 3px;
+        cursor: pointer;
+    }
+    abbr[title="required"] {
+        color: #ff0000;
+    }
+}

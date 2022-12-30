@@ -1,0 +1,104 @@
+<script type="text/javascript">
+  function changeValue(el) {
+    if (el.value === 'subtract') {
+      if (parseInt(el.nextElementSibling.innerHTML) > 1) {
+        var curr = parseInt(el.nextElementSibling.innerHTML);
+        var after = curr - 1;
+        el.nextElementSibling.innerHTML = after;
+        el.parentNode.nextElementSibling.nextElementSibling.childNodes[1].childNodes[3].childNodes[1].value = after;
+
+      }
+    } else if (el.value === 'add') {
+      var curr = parseInt(el.previousElementSibling.innerHTML);
+      var after = curr + 1;
+      el.previousElementSibling.innerHTML = after;
+      el.parentNode.nextElementSibling.nextElementSibling.childNodes[1].childNodes[3].childNodes[1].value = after;
+    }
+  }
+</script>
+
+<div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Item Name</th>
+        <th>Price($)</th>
+        <th>Quantity</th>
+        <th>Total Price($)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each cart}}
+      <tr>
+        <td>{{this.[3]}}</td>
+        <td>{{ this.[0] }}</td>
+        <td style="width:200px;" class="row">
+          <button class="btn btn-secondary" name="minus_item" value="subtract" onclick="changeValue(this)"><span
+              class="fa fa-minus"></span></button>
+          <p class="col-md-2">{{ this.[1] }}</p>
+          <button class="btn btn-secondary" name="add_item" value="add" onclick="changeValue(this)"><span
+              class="fa fa-plus"></span></button>
+        </td>
+        <td>{{ this.[2] }}</td>
+        <td>
+          <div class="row">
+            <form action="/shop/removeCart/{{ @key }}" method="POST">
+              <button type="submit" class="btn btn-danger">
+                Delete
+              </button>
+            </form>
+            &nbsp;
+            <form action="/shop/updateCart/{{ @key }}" method="POST">
+              <input type="hidden" name="newValue" id="newValue" value="{{ this.[1] }}">
+              <button type="submit" class="btn btn-primary">
+                Update
+              </button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {{/each}}
+
+    </tbody>
+  </table>
+  {{#if cartLength}}
+  {{!-- <div class="row"> --}}
+    {{!-- <div class="ml-auto">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        Save Cart
+      </button>
+    </div>
+    &nbsp; --}}
+  <div class="float-right">
+    <form action="/payment/item" method="POST">
+      <button style="margin-right:20px" class="btn btn-primary">Place Order</button>
+    </form>
+  </div>
+  {{!-- </div> --}}
+    {{/if}}
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Save Confirmation</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          This action will overwrite your previous save, continue?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <form action="/shop/saveCart/{{user.user_id}}" method="POST">
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+</div>

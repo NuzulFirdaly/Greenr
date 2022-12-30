@@ -1,0 +1,178 @@
+<!-- HEADER MOBILE-->
+<header class="header-mobile d-block d-lg-none">
+  <div class="header-mobile__bar">
+    <div class="container-fluid">
+      <div class="header-mobile-inner">
+        <a class="logo" href="/admin">
+          <img src="images/tutorhublogo.png" alt="TutorHub" style="max-width: 200px; max-height: 65px"/>
+        </a>
+        <button class="hamburger hamburger--slider" type="button">
+          <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <nav class="navbar-mobile">
+    <div class="container-fluid">
+      <ul class="navbar-mobile__list list-unstyled">
+        <li>
+          <a href="/admin">
+            <i class="fas fa-tachometer-alt"></i>Dashboard</a>
+        </li>
+        <li class="has-sub">
+          <a class="js-arrow" href="#">
+            <i class="fas fa-graduation-cap mr-3"></i>Certificate</a>
+          <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
+            <li>
+              <a href="/admin/certificate">Tutor Certificate</a>
+            </li>
+            <li>
+              <a href="/admin/certificate#institution">Institution Certificate</a>
+            </li>
+          </ul>
+        </li>
+        <li class="has-sub">
+          <a class="js-arrow" href="#">
+            <i class="fas fa-pencil-square-o mr-3"></i>Account</a>
+          <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
+            <li>
+              <a href="/admin/create">Create Admin</a>
+            </li>
+            <li>
+              <a href="/admin/create#adminlistheader">Admin List</a>
+            </li>
+          </ul>
+        </li>
+        <li class="has-sub">
+          <a class="js-arrow" href="#">
+            <i class="fas fa-bell mr-3"></i> Notification</a>
+          <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
+            <li>
+              <a href="/admin/notification">Create Notification</a>
+            </li>
+            <li>
+              <a href="/admin/notification#viewnotificationheader">View Notification</a>
+            </li>
+          </ul>
+        </li>
+        {{!-- <li class="has-sub">
+          <a class="js-arrow" href="#">
+            <i class="fas fa-tachometer-alt"></i>Dashboard</a>
+          <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
+            <li>
+              <a href="/admin">Dashboard 1</a>
+            </li>
+            <li>
+              <a href="index2.html">Dashboard 2</a>
+            </li>
+            <li>
+              <a href="index3.html">Dashboard 3</a>
+            </li>
+            <li>
+              <a href="index4.html">Dashboard 4</a>
+            </li>
+          </ul>
+        </li> --}}
+      </ul>
+    </div>
+  </nav>
+</header>
+<!-- END HEADER MOBILE-->
+
+<!-- MENU SIDEBAR-->
+<aside class="menu-sidebar d-none d-lg-block">
+  {{!-- <div class="logo">
+    <a href="#">
+      <img src="images/icon/logo.png" alt="Cool Admin" />
+    </a>
+  </div> --}} 
+  {{!-- add TutorHub logo --}}
+  {{!-- <div class="img bg-wrap text-center py-4"
+    style="background-image: url(/admin/images/adminBackgroundPictures/bg_1.jpg);">
+    <div class="user-logo">
+      <div class="img" style="background-image: url(/admin/images/adminProfilePictures/{{user.Profile_pic}});"></div>
+      <h3 style="text-shadow: 2px 2px 5px black; font-weight:normal">{{user.FirstName}} {{user.LastName}}</h3>
+    </div>
+  </div> --}}
+  <div class="img bg-wrap text-center py-4"
+    style="background-image: url(/admin/images/adminBackgroundPictures/{{bg_img}});">
+    <div class="user-logo">
+      <div class="img" style="background-image: url(/admin/images/adminProfilePictures/{{user.Profile_pic}});"></div>
+      <h3 style="text-shadow: 2px 2px 5px black; font-weight:normal">{{user.FirstName}} {{user.LastName}}</h3>
+    </div>
+  </div>
+  <div class="menu-sidebar__content js-scrollbar1">
+    {{!-- <div class="img bg-wrap text-center py-4"
+      style="background-image: url(/admin/images/adminBackgroundPictures/bg_1.jpg);">
+      <div class="user-logo">
+        <div class="img" style="background-image: url(/admin/images/adminProfilePictures/{{user.Profile_pic}});"></div>
+        <h3 style="text-shadow: 2px 2px 5px black; font-weight:normal">{{user.FirstName}} {{user.LastName}}</h3>
+      </div>
+    </div> --}}
+    <nav class="navbar-sidebar">
+      <ul class="list-unstyled navbar__list">
+        {{!-- <li class="{{#if active.home}}active{{/if}} has-sub">
+          <a class="js-arrow" href="#">
+            <i class="fas fa-tachometer-alt"></i>Dashboard</a>
+          <ul class="list-unstyled navbar__sub-list js-sub-list">
+            <li>
+              <a href="/admin">Dashboard 1</a>
+            </li>
+            <li>
+              <a href="index2.html">Dashboard 2</a>
+            </li>
+            <li>
+              <a href="index3.html">Dashboard 3</a>
+            </li>
+            <li>
+              <a href="index4.html">Dashboard 4</a>
+            </li>
+          </ul>
+        </li> --}}
+        <li class="{{#if active.home}}active{{/if}}">
+          <a href="/admin">
+            <i class="fas fa-tachometer-alt"></i>Dashboard</a>
+        </li>
+        <li class="{{#if active.certificate}}active{{/if}} has-sub">
+          <a class="js-arrow" href="#">
+            <i class="fas fa-graduation-cap mr-3"></i>Certificate</a>
+          <ul class="list-unstyled navbar__sub-list js-sub-list">
+            <li>
+              <a href="/admin/certificate">Tutor Certificate</a>
+            </li>
+            <li>
+              <a href="/admin/certificate#institution">Institution Certificate</a>
+            </li>
+          </ul>
+        </li>
+        <li class="{{#if active.create}}active{{/if}} has-sub">
+          <a class="js-arrow" href="#">
+            <i class="fas fa-pencil-square-o mr-3"></i>Account</a>
+          <ul class="list-unstyled navbar__sub-list js-sub-list">
+            <li>
+              <a href="/admin/create">Create Admin</a>
+            </li>
+            <li>
+              <a href="/admin/create#adminlistheader">Admin List</a>
+            </li>
+          </ul>
+        </li>
+        <li class="{{#if active.notification}}active{{/if}} has-sub">
+          <a class="js-arrow" href="#">
+            <i class="fas fa-bell mr-3"></i> Notification</a>
+          <ul class="list-unstyled navbar__sub-list js-sub-list">
+            <li>
+              <a href="/admin/notification">Create Notification</a>
+            </li>
+            <li>
+              <a href="/admin/notification#viewnotificationheader">View Notification</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</aside>
+<!-- END MENU SIDEBAR-->

@@ -1,0 +1,34 @@
+<div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Picture</th>
+        <th>Price($)</th>
+        <th>Quantity</th>
+        <th>Total Price($)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each items}}
+      <tr>
+        <td>{{ this.Name }}</td>
+        <td>
+          <p style="height: 40px; scroll:auto;">{{ this.Description }}</p>
+        </td>
+        <td><img height="40px" width="40px" src="/images/itemlisting/{{this.Picture}}" alt=""></td>
+        <td>
+          {{this.Price}}
+        </td>
+        <td>
+            {{this.order_details.[0].quantity}}
+        </td>
+        <td>
+            {{this.order_details.[0].total_price}}
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

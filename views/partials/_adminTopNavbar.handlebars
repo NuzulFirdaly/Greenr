@@ -1,0 +1,130 @@
+<!-- HEADER DESKTOP-->
+<header class="header-desktop" style="max-height: 115px;">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+            <div class="header-wrap">
+                <div class="header-button" style="margin-top: 15px; margin-bottom: 15px;">
+                    <div class="noti-wrap">
+                        <div class="noti__item js-item-menu">
+                            <i class="zmdi zmdi-comment-more"></i>
+                            <span class="quantity">0</span>
+                            <div class="mess-dropdown js-dropdown">
+                                <div class="mess__title">
+                                    <p>You have 0 news message</p>
+                                </div>
+                                {{!-- <div class="mess__item">
+                                    <div class="image img-cir img-40">
+                                        <img src="images/icon/avatar-06.jpg" alt="Michelle Moreno" />
+                                    </div>
+                                    <div class="content">
+                                        <h6>Michelle Moreno</h6>
+                                        <p>Have sent a photo</p>
+                                        <span class="time">3 min ago</span>
+                                    </div>
+                                </div> --}}
+                                <div class="mess__footer">
+                                    <a href="#">View all messages</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="noti__item js-item-menu">
+                            <i class="zmdi zmdi-email"></i>
+                            <span class="quantity">0</span>
+                            <div class="email-dropdown js-dropdown">
+                                <div class="email__title">
+                                    <p>You have 0 New Emails</p>
+                                </div>
+                                {{!-- <div class="email__item">
+                                    <div class="image img-cir img-40">
+                                        <img src="images/icon/avatar-06.jpg" alt="Cynthia Harvey" />
+                                    </div>
+                                    <div class="content">
+                                        <p>Meeting about new dashboard...</p>
+                                        <span>Cynthia Harvey, 3 min ago</span>
+                                    </div>
+                                </div> --}}                           
+                                <div class="email__footer">
+                                    <a href="#">See all emails</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="noti__item js-item-menu">
+                            <i class="zmdi zmdi-notifications"></i>
+                            <span class="quantity nqn">{{notification.length}}</span>
+                            <p class="usertype" hidden>{{user.AccountTypeID}}</p>
+                            <div class="notifi-dropdown js-dropdown">
+                                <div class="notifi__title">
+                                    <p class="nqt">You have {{notification.length}} Notifications</p>
+                                </div>
+                                    
+                                {{!-- {{#each (takeLast3 notification)}}
+                                    <div class="notifi__item notifiitem{{}}">
+                                        <div class="bg-c1 img-cir img-40">
+                                            <i class="zmdi zmdi-email-open"></i>
+                                        </div>
+                                        <div class="content">
+                                            <p>You got a email notification</p>
+                                            <span class="date">{{this.notificationmsg.DateSent}}</span>
+                                        </div>
+                                    </div>
+                                {{/each}} --}}
+
+                                {{#takeLast3 notification}}{{/takeLast3}}
+
+                                <div class="notifi__footer">
+                                    <a href="/admin/notification">All notifications</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="account-wrap">
+                        <div class="account-item clearfix js-item-menu">
+                            <div class="image">
+                                <img src="/admin/images/adminProfilePictures/{{user.Profile_pic}}"
+                                    alt="{{user.FirstName}} {{user.LastName}}" />
+                            </div>
+                            <div class="content">
+                                <a class="js-acc-btn" href="#">{{user.FirstName}} {{user.LastName}}</a>
+                            </div>
+                            <div class="account-dropdown js-dropdown">
+                                <div class="info clearfix">
+                                    <div class="image">
+                                        <a href="#">
+                                            <img src="/admin/images/adminProfilePictures/{{user.Profile_pic}}"
+                                                alt="{{user.FirstName}} {{user.LastName}}" />
+                                        </a>
+                                    </div>
+                                    <div class="content">
+                                        <h5 class="name">
+                                            <a href="#">{{user.FirstName}} {{user.LastName}}</a>
+                                        </h5>
+                                        <span class="email">{{user.Email}}</span>
+                                    </div>
+                                </div>
+                                <div class="account-dropdown__body">
+                                    <div class="account-dropdown__item">
+                                        <a href="/admin/profile">
+                                            <i class="zmdi zmdi-account"></i>Account</a>
+                                    </div>
+                                    <div class="account-dropdown__item">
+                                        <a href="/admin/editprofile">
+                                            <i class="zmdi zmdi-settings"></i>Setting</a>
+                                    </div>
+                                    {{!-- <div class="account-dropdown__item">
+                                        <a href="#">
+                                            <i class="zmdi zmdi-money-box"></i>Billing</a>
+                                    </div> --}}
+                                </div>
+                                <div class="account-dropdown__footer">
+                                    <a href="/logout">
+                                        <i class="zmdi zmdi-power"></i>Logout</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- HEADER DESKTOP-->

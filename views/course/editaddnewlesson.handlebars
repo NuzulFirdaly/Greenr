@@ -1,0 +1,31 @@
+<section class="section-content padding-y container">
+   <h1>Add New Session</h1>
+
+<!-- ============================ COMPONENT SIGNUP 2  ================================= -->
+<div class="card">
+<article class="card-body">
+<form class="block-register" method="POST" action="/course/editaddnewlesson/{{course_id}}">
+  <div class="form-group form-row">
+    <label class="col-md-3 col-form-label">Session Title</label>
+    <div class="col">
+        <input class="form-control" type="text" id="title" name="title" placeholder="Title" required>        
+    </div>
+  </div>
+  <div class="form-group form-row">
+    <label class="col-md-3 col-form-label">Description</label>
+    <div class="col">
+        <textarea class="form-control" type="text" id="session_description" name="session_description" placeholder="A description that gives the reader the overall idea of the session" required></textarea>   
+    </div>
+  </div>
+    <div class="form-group form-row">
+    <label class="col-md-3 col-form-label">Time Approximation</label>
+    <div class="col-md-1">
+        <input type="number" class="form-control" name="time_approx" id="time_approx" value="1" min="1" max="8">
+    </div>
+  </div>
+  <button class="btn btn-primary float-right" type="submit" value="Submit">Finish</button>
+</form>
+</article> <!-- card-body end .// -->
+</div> <!-- card.// -->
+<!-- ============================ COMPONENT SIGNUP 2 END.// ================================= -->
+</section>

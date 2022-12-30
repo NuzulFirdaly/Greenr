@@ -1,0 +1,28 @@
+<div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Status</th>
+        <th>Total</th>
+        <th>Date</th>
+        <th>Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each orderlist}}
+      <tr>
+        <td>{{this.dataValues.order_id}}</td>
+        <td>{{ this.dataValues.status }}</td>
+        <td>
+          <p>${{ this.dataValues.total }}</p>
+        </td>
+        <td>{{#format this.dataValues.date }}{{/format}}</td>
+        <td>
+          <a href="/shop/viewOrderDetails/{{this.dataValues.order_id}}">More Details Here</a>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

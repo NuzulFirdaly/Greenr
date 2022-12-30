@@ -1,0 +1,198 @@
+<style>
+  .profile-head {
+    transform: translateY(5rem)
+  }
+
+  .cover {
+    background-size: cover;
+    background-repeat: no-repeat
+  }
+</style>
+<script>
+  /// some script
+
+  // jquery ready start
+  $(document).ready(function () {
+    // jQuery code
+
+
+    /////////////////  items slider. /plugins/owlslider/
+    if ($('.slider-items-owl').length > 0) { // check if element exists
+      $('.slider-items-owl').owlCarousel({
+        //change the loop daddy
+        loop: false,
+        nav: true,
+        autoWidth: true,
+        margin: 10,
+        navText: ["<i class='fa fa-chevron-left'></i>", "<i class='fa fa-chevron-right'></i>"],
+        responsive: {
+          0: {
+            items: 1
+          },
+          640: {
+            items: 2
+          },
+          1024: {
+            items: 3
+          }
+        }
+      })
+    } // end if
+
+
+
+
+  });
+  // jquery end
+  function coolColors(el) {
+    var coolcolor = el.value;
+    el.parentNode.style.color = coolcolor;
+    el.parentNode.nextElementSibling.style.color = coolcolor;
+  }
+</script>
+<div class="row py-5 px-4">
+  <div class="col-md-7 mx-auto">
+    <!-- Profile widget -->
+    <div class="bg-white shadow rounded overflow-hidden">
+      <form action="/user/editProfile" method="POST">
+        <label for="backgroundUpload"
+          style="float: right; background-color: white; border-radius:2px; cursor:pointer"><i
+            class="fas fa-edit fa-2x"></i></label>
+        <input type="file" name="backgroundUpload" id="backgroundUpload" style="display: none;" accept="image/png,
+image/jpeg,image/jpg">
+        <input type="hidden" name="backgroundFile" id="backgroundFile" value="{{extra.background}}">
+        {{#if extra.background}}
+                    <div class="px-4 pt-0 pb-4 cover" style="background-image: url(/images/background/{{extra.background}})">
+                    {{else}}
+                    <div class="px-4 pt-0 pb-4 cover" style="background-image: url(https://images.unsplash.com/photo-1530305408560-82d13781b33a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1352&q=80);">
+                    {{/if}}
+          <div class="media align-items-end profile-head">
+            <div class="profile mr-3">
+              <label for="profilePictureUpload">
+                <img src="/images/profilepictures/{{user.Profile_pic}}" alt="..." width="130"
+                  class="rounded mb-2 img-thumbnail" style="cursor: pointer;" id="profilePic">
+              </label>
+              <input style="display: none;" type="file" name="profilePictureUpload" id="profilePictureUpload"
+                accept="image/png,image/jpeg,image/jpg,image/gif">
+              <input type="hidden" name="profilePicture" id="profilePicture" value="{{user.Profile_pic}}">
+            </div>
+            <div class="media-body mb-5" style="color: {{extra.color}};">
+              <h4 class="mt-0 mb-0">{{user.FirstName}} {{user.LastName}}<label for="colorInput" style="cursor:pointer">
+                  <i class="fas fa-palette" style=""></i>
+                </label>
+                <input name="colorInput" id="colorInput" style="display: none;" type="color" onchange="coolColors(this)"
+                  value="{{extra.color}}">
+              </h4>
+
+              <p class="small mb-4"> {{user.Username}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-light p-4 d-flex justify-content-end text-center">
+          {{#if affiliation}}
+          Affiliated with
+          <img src="/images/Institutionpictures/{{affiliation.dataValues.mainlogo}}" width="80px" height="40px" alt="">
+          {{/if}}
+          <div class="col-md-1"></div>
+          <ul class="list-inline mb-0">
+            <li class="list-inline-item">
+              <h5 class="font-weight-bold mb-0 d-block">0</h5><small class="text-muted"> <i
+                  class="fas fa-image mr-1"></i>No. of Sessions</small>
+            </li>
+            <li class="list-inline-item">
+              <h5 class="font-weight-bold mb-0 d-block">0</h5><small class="text-muted"> <i class="fas fa-clock"></i>Total No. of Hours</small>
+            </li>
+          </ul>
+        </div>
+        <div class="px-4 py-3">
+          <div class="form-group form-row">
+            <label class="col-md-2 col-form-label">First Name</label>
+            <div class="col-md-3">
+              <input class="form-control" type="text" id="firstName" name="firstName" value="{{user.FirstName}}">
+            </div>
+            <label class="col-md-2 col-form-label">Last Name</label>
+            <div class="col-md-3">
+              <input class="form-control" type="text" id="lastName" name="lastName" value="{{user.LastName}}">
+            </div>
+          </div>
+          <h5 class="mb-0">About</h5>
+          <div class="p-4 rounded shadow-sm bg-light">
+            <textarea class="form-control" type="text" id="description "
+              name="description">{{user.description}}</textarea>
+          </div>
+        </div>
+        <div class="py-4 px-4">
+          {{#if coursesarray}}
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h5 class="mb-0">My Courses</h5>
+          </div>
+          <div class="slider-items-owl owl-carousel owl-theme" style="margin-left:2em;">
+            {{#each coursesarray }}
+            <div class="item-slide">
+              <figure class="card card-product-grid" style="width: 18rem;">
+                <img class="card-img-top" src="/images/coursethumbnails/{{Course_thumbnail}}" height="140" width="240">
+                <div class="widget-header">
+                  <a href="#" class="ml-3 icontext" data-toggle="dropdown" data-offset="20,10">
+                    <div class="icon"><img class="icon icon-xs rounded-circle">
+                      <div class="text">
+                        <small class="text-muted">{{userobject.FirstName}} {{userobject.LastName}}</small> <br>
+                      </div>
+                  </a>
+                </div>
+                <figcaption class="info-wrap">
+                  <h4 class="title" style="font-size:1.3em; height:58px"><a
+                      href="/course/updatecourse/{{course_id}}">{{Title}}</a></h4>
+                  <p class="text-muted" style="font-size:0.9em; height:58px">{{Short_description}}</p>
+                  <br>
+                  <h5>${{Hourlyrate}}/Hour</h5>
+                </figcaption>
+              </figure> <!-- card // -->
+            </div>
+            {{/each}}
+          </div>
+          {{/if}}
+          <button class="btn btn-primary float-right" style="margin-right: 20px; margin-bottom: 20px" type="submit">Save
+            Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  $('#backgroundUpload').on('change', function () {
+    let image = $("#backgroundUpload")[0].files[0];
+    let formdata = new FormData();
+    formdata.append('backgroundUpload', image);
+    console.log("this is form data", formdata)
+    $.ajax({
+      url: '/user/backgroundUpload',
+      type: 'POST',
+      data: formdata,
+      contentType: false,
+      processData: false,
+      'success': (data) => {
+        $('.cover').css('background-image', `url(/images/background/${data.file})`);
+        $('#backgroundFile').attr('value', data.file);// sets posterURL hidden field
+      }
+    });
+  });
+
+  $('#profilePictureUpload').on('change', function () {
+    let image = $("#profilePictureUpload")[0].files[0];
+    let formdata = new FormData();
+    formdata.append('profilePictureUpload', image);
+    console.log("this is form data", formdata)
+    $.ajax({
+      url: '/user/profilePictureUpload',
+      type: 'POST',
+      data: formdata,
+      contentType: false,
+      processData: false,
+      'success': (data) => {
+        $('#profilePic').attr('src', `/images/profilepictures/${data.file}`);
+        $('#profilePicture').attr('value', data.file);// sets posterURL hidden field
+      }
+    });
+  });
+</script>

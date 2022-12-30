@@ -1,0 +1,181 @@
+<div class="container padding-y">
+  <h1>My Schedule</h1>
+</div>
+
+<div class="todo-grid-parent container padding-y">
+    <div>
+        <h3>Change Availability</h3>
+      <div class="todo-input todo-block">
+        {{!-- make all day in month avaialble or not, do it todo.js and by using moment --}}
+        <span>Select all remaining dates in the current month as <strong>available</strong></span>
+        <button class="relative center-x btn rounded-pill btn-success" id="allmonth">Fill</button>
+        <span>Select all remaining dates in the current month as <strong>unavailable</strong></span>
+        <button class="relative center-x btn rounded-pill btn-danger" id="unselectallmonth">Unfill</button>
+        <div style="grid-column: 1 / span 2;">
+        <hr>
+        </div>
+        <h4>Manual Update</h4> <span></span>
+        <div>
+            <span>Date:</span>
+        </div>
+        <input type="date" id="dateInput" min="2021-02-14">
+
+        <span>Start Time:</span>
+        {{!-- use jquerytimepicker --}}
+        <select name="startTimeInput" id="startTimeInput">
+        </select>
+        <span> End Time:</span>
+          <select name="endTimeInput" id="endTimeInput">
+        </select>
+        
+        <div style="grid-column: 1 / span 2;">
+          <button class="relative center-x btn rounded-pill btn-primary" id="addBtn">Make Available</button>
+        </div>
+      </div>
+      <br>
+      <br>
+      <div id="todotablediv">
+      <h3>Tutee Bookings</h3>
+
+      <table id="todoTable" class="todo-block">
+          <tr>
+            <td>Date</td>
+            <td>Start Time</td>
+            <td>End Time</td>
+
+            <td>Category</td>
+          </tr>
+      </table>
+      </div>
+      <br>
+      <br>
+    </div>
+
+    <div class="todo-calendar  todo-block">
+      <div id='calendar'></div>
+    </div>
+
+  </div> <!-- class="todo-grid-parent" -->
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Edit Date</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body todo-input">
+          <span>Category: </span>
+          <input type="text" placeholder="Enter category" list="categoryList"  id="todo-edit-category">
+          <datalist id="categoryList">
+            <option value="Personal"></option>
+            <option value="Work"></option>
+          </datalist>
+            {{!-- <div style="grid-column: 1 / span 2;">
+              <div style=" width: 50%;margin: 0 auto;">
+                <h4 class="relative center-x" style="text-align: center;" id='toggleswitchlabel'>Make Available
+                </h4>
+                <label class="relative center-x switch">
+                  <input type="checkbox" id="toggleswitch">
+                  <span class="slider round"></span>
+                </div>          
+              </label>
+            </div>  --}}
+            
+          <span>Date:</span>
+          <input type="date" id="todo-edit-date" readonly disabled>
+          <span>Start Time:</span>
+          {{!-- <input type="time" id="todo-edit-starttime"> --}}
+          <select name="todo-edit-starttime" id="todo-edit-starttime">
+          </select>
+          <span>End Time:</span>
+          {{!-- <input type="time" id="todo-edit-endtime"> --}}
+          <select name="todo-edit-endtime" id="todo-edit-endtime"disabled> 
+          </select>
+          <div>
+            <button style="width:50%; margin:0 auto;"class="relative center-x btn rounded-pill btn-danger" id="unavailableBtn">Unavailable</button>
+          </div>
+          <div>
+              <button style="width:50%; margin:0 auto;"class="relative center-x btn rounded-pill btn-success" id="availableBtn">Available</button>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="sessionModal" tabindex="-1" role="dialog" aria-labelledby="sessionModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="exampleModalLongTitle">Session Info</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row container padding-y">
+          <div class="col-sm-8">
+            <p>Session Booked By:</p>
+            <a id="tuteeName">Nuzul Firdaly</a>
+            <p>Session Name:</p>
+            <h5 id="sessionName">testing-tsting</h5>
+            <p>Under Course:</p>
+            <h5 id="courseName">Course 2</h5>
+            <p>Date &amp; Time: </p>
+            <h5 id="datetime">Thursday, August 19, 2021 | 9am - 10am</h5>
+            <p>Meeting Link:</p>
+            <div style="display:grid" >
+              <input id="meetingLink" type="text">
+              <p class="text-center">Schedule a meeting on your conference platform and paste it on top</p>
+            </div>
+            
+            <br>
+          </div>
+          <div class="col-sm-4">
+            <img id="tuteeProfilePic" class="img-fluid img-lg rounded-circle" src="">
+          </div>
+        </div>
+          <hr>
+        <div style="display:grid; grid-template-columns: 4fr 1fr; column-gap: 1rem;">
+          <div class="container">
+            <p>Total Price Paid:</p>
+            <h1 id="totalPrice">$20</h1>
+          </div>
+          <div> 
+          <br>       
+          <button type="button" id="saveChangesButton" class="btn btn-lg btn-primary">Save changes</button></div>
+        </div>
+        
+   
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- <script src="https://requirejs.org/docs/release/2.3.5/minified/require.js"></script> <!--https://stackoverflow.com/questions/23603514/javascript-require-function-giving-referenceerror-require-is-not-defined --> --}}
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+
+<link rel="stylesheet" href="/css/todo.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.1.0/main.min.css">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.1.0/main.min.js"></script>
+<script>moment().format()</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!--
+<link rel="stylesheet" href="./fullcalendar/main.min.css">
+<script src="./fullcalendar/main.min.js" defer></script>
+https://youtu.be/Un5DrBn5gxc
+-->
+{{!-- <script type="module">
+    import "./fullcalendar"
+    alert("loaded fullcalendar")
+</script> --}}
+<script src="/js/todo.js" defer></script>
+
+

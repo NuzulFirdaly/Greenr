@@ -1,0 +1,41 @@
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content padding-y" style="min-height:84vh">
+
+<!-- ============================ COMPONENT LOGIN   ================================= -->
+	<div class="card mx-auto" style="max-width: 380px; margin-top:100px;">
+      <div class="card-body">
+      <h4 class="card-title mb-4">Sign in</h4>
+      <form action="/loginPost" method="POST">
+          <div class="form-group">
+                <label class="col-form-label">Email</label>
+
+                <input class="form-control" type="text" id="email" name="email">
+			    {{!-- {{ render_field(form.username, class="form-control") }} --}}
+		     </div> <!-- form-group// -->
+          <div class="form-group">
+              <label class="col-form-label">Password</label>
+
+			        <a href="#" class="float-right">Forgot password?</a>
+              <input class="form-control" type="password" id="password" name="password">
+			  {{!-- {{ render_field(form.password, class="form-control") }} --}}
+          </div> <!-- form-group// -->
+		  {{!-- <div class="form-group">
+			   {{render_field(form.remember)}}
+		  </div> --}}
+        {{>_msg}} {{!-- views/partials/_msg.handlebars --}}
+				{{>_errors}} {{!-- views/partials/_errors.handlebars --}}
+		  <input type="submit" class="btn btn-primary btn-block">
+      </form>
+          {{!-- {% if error %}
+            <p  style="color:red;" class="error"><strong>Error:</strong> {{ error }}
+          {% endif %} --}}
+      </div> <!-- card-body.// -->
+    </div> <!-- card .// -->
+
+     <p class="text-center mt-4">Don't have account? <a href="/register">Sign up</a></p>
+     <br><br>
+<!-- ============================ COMPONENT LOGIN  END.// ================================= -->
+
+
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->

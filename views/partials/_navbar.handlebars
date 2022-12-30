@@ -1,0 +1,178 @@
+<header class="section-header">
+
+<section class="header-main border-bottom">
+	<div class="container">
+	<div class="row align-items-center">
+	<div class="col-lg-2 col-6">
+		<a href="/" class="brand-wrap">
+			<img class="logo" src="/images/logos/222.png">
+		</a> <!-- brand-wrap.// -->
+	</div>
+	<div class="col-lg-6 col-12 col-sm-12">
+		<form action="#" class="search">
+			<div class="input-group w-100">
+			    <input type="text" class="form-control" id="searchInput" onkeyup="courseNameSearch()" placeholder="Search">
+			    <div class="input-group-append">
+			      <button class="btn btn-primary" type="submit">
+			        <i class="fa fa-search"></i> Search
+			      </button>
+			    </div>
+		    </div>
+		</form> <!-- search-wrap .end// -->
+	</div> <!-- col.// -->
+		<!-- User Specific navigations -->
+	{{#ifEquals user.AccountTypeID 0}}
+	<div class="col-lg-4 col-sm-6 col-12">
+		<div class="widgets-wrap float-lg-right">
+			<div class="widget-header dropdown">
+				<a href="#" class="ml-3 icontext" data-toggle="dropdown" data-offset="20,10">
+					<div class="icon"><img class="icon icon-sm rounded-circle" src="/images/profilepictures/{{user.Profile_pic}}"></div>
+					<div class="text">
+						<small class="text-muted">{{user.FirstName}} {{user.LastName}}</small> <br>
+						<span>My account <i class="fa fa-caret-down"></i></span>
+					</div>
+				</a>
+				<div class="dropdown-menu dropdown-menu-right">
+					<a class="dropdown-item" href="/seller_onboarding/becometutor">Become A Seller</a>
+					<a class="dropdown-item" href="/user/Settings">Profile setting</a>
+					<a class="dropdown-item" href="#">My Courses</a>
+					<a class="dropdown-item" href="/myschedule/user/{{user.user_id}}">My Bookings</a>
+					<hr class="dropdown-divider">
+					<a class="dropdown-item" href="/logout">Log out</a>
+				</div> <!--  dropdown-menu .// -->
+			</div> <!-- widget  dropdown.// -->
+		</div> <!-- widgets-wrap.// -->
+	</div> <!-- col.// -->
+	{{/ifEquals}}
+	<!-- Default, user is not logged-->
+	{{#ifEquals user.AccountTypeID null}}
+	<div class="col-lg-4 col-sm-6 col-12">
+		<div class="widgets-wrap float-lg-right">
+			<div class="widget-header icontext">
+				<a href="#" class="icon icon-sm rounded-circle border"><i class="fa fa-user"></i></a>
+				<div class="text">
+					<span class="text-muted">Welcome!</span>
+					<div>
+						<a href="/login">Sign in</a> |
+						<a href="/register"> Register</a>
+					</div>
+				</div>
+			</div>
+		</div> <!-- widgets-wrap.// -->
+	</div> <!-- col.// -->
+	{{/ifEquals}}
+
+	{{#ifEquals user.AccountTypeID 1}} 
+	<div class="col-lg-4 col-sm-6 col-12">
+		<div class="widgets-wrap float-lg-right">
+			<div class="widget-header  mr-3">
+				<a href="/course/CreateCourse" class="icontext mr-4" >
+					<i class="icon mr-2 far fa-plus-square"></i>
+					<div class="text">
+						Create Courses
+					</div>
+				</a> <!-- iconbox // -->
+				<!--<a href="#" class="icon icon-sm rounded-circle border">
+					<i class="fas fa-book-reader"></i>
+					<span class="badge badge-pill badge-danger notify">0</span>
+				</a>
+				<div class="text">
+					<span>My Courses</span>
+				</div> -->
+			</div>
+			<div class="widget-header dropdown">
+				<a href="#" class="ml-3 icontext" data-toggle="dropdown" data-offset="20,10">
+					<div class="icon"><img class="icon icon-sm rounded-circle" src="/images/profilepictures/{{user.Profile_pic}}"></div>
+					<div class="text">
+						<small class="text-muted">{{user.FirstName}} {{user.LastName}}</small> <br>
+						<span>My account <i class="fa fa-caret-down"></i></span>
+					</div>
+				</a>
+				<div class="dropdown-menu dropdown-menu-right">
+					<a class="dropdown-item" href="/user/Settings">Profile setting</a>
+					<a class="dropdown-item" href="/course/mycourses">My Courses</a>
+					<a class="dropdown-item" href="/myschedule/{{user.user_id}}">My Schedule</a>
+					<a class="dropdown-item" href="/myschedule/user/{{user.user_id}}">My Bookings</a>
+					{{#ifEquals user.institutionInstitutionId null}}
+					<a class="dropdown-item" href="/institution/showaffiliate">Be Affiliated</a>
+					{{/ifEquals}}
+
+					<hr class="dropdown-divider">
+					<a class="dropdown-item" href="/logout">Log out</a>
+				</div> <!--  dropdown-menu .// -->
+			</div> <!-- widget  dropdown.// -->
+		</div> <!-- widgets-wrap.// -->
+	</div> <!-- col.// -->
+	{{/ifEquals}}
+
+	{{#ifEquals user.AccountTypeID 2}}
+	<div class="col-lg-4 col-sm-6 col-12">
+		<div class="widgets-wrap float-lg-right">
+			<div class="widget-header dropdown">
+				<a href="#" class="ml-3 icontext" data-toggle="dropdown" data-offset="20,10">
+					<div class="icon"><img class="icon icon-sm rounded-circle" src="/images/logos/222.png"></div>
+					<div class="text">
+						<small class="text-muted">{{user.FirstName}} {{user.LastName}}</small> <br>
+						<span>My account <i class="fa fa-caret-down"></i></span>
+					</div>
+				</a>
+				<div class="dropdown-menu dropdown-menu-right">
+					<a class="dropdown-item" href="/user/Settings">Profile setting</a>
+					<hr class="dropdown-divider">
+					<a class="dropdown-item" href="/logout">Log out</a>
+				</div> <!--  dropdown-menu .// -->
+			</div> <!-- widget  dropdown.// -->
+		</div> <!-- widgets-wrap.// -->
+	</div> <!-- col.// -->
+	{{/ifEquals}}
+
+</div> <!-- row.// -->
+	</div> <!-- container.// -->
+</section> <!-- header-main .// -->
+</header> <!-- section-header.// -->
+
+<!-- categories -->
+<nav class="navbar navbar-main navbar-expand-lg navbar-light border-bottom">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main_nav" aria-controls="main_nav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="main_nav">
+      <ul class="navbar-nav">
+      	<li class="nav-item dropdown">
+          <a class="nav-link pl-0" data-toggle="dropdown" href="#"><strong> <i class="fa fa-bars"></i> &nbsp  All category</strong></a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="#">Programming</a>
+            <a class="dropdown-item" href="#">Computer Science</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Category 1</a>
+            <a class="dropdown-item" href="#">Category 2</a>
+            <a class="dropdown-item" href="#">Category 3</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Programming</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Physics</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Photography</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Chemistry</a>
+        </li>
+		<li class="nav-item">
+		  <a class="nav-link" href="/institution/showallSchools">Institutions</a>
+		</li>
+		{{#if user}}
+		   <li class="nav-item">
+			  <a class="nav-link" href="/shop/viewShop">Shop</a>
+		  </li>
+		{{/if}}
+      </ul>
+    </div> 
+  </div> 
+</nav>
+

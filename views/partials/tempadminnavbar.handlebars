@@ -1,0 +1,34 @@
+<nav id="sidebar">
+  <div class="custom-menu">
+    <button type="button" id="sidebarCollapse" class="btn btn-primary"></button>
+  </div>
+  <div class="img bg-wrap text-center py-4"
+    style="background-image: url(/admin/images/adminBackgroundPictures/bg_1.jpg);">
+    <div class="user-logo">
+      <div class="img" style="background-image: url(/admin/images/adminProfilePictures/{{user.Profile_pic}});"></div>
+      <h3 style="text-shadow: 2px 2px 5px black;">{{user.FirstName}} {{user.LastName}}</h3>
+    </div>
+  </div>
+  <ul class="list-unstyled components mb-5">
+    <li class="active">
+      <a href="/admin"><span class="fa fa-home mr-3"></span> Home</a>
+    </li>
+    <li>
+      <a href="/admin/profile"><span class="fas fa-user-circle mr-3"></span> Profile</a>
+      {{!-- <a href="/admin/profile"><span class="fa fa-download mr-3 notif"><small
+            class="d-flex align-items-center justify-content-center">5</small></span> Download</a> --}}
+    </li>
+    <li>
+      <a href="/admin/certificate"><span class="fas fa-graduation-cap mr-3"></span> Certificate</a>
+    </li>
+    <li>
+      <a href="/admin/create"><span class="fas fa-pencil-square-o mr-3"></span> Create</a>
+    </li>
+    <li>
+      <a href="#"><span class="fa fa-cog mr-3"></span> Settings</a>
+    </li>
+    <li>
+      <a href="/logout"><span class="fas fa-sign-out-alt mr-3"></span> Sign Out</a>
+    </li>
+  </ul>
+</nav>

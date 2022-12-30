@@ -1,0 +1,65 @@
+<div class=" padding-y container">
+   <h1>Update Sessions</h1>
+   <hr>
+
+<!-- ============================ COMPONENT CARDS  ================================= -->
+<div class="card ">
+    {{>_errors}}
+    {{#each lessons}}
+<article class="card-body">
+    <div class="card padding-y">
+        <div class="row">
+            <div class="col-md-3">
+                <p class="text-center text-muted">SESSION</p>
+                <h4 class="text-center">{{session_no}}</h4>
+            </div>
+            <div class="col-md-6">
+                <i class="icon mr-2 fas fa-stopwatch">Approx. {{time_approx}} hours</i>
+                <h4>{{session_title}}</h4>
+                <p>{{session_description}}</p>
+            </div>
+            <div class="col-md-3">
+                <a href="/course/editupdatesession/{{session_id}}" class="btn btn-md btn-outline-primary">Update</a>
+                <button type="button" class="btn btn-md btn-warning" data-toggle="modal" data-target="#myModal_{{session_no}}">
+                      Delete
+                 </button>
+                <form action="/course/editdeletesession/{{../course_id}}/{{session_no}}" method="POST">
+                    <div class="modal fade" id="myModal_{{session_no}}">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h4 class="modal-title">Delete Confirmation</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          </div>
+
+                          <div class="modal-body">
+                            Are you sure you want to delete session {{session_no}}?
+                          </div>
+
+                          <div class="modal-footer">
+                            <input type="submit" value="Delete" class="btn btn-danger">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</article> <!-- card-body end .// -->
+    {{/each }}
+    <div class="text-center padding-y ">
+                <p>Add New Session</p>
+        <a href="/course/editaddnewlesson/{{course_id}}" class="icon icon-md rounded-circle border"><i class="fa fa-plus"></i></a>
+
+    </div>
+</div> <!-- card.// -->
+<form method="POST" action="/course/editlesson/{{course_id}}"> 
+      <button class="btn btn-primary float-right" type="submit" value="Submit">Continue</button>
+
+  </form>
+{{!-- <div class="padding-y float-right">
+    <a href="/course/updatecourse/{{course_id}}" class="btn btn-lg btn-primary">Finish</a>
+</div> --}}
