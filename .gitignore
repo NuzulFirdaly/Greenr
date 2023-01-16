@@ -1,1 +1,4 @@
 /node_modules
+/server_ssl
+/.env
+/public/images

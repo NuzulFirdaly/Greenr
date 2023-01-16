@@ -39,6 +39,7 @@
         "passport": "^0.4.1",
         "passport-local": "^1.0.0",
         "paypal-rest-sdk": "^1.8.1",
+        "raw-loader": "^4.0.2",
         "read-chunk": "^4.0.0",
         "sequelize": "^6.6.4",
         "socket.io": "^4.1.3",
