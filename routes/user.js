@@ -7,62 +7,62 @@ const User = require('../models/User');
 const alertMessage = require('../helpers/messenger');
 const ensureAuthenticated = require('../helpers/auth');
 
-router.get('/viewProfile/:id', async(req, res) => {
-    var id = req.params.id;
-    var tutor = await User.findOne({ where: { user_id: id } });
-    var extra = await professionalProfile.findOne({ where: { userUserId: id } });
-    var affiliation = await Institution.findOne({ where: { institution_id: tutor.institutionInstitutionId } });
-    console.log(affiliation);
-    if (req.user) {
-        if (id === req.user.dataValues.user_id) { res.redirect('/user/Settings'); } else {
-            if (tutor.AccountTypeID == 1) {
-                tutor_id = id;
-                var courses = await CourseListing.findAll({ where: { userUserId: tutor_id }, raw: true })
-                res.render('user/viewProfile', {
-                    layout: 'userFunctions',
-                    tutor: tutor.dataValues,
-                    coursesarray: courses,
-                    extra: extra.dataValues,
-                    affiliation
-                })
+// router.get('/viewProfile/:id', async(req, res) => {
+//     var id = req.params.id;
+//     var tutor = await User.findOne({ where: { user_id: id } });
+//     var extra = await professionalProfile.findOne({ where: { userUserId: id } });
+//     var affiliation = await Institution.findOne({ where: { institution_id: tutor.institutionInstitutionId } });
+//     console.log(affiliation);
+//     if (req.user) {
+//         if (id === req.user.dataValues.user_id) { res.redirect('/user/Settings'); } else {
+//             if (tutor.AccountTypeID == 1) {
+//                 tutor_id = id;
+//                 var courses = await CourseListing.findAll({ where: { userUserId: tutor_id }, raw: true })
+//                 res.render('user/viewProfile', {
+//                     layout: 'userFunctions',
+//                     tutor: tutor.dataValues,
+//                     coursesarray: courses,
+//                     extra: extra.dataValues,
+//                     affiliation
+//                 })
 
-            } else {
-                res.render('user/viewProfile', {
-                    layout: 'userFunctions',
-                    tutor: tutor.dataValues,
-                    extra: extra.dataValues,
-                    affiliation
-                });
-            }
-        }
-    } else {
-        if (tutor.AccountTypeID == 1) {
-            tutor_id = id;
-            var courses = await CourseListing.findAll({ where: { userUserId: tutor_id }, raw: true })
-            res.render('user/viewProfile', {
-                layout: 'userFunctions',
-                tutor: tutor.dataValues,
-                coursesarray: courses,
-                extra: extra.dataValues,
-                affiliation
-            })
+//             } else {
+//                 res.render('user/viewProfile', {
+//                     layout: 'userFunctions',
+//                     tutor: tutor.dataValues,
+//                     extra: extra.dataValues,
+//                     affiliation
+//                 });
+//             }
+//         }
+//     } else {
+//         if (tutor.AccountTypeID == 1) {
+//             tutor_id = id;
+//             var courses = await CourseListing.findAll({ where: { userUserId: tutor_id }, raw: true })
+//             res.render('user/viewProfile', {
+//                 layout: 'userFunctions',
+//                 tutor: tutor.dataValues,
+//                 coursesarray: courses,
+//                 extra: extra.dataValues,
+//                 affiliation
+//             })
 
-        } else {
-            res.render('user/viewProfile', {
-                layout: 'userFunctions',
-                tutor: tutor.dataValues,
-                extra: extra.dataValues,
-                affiliation
-            });
-        }
-    }
-})
+//         } else {
+//             res.render('user/viewProfile', {
+//                 layout: 'userFunctions',
+//                 tutor: tutor.dataValues,
+//                 extra: extra.dataValues,
+//                 affiliation
+//             });
+//         }
+//     }
+// })
 
 router.get('/Settings', ensureAuthenticated, async(req, res) => {
     if (req.user !== null) {
-        var extra = await professionalProfile.findOne({ where: { userUserId: req.user.dataValues.user_id } });
-        var affiliation = await Institution.findOne({ where: { institution_id: req.user.dataValues.institutionInstitutionId } });
-        console.log("I am cow", affiliation);
+        // var extra = await professionalProfile.findOne({ where: { userUserId: req.user.dataValues.user_id } });
+        // var affiliation = await Institution.findOne({ where: { institution_id: req.user.dataValues.institutionInstitutionId } });
+        // console.log("I am cow", affiliation);
         if (req.user.AccountTypeID == 1) {
             tutor_id = req.user.dataValues.user_id;
             CourseListing.findAll({
@@ -70,22 +70,23 @@ router.get('/Settings', ensureAuthenticated, async(req, res) => {
                     raw: true
                 })
                 .then((courses) => {
-
+                    var cart = Object.keys(req.session.cart).length;
                     console.log(courses);
                     res.render('user/Settings', {
                         layout: 'userFunctions',
                         user: req.user.dataValues,
                         coursesarray: courses,
-                        extra: extra.dataValues,
-                        affiliation
+                        cart: cart
+                            // extra: extra.dataValues,
+                            // affiliation
                     })
                 });
         } else {
             res.render('user/Settings', {
                 layout: 'userFunctions',
                 user: req.user.dataValues,
-                extra: extra.dataValues,
-                affiliation
+                // extra: extra.dataValues,
+                // affiliation
             });
         }
     }
@@ -93,9 +94,9 @@ router.get('/Settings', ensureAuthenticated, async(req, res) => {
 
 router.get('/editProfile', ensureAuthenticated, async(req, res) => {
     if (req.user !== null) {
-        var extra = await professionalProfile.findOne({ where: { userUserId: req.user.dataValues.user_id } });
-        var affiliation = await Institution.findOne({ where: { institution_id: req.user.dataValues.institutionInstitutionId } });
-        console.log("I am cow", affiliation);
+        //     var extra = await professionalProfile.findOne({ where: { userUserId: req.user.dataValues.user_id } });
+        //     var affiliation = await Institution.findOne({ where: { institution_id: req.user.dataValues.institutionInstitutionId } });
+
         if (req.user.AccountTypeID == 1) {
             if (req.user.InstitutionName !== null) {
                 tutor_id = req.user.dataValues.user_id;
@@ -110,8 +111,8 @@ router.get('/editProfile', ensureAuthenticated, async(req, res) => {
                             layout: 'userFunctions',
                             user: req.user.dataValues,
                             coursesarray: courses,
-                            extra: extra.dataValues,
-                            affiliation
+                            // extra: extra.dataValues,
+                            // affiliation
                         })
                     });
 
@@ -128,8 +129,8 @@ router.get('/editProfile', ensureAuthenticated, async(req, res) => {
                             layout: 'userFunctions',
                             user: req.user.dataValues,
                             coursesarray: courses,
-                            extra: extra.dataValues,
-                            affiliation
+                            // extra: extra.dataValues,
+                            // affiliation
                         })
                     });
             }
@@ -183,15 +184,15 @@ router.post('/editProfile', async(req, res, next) => {
 
 
 
-    await professionalProfile.findOne({ where: { userUserId: req.user.dataValues.user_id } })
-        .then(info => {
-            console.log(info);
-            if (info !== null) {
-                info.update({ color: colorInput, background: backgroundFile })
-            } else {
-                professionalProfile.create({ color: colorInput, background: backgroundFile, userUserId: req.user.dataValues.user_id })
-            }
-        })
+    // await professionalProfile.findOne({ where: { userUserId: req.user.dataValues.user_id } })
+    //     .then(info => {
+    //         console.log(info);
+    //         if (info !== null) {
+    //             info.update({ color: colorInput, background: backgroundFile })
+    //         } else {
+    //             professionalProfile.create({ color: colorInput, background: backgroundFile, userUserId: req.user.dataValues.user_id })
+    //         }
+    //     })
     alertMessage(res, 'success', 'Profile updated', 'fas fa-check', true);
     res.redirect("/user/Settings");
 });

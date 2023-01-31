@@ -73,40 +73,46 @@ router.post('/ItemDelete/:itemid', (req, res) => {
 });
 
 router.get('/viewCart', async(req, res) => {
-    var cartLength = 0
-    var cart = req.session.cart;
-    if (cart) {
-        cartLength = Object.keys(req.session.cart).length;
-        for (var key in cart) {
-            await ItemListing.findOne({ where: { item_id: key } })
-                .then(item => {
-                    if (cart[key][0] !== item.dataValues.Price) {
-                        var old = cart[key][0];
-                        cart[key][0] = item.dataValues.Price;
-                        cart[key][2] = (cart[key][0] * cart[key][1]).toFixed(2);
-                        alertMessage(res, 'info', cart[key][3] + ` price has been changed from ${old} to ${cart[key][0]}.`, 'fas fa-check', true);
-                    }
-                })
-        }
-    }
-    res.render('shop/viewCart', { cart, cartLength })
+    cart = Object.keys(req.session.cart).length;
+    actualCart = req.session.cart;
+    // if (cart) {
+    //     // for (var key in cart) {
+    //     //     await ItemListing.findOne({ where: { item_id: key } })
+    //     //         .then(item => {
+    //     //             if (cart[key][0] !== item.dataValues.Price) {
+    //     //                 var old = cart[key][0];
+    //     //                 cart[key][0] = item.dataValues.Price;
+    //     //                 cart[key][2] = (cart[key][0] * cart[key][1]).toFixed(2);
+    //     //                 alertMessage(res, 'info', cart[key][3] + ` price has been changed from ${old} to ${cart[key][0]}.`, 'fas fa-check', true);
+    //     //             }
+    //     //         })
+    //     // }
+    // }
+    res.render('shop/viewCart', { actualCart, cart })
 })
 
 router.post('/addCart', (req, res) => {
-    let { itemid, name, price, quantity } = req.body;
-    Price = parseFloat(price);
-    Quantity = parseInt(quantity);
-    total = (Price * Quantity).toFixed(2);
-    var cart = req.session.cart;
-    if (cart[itemid] !== undefined) {
-        cart[itemid][1] += Quantity;
-        cart[itemid][2] += total;
+    if (req.user) {
+        let { itemid, name, price, quantity } = req.body;
+        console.log("this is addcart", itemid, name, price, quantity)
+        Price = parseFloat(price);
+        Quantity = parseInt(quantity);
+        total = (Price * Quantity).toFixed(2);
+        var cart = req.session.cart;
+        if (cart[itemid] !== undefined) {
+            cart[itemid][1] += Quantity;
+            cart[itemid][2] += total;
+        } else {
+            cart[itemid] = [Price, Quantity, total, name];
+        }
+        req.session.cart = cart;
+        alertMessage(res, 'success', name + ' added to cart.', 'fas fa-plus', true);
+        res.redirect('/shop/viewCart');
     } else {
-        cart[itemid] = [Price, Quantity, total, name];
+        alertMessage(res, 'Info', 'You have to be logged in', 'fas fa-plus', true);
+        res.redirect('/login');
     }
-    req.session.cart = cart;
-    alertMessage(res, 'success', name + ' added to cart.', 'fas fa-plus', true);
-    res.redirect('/shop/viewShop');
+
 });
 
 router.post('/updateCart/:id', (req, res) => {

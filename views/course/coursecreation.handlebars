@@ -1,5 +1,5 @@
 <div class="container padding-y">
-   <h1>Create Course</h1>
+   <h1>Create Product Listing</h1>
    <hr>
 
 <!-- ============================ COMPONENT SIGNUP 2  ================================= -->
@@ -8,13 +8,13 @@
     {{>_errors}}
 <form class="block-register" method="POST" action="" >
   <div class="form-group form-row">
-    <label class="col-md-3 col-form-label">Course Title</label>
+    <label class="col-md-3 col-form-label">Product Name</label>
     <div class="col">
         <input class="form-control" type="text" id="coursetitle" name="coursetitle" value="{{coursetitle}}" placeholder="Enter Something Eye-Catching" required>    
     </div>
   </div>
   <div class="form-group form-row">
-    <label class="col-md-3 col-form-label">Course Thumbnail</label>
+    <label class="col-md-3 col-form-label">Product Picture</label>
     <div class="col-md-3">
       <img id='courseThumbnail'  src="\images\coursethumbnails\default.jpg" width="240" height="135" class="border">
         <div style="position:relative; ">
@@ -31,8 +31,8 @@
     <div class="col">
         <select class="form-control" id="category" name="category" value="{{category}}" required>
           <option disabled selected>CATEGORIES</option>
-          <option value="GRAPHIC DESIGN">GRAPHICS &#38; DESIGN</option>
-          <option value="DIGITAL MARKETING">DIGITAL MARKETING</option>
+          <option value="Fridge">Fridge</option>
+          <option value="Computers">Computers</option>
         </select>
     </div>
       <div class="col">

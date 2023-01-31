@@ -18,31 +18,12 @@
                 <br> <br>
                 <img src="/images/coursethumbnails/{{Course_thumbnail}}" class="img-fluid" alt="Responsive image">
                 <br> <br>
-                <h3>Course Description</h3>
+                <h3>Product Description</h3>
                 <br>
                 <p>{{Description}}</p>
                 <br>
             </div>
             <br>
-            <div class="border">
-                <a href="/course/editlesson/{{course_id}}" class="btn btn-primary float-right">Edit</a>
-                <h3>Course Syllabus</h3>
-                {{#each Lessons }}
-                <br> <br>
-                <div class="row">
-                    <div class="col-md-3">
-                        <p class="text-center text-muted">SESSION</p>
-                        <h4 class="text-center">{{session_no}}</h4>
-                    </div>
-                    <div class="col">
-                        <i class="icon mr-2 fas fa-stopwatch">Approx. {{time_approx}} hours</i>
-                        <h4>{{session_title}}</h4>
-                        <p>{{session_description}}</p>
-                    </div>
-                </div>
-                {{/each}}
-            </div>
-
         </div>
         <div class="col-md-6">
             <button type="button" class="float-right btn btn-md btn-warning" data-toggle="modal" data-target="#myModal_{{course_id}}">

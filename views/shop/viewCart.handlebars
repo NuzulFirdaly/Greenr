@@ -28,7 +28,7 @@
       </tr>
     </thead>
     <tbody>
-      {{#each cart}}
+      {{#each actualCart}}
       <tr>
         <td>{{this.[3]}}</td>
         <td>{{ this.[0] }}</td>
@@ -61,7 +61,7 @@
 
     </tbody>
   </table>
-  {{#if cartLength}}
+  {{#if cart}}
   {{!-- <div class="row"> --}}
     {{!-- <div class="ml-auto">
       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">

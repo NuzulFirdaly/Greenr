@@ -3,42 +3,20 @@
 
 <!-- ============================ COMPONENT SIGNUP 2  ================================= -->
     <div class="row">
-        <div class="col-md-6 overflow-auto card" style="max-height:600px;">
-            {{#if sessionarray}}
-                {{#each sessionarray }}
-                    <article class="card-body">
-                        <div class="card padding-y">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <p class="text-center text-muted">SESSION</p>
-                                    <h4 class="text-center">{{this.session_no}}</h4>
-                                </div>
-                                <div class="col-md-6">
-                                    <i class="icon mr-2 fas fa-stopwatch">Approx. {{this.time_approx}} hours</i>
-                                    <h4>{{this.session_title}}</h4>
-                                    <p>{{this.session_description}}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </article> <!-- card-body end .// -->
-                {{/each}}
-            {{/if}}
-        </div>
         <div class="col-md-6">
          <div class="card">
         <article class="card-body">
         <form class="block-register" method="POST" action="/course/addnewpricing/{{course_id}}" >
-            <h2 class="text-center">Number of Sessions: {{sessioncount}} <br> Total Approximate Hours: {{totalhours}}</h2>
           <div class="form-group form-row">
-            <label class="col-md-3 col-form-label">Hourly Rates</label>
+            <label class="col-md-3 col-form-label">Price</label>
             <div class="col">
-                    <input class="form-control" type="number" id="hourlyrate" name="hourlyrate" min="1" placeholder="How much do you charge per session?" required>        
+                    <input class="form-control" type="number" id="hourlyrate" name="hourlyrate" min="1" placeholder="How much do you charge for the product?" required>        
             </div>
           </div>
             <div class="form-group form-row">
                 <div class="col-md-3 col-form-label">
                   <label>Minimum Days</label>
-                  <p class="text-muted">Minimum number of days needed for a tutee to finish your course</p>
+                  <p class="text-muted">Minimum number of days needed to deliver</p>
                 </div>
                  <div class="col">
                     <input class="form-control" type="number" id="minimumdays" name="minimumdays" min='1' placeholder="Minimum No. Days to finish course" required>        
@@ -47,7 +25,7 @@
             <div class="form-group form-row">
                 <div class="col-md-3 col-form-label">
                   <label>Maximum Days</label>
-                  <p class="text-muted">Maximum number of days you would reserve for one course</p>
+                  <p class="text-muted">Maximum number of days requried to deliver</p>
                 </div>
                 <div class="col">
                     <input class="form-control" type="number" id="maximumdays" name="maximumdays" min="1" placeholder="Maximum No. Days that can be spent on one tutee" required>        

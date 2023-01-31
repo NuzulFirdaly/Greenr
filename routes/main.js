@@ -21,9 +21,12 @@ router.get('/', (req, res) => {
         courseArray = JSON.parse(JSON.stringify(courseArray, null, 2))
             //console.log(courseArray);
         if (req.user != null) {
+            var cart = Object.keys(req.session.cart).length;
+
             res.render('home', {
                 user: req.user.dataValues,
-                courseArray
+                courseArray,
+                cart: cart
             })
         } else {
             res.render('home', {

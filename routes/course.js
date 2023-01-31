@@ -22,10 +22,8 @@ const ensureAuthenticated = require('../helpers/auth');
 
 //change this to database where admin can add
 categories = {
-        'GRAPHIC DESIGN': ['LOGO DESIGN', 'BRAND STYLE GUIDES', 'GAME ART', 'RESUME DESIGN'],
-        'DIGITAL MARKETING': ['SOCIAL MEDIA ADVERTISING', 'SEO', 'PODCAST MARKETING', 'SURVEY', 'WEB TRAFFIC'],
-        'WRITING & TRANSLATION': ['ARTICLES & BLOG POSTS'],
-        'PROGRAMMING & TECH': ['WEB PROGRAMMING', 'E-COMMERCE DEVELOPMENT', 'MOBILE APPLS', 'DESKTOP APPLICATIONS', 'DATABASES', 'USER TESTING']
+        'Fridge': ['Top Freezer', 'Bottom Freezer', 'Side-by-side', 'French door', 'door-in-door', 'Smart/Wifi enabled'],
+        'Computers': ['Graphic Cards', 'CPU', 'Case', 'RAM', 'Power Units'],
     }
     //a route so that our createcourse select field can fetch the data
 router.get("/category/:category", (req, res) => {
@@ -65,9 +63,9 @@ router.post("/courseThumbnailUpload", (req, res) => {
     });
 })
 router.post("/CreateCourse", [
-    body('coursetitle').not().isEmpty().trim().escape().withMessage("Course Title is invalid"),
-    body('courseThumbnailUpload').not().isEmpty().trim().escape().withMessage("please select a course thumbnail"),
-    body('trueFileName').not().isEmpty().trim().escape().withMessage("please select a course thumbnail"),
+    body('coursetitle').not().isEmpty().trim().escape().withMessage("Product name is invalid"),
+    body('courseThumbnailUpload').not().isEmpty().trim().escape().withMessage("please select a product thumbnail"),
+    body('trueFileName').not().isEmpty().trim().escape().withMessage("please select a product thumbnail"),
     body('short_description').not().isEmpty().withMessage("Short description is invalid").isLength({ max: 100 }).withMessage("Short description too long, Must be below 100 characters"),
     body('description').not().isEmpty().withMessage("description is invalid").isLength({ min: 100, max: 2500 }).withMessage("Description must be between 100 to 2500 characters"),
     body('category').not().isEmpty().trim().escape().withMessage("please select a category"),
@@ -100,7 +98,7 @@ router.post("/CreateCourse", [
             //check if course with the same name has been created
         Course.findOne({ where: { title: coursetitle } }).then(course => {
             if (course !== null) {
-                errors.push({ text: "There already exists a course with the same name, please think of unique title!" })
+                errors.push({ text: "There already exists a product with the same name, please think of unique title!" })
                 res.render("course/coursecreation", {
                     user: req.user.dataValues, //have to do this for all pages
                     errors
@@ -110,8 +108,8 @@ router.post("/CreateCourse", [
                 if (req.user.institutionInstitutionId != null) {
                     Course.create({ Title: coursetitle, Category: category, Subcategory: subcategory, Short_description: short_description, Description: description, userUserId: userid, Course_thumbnail: trueFileName, institutionInstitutionId: req.user.institutionInstitutionId })
                         .then(course => {
-                            alertMessage(res, 'success', course.Title + ` added. \n Course will be displayed under your institution's page`, 'fas fa-check', true);
-                            res.redirect('/course/CreateSession/' + course.course_id);
+                            alertMessage(res, 'success', course.Title + ` added. \n Product will be displayed under your institution's page`, 'fas fa-check', true);
+                            res.redirect(301, '/course/addpricing/' + req.params.courseid)
                         })
                         .catch(err => console.log(err));
 
@@ -119,7 +117,7 @@ router.post("/CreateCourse", [
                     Course.create({ Title: coursetitle, Category: category, Subcategory: subcategory, Short_description: short_description, Description: description, userUserId: userid, Course_thumbnail: trueFileName })
                         .then(course => {
                             alertMessage(res, 'success', course.Title + ' added.', 'fas fa-sign-in-alt', true);
-                            res.redirect('/course/CreateSession/' + course.course_id);
+                            res.redirect(301, '/course/addpricing/' + req.params.courseid)
                         })
                         .catch(err => console.log(err));
                 }
@@ -128,31 +126,31 @@ router.post("/CreateCourse", [
     }
 });
 
-router.get("/CreateSession/:courseid", (req, res) => {
-    if ((req.user != null) && (req.user.AccountTypeID == 1)) {
-        course_id = req.params.courseid
-            //raw: true need because we dont want other attributes like _previousdatavalue
-        Lessons.findAll({
-            where: { courseListingCourseId: course_id },
-            raw: true,
-            order: [
-                ['session_no', 'ASC']
-            ]
-        })
+// router.get("/CreateSession/:courseid", (req, res) => {
+//     if ((req.user != null) && (req.user.AccountTypeID == 1)) {
+//         course_id = req.params.courseid
+//             //raw: true need because we dont want other attributes like _previousdatavalue
+//         Lessons.findAll({
+//             where: { courseListingCourseId: course_id },
+//             raw: true,
+//             order: [
+//                 ['session_no', 'ASC']
+//             ]
+//         })
 
-        //lessons are all the lessons from the course id(return multiple lessons)
-        .then((lessons) => {
-            res.render("course/sessioncreation", {
-                sessionarray: lessons,
-                course_id: course_id,
-                user: req.user.dataValues,
-            })
-        });
-    } else {
-        alertMessage(res, 'danger', 'You dont have access to that page!', 'fas fa-exclamation-triangle', true)
-        res.redirect("/")
-    };
-})
+//         //lessons are all the lessons from the course id(return multiple lessons)
+//         .then((lessons) => {
+//             res.render("course/sessioncreation", {
+//                 sessionarray: lessons,
+//                 course_id: course_id,
+//                 user: req.user.dataValues,
+//             })
+//         });
+//     } else {
+//         alertMessage(res, 'danger', 'You dont have access to that page!', 'fas fa-exclamation-triangle', true)
+//         res.redirect("/")
+//     };
+// })
 
 // await PendingTutor.findOne({where:{ userUserId: req.user.user_id}}).then(pendingticket =>{
 //     if(pendingticket !== null){
@@ -172,59 +170,59 @@ router.get("/CreateSession/:courseid", (req, res) => {
 //     }
 // })
 
-router.post("/CreateSession/:courseid", async(req, res) => {
-    await Lessons.findAll({
-            where: { courseListingCourseId: req.params.courseid },
-            raw: true,
-            order: [
-                ['session_no', 'ASC']
-            ]
-        })
-        //lessons are all the lessons from the course id(return multiple lessons)
-        .then((lessons) => {
-            let errors = [];
-            console.log('this is lesson query in createsession post')
-            console.log(lessons)
-            console.log(lessons.length)
-            if (lessons.length === 0) {
-                errors.push({ text: "You must have at least 1 session" })
-                res.render('course/sessioncreation', {
-                    errors,
-                    course_id: req.params.courseid,
-                    user: req.user.dataValues
-                })
-            } else {
-                if ((req.user) && (req.user.AccountTypeID == 1)) {
-                    res.redirect(301, '/course/addpricing/' + req.params.courseid)
-                } else {
-                    res.redirect("/")
-                }
-                //render session and push error saying need to have 1 cost
-            }
-        })
+// router.post("/CreateSession/:courseid", async(req, res) => {
+//     await Lessons.findAll({
+//             where: { courseListingCourseId: req.params.courseid },
+//             raw: true,
+//             order: [
+//                 ['session_no', 'ASC']
+//             ]
+//         })
+//         //lessons are all the lessons from the course id(return multiple lessons)
+//         .then((lessons) => {
+//             let errors = [];
+//             console.log('this is lesson query in createsession post')
+//             console.log(lessons)
+//             console.log(lessons.length)
+//             if (lessons.length === 0) {
+//                 errors.push({ text: "You must have at least 1 session" })
+//                 res.render('course/sessioncreation', {
+//                     errors,
+//                     course_id: req.params.courseid,
+//                     user: req.user.dataValues
+//                 })
+//             } else {
+//                 if ((req.user) && (req.user.AccountTypeID == 1)) {
+//                     res.redirect(301, '/course/addpricing/' + req.params.courseid)
+//                 } else {
+//                     res.redirect("/")
+//                 }
+//                 //render session and push error saying need to have 1 cost
+//             }
+//         })
 
-    // if (((req.user != null) && (req.user.AccountTypeID == 1)) && (req.user.AccountTypeID == 1)){
-    //     course_id = req.params.courseid
-    //     console.log(course_id)
-    //     //raw: true need because we dont want other attributes like _previousdatavalue
-    //     Lessons.findAll({where: {courseListingCourseId: course_id}, raw: true, order:[['session_no', 'ASC']]})
+// if (((req.user != null) && (req.user.AccountTypeID == 1)) && (req.user.AccountTypeID == 1)){
+//     course_id = req.params.courseid
+//     console.log(course_id)
+//     //raw: true need because we dont want other attributes like _previousdatavalue
+//     Lessons.findAll({where: {courseListingCourseId: course_id}, raw: true, order:[['session_no', 'ASC']]})
 
-    //     //lessons are all the lessons from the course id(return multiple lessons)
-    //     .then((lessons)=> {
-    //         console.log(lessons)
-    //         res.render("course/sessioncreation",{
-    //             sessionarray : lessons,
-    //             course_id : course_id,
-    //             user:req.user.dataValues,
-    //         })
-    //   });
-    // }
-    // else{
-    //     res.redirect("/")
-    // };
-    //check whether the user has a session or not if not dont let them go to the pricing
+//     //lessons are all the lessons from the course id(return multiple lessons)
+//     .then((lessons)=> {
+//         console.log(lessons)
+//         res.render("course/sessioncreation",{
+//             sessionarray : lessons,
+//             course_id : course_id,
+//             user:req.user.dataValues,
+//         })
+//   });
+// }
+// else{
+//     res.redirect("/")
+// };
+//check whether the user has a session or not if not dont let them go to the pricing
 
-})
+// })
 
 router.get("/addnewlesson/:courseid", (req, res) => {
     if (((req.user != null) && (req.user.AccountTypeID == 1)) && (req.user.AccountTypeID == 1)) {

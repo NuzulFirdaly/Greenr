@@ -51,14 +51,14 @@
                     <br> <br>
                     <img src="/images/coursethumbnails/{{Course_thumbnail}}" class="img-fluid" alt="Responsive image">
                     <br> <br>
-                    <h3>Course Description</h3>
+                    <h3>Description</h3>
                     <br>
                     <p>{{Description}}</p>
                     <br>
                 </div>
                 <br>
                 <div>
-                    <h3>Course Syllabus</h3>
+                    <h3>Review Overview</h3>
                     {{#each Lessons }}
                     <br> <br>
                     <div class="row">
@@ -196,11 +196,19 @@
                 <div class="card center-x relative" style="width:50%;">
                     <div class="card-body">
                         <div>
-                            <h3 style="position:absolute;" >Hourly</h3>
+                            <h3 style="position:absolute;" >Price:</h3>
                             <h3 class="float-right" >${{Hourlyrate}}</h3>
                         </div>
                     {{!-- {% if session.get('loggedin') and session['username'] != userobject.get_username() %} --}}
-                        <a href="/myschedule/bookavailableslot/{{userUserId}}/{{course_id}}" style="position:relative; margin-top:4rem;" class=" center-x btn btn-primary">Book</a>
+                        <form class='block-register' action="/shop/addCart" method="POST">
+                                <input type="hidden" name="itemid" id="itemid" value="{{this.course_id}}">
+                                <input type="hidden" name="name" id="name" value="{{this.Title}}">
+                                <input type="hidden" name="price" id="price" value="{{this.Hourlyrate}}">
+                                <input type="hidden" name="quantity" id="quantity" value="1">
+                                <button type="submit" style="position:relative; margin-top:4rem;" class=" center-x btn btn-primary btn btn-primary" >Add to Cart</button>
+
+                        </form>
+                        {{!-- <a href="/myschedule/bookavailableslot/{{userUserId}}/{{course_id}}" style="position:relative; margin-top:4rem;" class=" center-x btn btn-primary">Add to cart</a> --}}
                     {{!-- {% endif%} --}}
                     </div>
                 </div>

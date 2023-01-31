@@ -61,7 +61,7 @@
                             <img class="logo" src="/images/logos/222.png">
                         </a> <!-- brand-wrap.// -->
                     </div>
-                    <div class="col-lg-6 col-12 col-sm-12">
+                    <div class="col-lg-4 col-12 col-sm-12">
                         <form action="#" class="search">
                             <div class="input-group w-100">
                                 <input type="text" class="form-control" placeholder="Search">
@@ -78,6 +78,10 @@
                     {{#ifEquals user.AccountTypeID 0}}
                     <div class="col-lg-4 col-sm-6 col-12">
                         <div class="widgets-wrap float-lg-right">
+                            <div class="widget-header  mr-3">
+                                <a href="/shop/viewCart" class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></a>
+                                <span class="badge badge-pill badge-danger notify">{{cart}}</span>
+                            </div>
                             <div class="widget-header dropdown">
                                 <a href="#" class="ml-3 icontext" data-toggle="dropdown" data-offset="20,10">
                                     <div class="icon"><img class="icon icon-sm rounded-circle"
@@ -88,10 +92,10 @@
                                     </div>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="/tutor_onboarding/becometutor">Become A Tutor</a>
+                                    <a class="dropdown-item" href="/tutor_onboarding/becometutor">Become A Seller</a>
                                     <a class="dropdown-item" href="/user/Settings">Profile setting</a>
-                                    <a class="dropdown-item" href="#">My Courses</a>
-                                    <a class="dropdown-item" href="/myschedule/user/{{user.user_id}}">My Bookings</a>
+                                    {{!-- <a class="dropdown-item" href="#">My Courses</a>
+                                    <a class="dropdown-item" href="/myschedule/user/{{user.user_id}}">My Bookings</a> --}}
                                     <hr class="dropdown-divider">
                                     <a class="dropdown-item" href="/logout">Log out</a>
                                 </div> <!--  dropdown-menu .// -->
@@ -100,22 +104,19 @@
                     </div> <!-- col.// -->
                     {{/ifEquals}}
                     {{#ifEquals user.AccountTypeID 1}}
-                    <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="col-lg-6 col-sm-6 col-12">
                         <div class="widgets-wrap float-lg-right">
+                            <div class="widget-header  mr-3">
+                                <a href="/shop/viewCart" class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></a>
+                                <span class="badge badge-pill badge-danger notify">{{cart}}</span>
+                            </div>
                             <div class="widget-header  mr-3">
                                 <a href="/course/CreateCourse" class="icontext mr-4">
                                     <i class="icon mr-2 far fa-plus-square"></i>
                                     <div class="text">
-                                        Create Courses
+                                        Create Product listing
                                     </div>
-                                </a> <!-- iconbox // -->
-                                <!--<a href="#" class="icon icon-sm rounded-circle border">
-					<i class="fas fa-book-reader"></i>
-					<span class="badge badge-pill badge-danger notify">0</span>
-				</a>
-				<div class="text">
-					<span>My Courses</span>
-				</div> -->
+                                </a> 
                             </div>
                             <div class="widget-header dropdown">
                                 <a href="#" class="ml-3 icontext" data-toggle="dropdown" data-offset="20,10">
@@ -128,12 +129,7 @@
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <a class="dropdown-item" href="/user/Settings">Profile setting</a>
-                                    <a class="dropdown-item" href="/course/mycourses">My Courses</a>
-                                    <a class="dropdown-item" href="/myschedule/{{user.user_id}}">My Schedule</a>
-                                    <a class="dropdown-item" href="/myschedule/user/{{user.user_id}}">My Bookings</a>
-                                    {{#ifEquals user.institutionInstitutionId null}}
-                                    <a class="dropdown-item" href="/institution/showaffiliate">Be Affiliated</a>
-                                    {{/ifEquals}}
+                                    <a class="dropdown-item" href="/course/mycourses">My Products</a>
 
                                     <hr class="dropdown-divider">
                                     <a class="dropdown-item" href="/logout">Log out</a>
