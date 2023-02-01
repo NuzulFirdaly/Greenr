@@ -36,6 +36,7 @@
         "mysql2": "^2.2.5",
         "nodemailer": "^6.6.2",
         "nodemailer-express-handlebars": "^4.0.0",
+        "nodemon": "^2.0.20",
         "passport": "^0.4.1",
         "passport-local": "^1.0.0",
         "paypal-rest-sdk": "^1.8.1",

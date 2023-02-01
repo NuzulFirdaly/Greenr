@@ -66,6 +66,7 @@ const setUpDB = (drop) => {
             User.hasMany(Booking, { foreignKey: "UserId" })
             Booking.belongsTo(Booking, { foreignKey: "UserId" })
             User.hasMany(Booking, { foreignKey: "TutorId" })
+            
             Booking.belongsTo(Booking, { foreignKey: "TutorId" })
 
 
