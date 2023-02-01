@@ -40,7 +40,7 @@
                     <h1>{{Title}}</h1>
                     <br>
                     <div class="widget-header">
-                        <a href="/user/viewProfile/{{user.user_id}}"class="ml-3 icontext">
+                        <a href="/user/viewProfile/{{user.user_id}}" class="ml-3 icontext">
                             <div class="icon"><img class="icon icon-md rounded-circle border"
                                     src="/images/profilepictures/{{user.Profile_pic}}"></div>
                             <div class="text">
@@ -59,20 +59,56 @@
                 <br>
                 <div>
                     <h3>Review Overview</h3>
-                    {{#each Lessons }}
-                    <br> <br>
+                    {{#with ../allSentiments}}
                     <div class="row">
-                        <div class="col-md-3">
-                            <p class="text-center text-muted">SESSION</p>
-                            <h4 class="text-center">{{session_no}}</h4>
+
+                        {{#each allSentiments }}
+                            {{#ifSameReturn this.sentiment "Positive"}}
+                            <div class="col-sm-3 ">
+                                <div class="card text-white border-0 bg-success mb-3" style="max-width: 18rem;">
+                                    <div class="card-body shadow">
+                                        <h5 class="card-title">
+                                            <i class="far fa-smile"></i>
+                                            {{this.aspect}}</h5>
+                                    </div>
+                                </div>
+                                </div>
+                            {{/ifSameReturn}}
+                            {{#ifSameReturn this.sentiment "Neutral"}}
+                            <div class="col-sm-3">
+                            <div class="card text-white border-0 bg-warning mb-3" style="max-width: 18rem;">
+                                <div class="card-body shadow">
+                                    <h5 class="card-title">
+                                        <i class="far fa-meh"></i>
+                                        {{this.aspect}}</h5>
+                                </div>
+                            </div>
+                            </div>
+                            {{/ifSameReturn}}
+                            {{#ifSameReturn  this.sentiment "Negative"}}
+                            <div class="col-sm-3">
+                                <div class="card text-white border-0 bg-danger mb-3" style="max-width: 18rem;">
+                                    <div class="card-body shadow">
+                                        <h5 class="card-title">
+                                            <i class="far fa-frown"></i>
+                                             {{this.aspect}}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/ifSameReturn }}
+                        {{!-- <div class="col-md-3">
+                            <p class="text-center text-muted">Aspect</p>
+                            <h4 class="text-center">{{this.aspect}}</h4>
                         </div>
                         <div class="col">
-                            <i class="icon mr-2 fas fa-stopwatch">Approx. {{time_approx}} hours</i>
-                            <h4>{{session_title}}</h4>
-                            <p>{{session_description}}</p>
-                        </div>
+                            <i class="icon mr-2 fas fa-stopwatch">{{this.sentiment}}</i>
+                            {{!-- <h4>{{session_title}}</h4>
+                            <p>{{session_description}}</p> --}}
+                        {{!-- </div> --}} 
+                        {{/each}}
                     </div>
-                    {{/each}}
+
+                    {{/with}}
                 </div>
                 <hr>
                 <div class="row">
@@ -124,99 +160,102 @@
                     <p class="text-muted">{{#format ../yourRateReview.Date }}{{/format}}</p>
                     <div class="row gx-5">
                         <button class="btn btn-primary" type="submit">Update</button>
-                        </form>
-                        <form action="/rate/deleteRating/course/{{course_id}}" method="POST">
-                            <button class="btn btn-danger" type="submit">Delete</button>
-                        </form>
-                    </div>
-
-                <!-- Reviews -->
-                <div>
-                        {{#each ../ratereviews}}
-                        {{#if (ifSame this.UserId ../../users.user_id)}}
-                        {{else}}
-                        <hr>
-                        <p><strong>{{ this.user.Username }}</strong><span class="fa fa-star checked">
-                                {{ this.Rating }}</span><br></p>
-                        <p>{{ this.Review }}</p>
-                        <p class="text-muted">{{#format this.Date }}{{/format}}</p>
-                        {{!-- <form
-                            action="{{ url_for('reportreview', item='course', id=courseobject.course_id, uservictim=review, userreport=session['user_id'],  comment=courseobject.reviews[review][1]) }}"
-                            method="POST" enctype="multipart/form-data">
-                            <button class="btn btn-danger" type="submit">Report</button>
-                        </form> --}}
-                        {{/if}}
-                        {{/each}}
-                    </div>
-                    {{!-- if you have not written a review --}}
-                    {{else}}
-                    <form class='block-register' action="/rate/giveRating/course/{{course_id}}" method="POST">
-                        <input class="form-control" type="number" min="1" max="5" id="rating" name="rating" required>
-                        <textarea class="form-control" type="text" id="review" name="review" required></textarea>
-                        <button class="btn btn-primary" type="submit">Send</button>
-                    </form>
-                    {{!-- {% if error %}
-                    <p style="color:red;" class="error"><strong>Error:</strong> {{ error }}
-                        {% endif %} --}}
+                </form>
+                <form action="/rate/deleteRating/course/{{course_id}}" method="POST">
+                    <button class="btn btn-danger" type="submit">Delete</button>
+                </form>
+            </div>
+        
+            <!-- Reviews -->
+            <div>
+                {{#each ../ratereviews}}
+                {{#if (ifSame this.UserId ../../users.user_id)}}
+                {{else}}
+                <hr>
+                <p><strong>{{ this.user.Username }}</strong><span class="fa fa-star checked">
+                        {{ this.Rating }}</span><br></p>
+                <p>{{ this.Review }}</p>
+                <p class="text-muted">{{#format this.Date }}{{/format}}</p>
+                {{!-- <form
+                    action="{{ url_for('reportreview', item='course', id=courseobject.course_id, uservictim=review, userreport=session['user_id'],  comment=courseobject.reviews[review][1]) }}"
+                    method="POST" enctype="multipart/form-data">
+                    <button class="btn btn-danger" type="submit">Report</button>
+                </form> --}}
+                {{/if}}
+                {{/each}}
+            </div>
+            {{!-- if you have not written a review --}}
+            {{else}}
+            <form class='block-register' action="/rate/giveRating/course/{{course_id}}" method="POST">
+                <input class="form-control" type="number" min="1" max="5" id="rating" name="rating" required>
+                <textarea class="form-control" type="text" id="review" name="review" required></textarea>
+                <button class="btn btn-primary" type="submit">Send</button>
+            </form>
+            {{!-- {% if error %}
+            <p style="color:red;" class="error"><strong>Error:</strong> {{ error }}
+                {% endif %} --}}
+            <div>
+                {{#each ../ratereviews}}
+                <hr>
+                <p><strong>{{ this.user.Username }}</strong><span class="fa fa-star checked">
+                        {{ this.Rating }}</span><br></p>
+                <p>{{ this.Review }}</p>
+                <p class="text-muted">{{#format this.Date }}{{/format}}</p>
+                {{!-- <form
+                    action="{{ url_for('reportreview', item='course', id=courseobject.course_id, uservictim=review, userreport=session['user_id'],  comment=courseobject.reviews[review][1]) }}"
+                    method="POST" enctype="multipart/form-data">
+                    <button class="btn btn-danger" type="submit">Report</button>
+                </form> --}}
+                <br>
+                {{/each}}
+            </div>
+            {{/if}}
+            {{/if}}
+            {{else}}
+            {{#each ../ratereviews}}
+            <hr>
+            <p><strong>{{ this.user.Username }}</strong><span class="fa fa-star checked">
+                    {{ this.Rating }}</span><br></p>
+            <p>{{ this.Review }}</p>
+            <p class="text-muted">{{#format this.Date }}{{/format}}</p>
+            {{!-- <form
+                action="{{ url_for('reportreview', item='course', id=courseobject.course_id, uservictim=review, userreport=session['user_id'],  comment=courseobject.reviews[review][1]) }}"
+                method="POST" enctype="multipart/form-data">
+                <button class="btn btn-danger" type="submit">Report</button>
+            </form> --}}
+            <br>
+            {{/each}}
+            {{/if}}
+        </div>
+        <!-- Booking -->
+        <div class="col-md-4">
+            <div class="card center-x relative" style="width:50%;">
+                <div class="card-body">
                     <div>
-                        {{#each ../ratereviews}}
-                        <hr>
-                        <p><strong>{{ this.user.Username }}</strong><span class="fa fa-star checked">
-                                {{ this.Rating }}</span><br></p>
-                        <p>{{ this.Review }}</p>
-                        <p class="text-muted">{{#format this.Date }}{{/format}}</p>
-                        {{!-- <form
-                            action="{{ url_for('reportreview', item='course', id=courseobject.course_id, uservictim=review, userreport=session['user_id'],  comment=courseobject.reviews[review][1]) }}"
-                            method="POST" enctype="multipart/form-data">
-                            <button class="btn btn-danger" type="submit">Report</button>
-                        </form> --}}
-                        <br>
-                        {{/each}}
+                        <h3 style="position:absolute;">Price:</h3>
+                        <h3 class="float-right">${{Hourlyrate}}</h3>
                     </div>
-                    {{/if}}
-                    {{/if}}
-                    {{else}}
-                    {{#each ../ratereviews}}
-                    <hr>
-                    <p><strong>{{ this.user.Username }}</strong><span class="fa fa-star checked">
-                            {{ this.Rating }}</span><br></p>
-                    <p>{{ this.Review }}</p>
-                    <p class="text-muted">{{#format this.Date }}{{/format}}</p>
-                    {{!-- <form
-                        action="{{ url_for('reportreview', item='course', id=courseobject.course_id, uservictim=review, userreport=session['user_id'],  comment=courseobject.reviews[review][1]) }}"
-                        method="POST" enctype="multipart/form-data">
-                        <button class="btn btn-danger" type="submit">Report</button>
-                    </form> --}}
-                    <br>
-                    {{/each}}
-                    {{/if}}
-            </div> 
-            <!-- Booking -->
-            <div class="col-md-4">
-                <div class="card center-x relative" style="width:50%;">
-                    <div class="card-body">
-                        <div>
-                            <h3 style="position:absolute;" >Price:</h3>
-                            <h3 class="float-right" >${{Hourlyrate}}</h3>
-                        </div>
                     {{!-- {% if session.get('loggedin') and session['username'] != userobject.get_username() %} --}}
-                        <form class='block-register' action="/shop/addCart" method="POST">
-                                <input type="hidden" name="itemid" id="itemid" value="{{this.course_id}}">
-                                <input type="hidden" name="name" id="name" value="{{this.Title}}">
-                                <input type="hidden" name="price" id="price" value="{{this.Hourlyrate}}">
-                                <input type="hidden" name="quantity" id="quantity" value="1">
-                                <button type="submit" style="position:relative; margin-top:4rem;" class=" center-x btn btn-primary btn btn-primary" >Add to Cart</button>
+                    <form class='block-register' action="/shop/addCart" method="POST">
+                        <input type="hidden" name="itemid" id="itemid" value="{{this.course_id}}">
+                        <input type="hidden" name="name" id="name" value="{{this.Title}}">
+                        <input type="hidden" name="price" id="price" value="{{this.Hourlyrate}}">
+                        <input type="hidden" name="quantity" id="quantity" value="1">
+                        <button type="submit" style="position:relative; margin-top:4rem;"
+                            class=" center-x btn btn-primary btn btn-primary">Add to Cart</button>
 
-                        </form>
-                        {{!-- <a href="/myschedule/bookavailableslot/{{userUserId}}/{{course_id}}" style="position:relative; margin-top:4rem;" class=" center-x btn btn-primary">Add to cart</a> --}}
+                    </form>
+                    {{!-- <a href="/myschedule/bookavailableslot/{{userUserId}}/{{course_id}}"
+                        style="position:relative; margin-top:4rem;" class=" center-x btn btn-primary">Add to cart</a>
+                    --}}
                     {{!-- {% endif%} --}}
-                    </div>
                 </div>
             </div>
-            <!-- end Booking -->
-        </div> <!-- end row-->
-            {{/with}}
-     </div> <!-- end container -->
+        </div>
+        <!-- end Booking -->
+    </div> <!-- end row-->
+    {{/with}}
+    </div> <!-- end container -->
 </section>
 <script>
     const starsTotal = 5
@@ -229,17 +268,17 @@
         // Get percentage
         const starPercentage = (avgRating / starsTotal) * 100;
 
-    // Round to nearest 10
-    const starPercentageRounded = `${Math.round(starPercentage / 10) * 10}%`;
+        // Round to nearest 10
+        const starPercentageRounded = `${Math.round(starPercentage / 10) * 10}%`;
 
-    // Set width of stars-inner to percentage
-    document.querySelector(".stars-inner").style.width = starPercentageRounded;
+        // Set width of stars-inner to percentage
+        document.querySelector(".stars-inner").style.width = starPercentageRounded;
 
-    // Add number rating
-    if (Number.isNaN(avgRating)){
-        document.querySelector(".number-rating").innerHTML = '0';
-    }else{
-        document.querySelector(".number-rating").innerHTML = avgRating;
-    }
+        // Add number rating
+        if (Number.isNaN(avgRating)) {
+            document.querySelector(".number-rating").innerHTML = '0';
+        } else {
+            document.querySelector(".number-rating").innerHTML = avgRating;
+        }
     }
 </script>

@@ -83,6 +83,13 @@ app.engine('handlebars', exphbs({
                 return options.inverse(this) //hide this
             }
         },
+        ifSameReturn(a, b, options) {
+            if (a == b) {
+                // console.log("Printing ifEquals helper")
+                // console.log(this)
+                return options.fn(this)
+            }
+        },
         ifSame(a, b) {
             return a == b
         },
