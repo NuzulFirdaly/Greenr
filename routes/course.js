@@ -396,6 +396,27 @@ router.get("/mycourses", (req, res) => {
 
 //associationze.UUID, allowNull: false }});
 
+function getAverageRating(list) {
+    // console.log("this is list", list)
+    avgrating = 0
+    for (let i = 0; i < list.length; i++) {
+        avgrating += list[i].Rating
+    }
+    avgrating = avgrating / list.length
+    console.log("this is getAverageRating", avgrating)
+    return avgrating
+}
+
+function getAllSentiments(list) {
+    listOfAspects_Sentiments = []
+    for (let i = 0; i < list.length; i++) {
+        listObjects = JSON.parse(list[i].Aspect_Sentiments)
+            // console.log("this is listObjects in getAllSentiments", listObjects)
+        listOfAspects_Sentiments = listOfAspects_Sentiments.concat(listObjects)
+    }
+    console.log("this is getAllSentiments", listOfAspects_Sentiments)
+    return listOfAspects_Sentiments
+}
 
 router.get("/viewcourse/:courseid", async(req, res) => {
     console.log("we are at view course now")
@@ -408,47 +429,57 @@ router.get("/viewcourse/:courseid", async(req, res) => {
             ]
         })
         .then(course => {
-            console.log("THIS IS COURSE NUZULLLLLLLL")
-            console.log(course)
-            console.log("this is course user", course[0].user) //checking if tutor created the course
+            // console.log("THIS IS COURSE NUZULLLLLLLL")
+            // console.log(course)
+            // console.log("this is course user", course[0].user) //checking if tutor created the course
+            //if user is logged in
             if (req.user) {
                 if (course[0].user.user_id == req.user.user_id) {
-                    console.log("*****************wtfsfsdf sf???")
                     res.redirect('/course/updatecourse/' + req.params.courseid)
                 } else {
+                    avgRating = 0
+                    allSentiments = []
                     RateReview.findAll({ where: { CourseId: courseid }, include: [User] })
                         .then(ratereviews => {
                             RateReview.findAll({
                                     where: { CourseId: courseid },
                                     attributes: [
-                                        [Sequelize.fn('avg', Sequelize.col('Rating')), 'avgRating']
+                                        'Aspect_Sentiments', 'Rating'
                                     ],
                                     raw: true,
                                 })
-                                .then(async function(avgRating) {
-                                    if (!avgRating) {
+                                .then(async function(data) {
+                                    console.log("this is data in view course", data)
+                                    if (!data) {
                                         avgRating = 0;
+                                    } else {
+                                        avgRating = getAverageRating(data)
+                                        allSentiments = getAllSentiments(data)
                                     }
 
                                     if (req.user) {
                                         console.log("ymca")
                                         console.log(req.user.user_id)
+                                        console.log("this allsentiments", allSentiments)
                                         await RateReview.findOne({ where: { CourseId: courseid, UserId: req.user.user_id }, include: [User] })
                                             .then(yourRateReview => {
+
                                                 console.log('gjfdjgjldfgj')
                                                 course = JSON.parse(JSON.stringify(course, null, 2))[0]
                                                 yourRateReview = yourRateReview
-                                                if (yourRateReview) {
+                                                if (yourRateReview) { //user has commented 
                                                     console.log("kms")
                                                     console.log(JSON.parse(JSON.stringify(ratereviews, null, 2)))
                                                     res.render("course/viewcourse", {
                                                         users: req.user.dataValues, //have to do this for all pages
                                                         course,
-                                                        avgRating: avgRating[0].avgRating,
+                                                        avgRating: avgRating,
                                                         yourRateReview: yourRateReview.dataValues,
-                                                        ratereviews: JSON.parse(JSON.stringify(ratereviews, null, 2))
+                                                        ratereviews: JSON.parse(JSON.stringify(ratereviews, null, 2)),
+                                                        allSentiments: { allSentiments }
                                                     })
                                                 } else {
+                                                    // user hasnt commented 
                                                     console.log(JSON.parse(JSON.stringify(ratereviews, null, 2)))
                                                     console.log(ratereviews)
                                                     console.log(avgRating)
@@ -456,7 +487,8 @@ router.get("/viewcourse/:courseid", async(req, res) => {
                                                     res.render("course/viewcourse", {
                                                         users: req.user.dataValues, //have to do this for all pages
                                                         course,
-                                                        avgRating: avgRating[0].avgRating,
+                                                        avgRating: avgRating,
+                                                        allSentiments: { allSentiments },
                                                         ratereviews: JSON.parse(JSON.stringify(ratereviews, null, 2))
                                                     })
                                                 }
@@ -466,7 +498,8 @@ router.get("/viewcourse/:courseid", async(req, res) => {
                                         course = JSON.parse(JSON.stringify(course, null, 2))[0]
                                         res.render("course/viewcourse", {
                                             course: course,
-                                            avgRating: avgRating[0].avgRating,
+                                            avgRating: avgRating,
+                                            allSentiments: { allSentiments },
                                             ratereviews: JSON.parse(JSON.stringify(ratereviews, null, 2))
                                         })
 
@@ -476,30 +509,38 @@ router.get("/viewcourse/:courseid", async(req, res) => {
                         })
                 }
             } else {
+                //user not logged in
                 RateReview.findAll({ where: { CourseId: courseid }, include: [User] })
                     .then(ratereviews => {
                         RateReview.findAll({
                                 where: { CourseId: courseid },
                                 attributes: [
-                                    [Sequelize.fn('avg', Sequelize.col('Rating')), 'avgRating']
+                                    'Aspect_Sentiments', 'Rating'
                                 ],
                                 raw: true,
                             })
-                            .then(async function(avgRating) {
-                                if (!avgRating) {
+                            .then(async function(data) {
+                                console.log("this is data in view course", data)
+                                if (!data) {
                                     avgRating = 0;
+                                } else {
+                                    avgRating = getAverageRating(data)
+                                    allSentiments = getAllSentiments(data)
                                 }
+                                console.log("this is allSentiments outside else", allSentiments)
                                 course = JSON.parse(JSON.stringify(course, null, 2))[0]
                                 res.render("course/viewcourse", {
                                     course: course,
-                                    avgRating: avgRating[0].avgRating,
-                                    ratereviews: JSON.parse(JSON.stringify(ratereviews, null, 2))
+                                    avgRating: avgRating,
+                                    ratereviews: JSON.parse(JSON.stringify(ratereviews, null, 2)),
+                                    allSentiments: { allSentiments }
                                 })
                             })
                     })
             }
         }).catch(error => console.log(error));
 })
+
 
 
 
