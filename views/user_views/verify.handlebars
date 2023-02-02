@@ -1,0 +1,33 @@
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content padding-y" style="min-height:84vh">
+
+    <!-- ============================ COMPONENT LOGIN   ================================= -->
+    <div class="card mx-auto" style="max-width: 380px; margin-top:100px;">
+        <div class="card-body">
+            <h4 class="card-title mb-4">Enter the code sent to your email</h4>
+            <form action="/login/verify" method="POST">
+                <div class="form-group">
+                    <label class="col-form-label">Email</label>
+                    <input class="form-control" readonly type="text" value="{{email}}" id="email"  name="email">
+                </div>
+                <!-- form-group// -->
+                <div class="form-group">
+                    <label class="col-form-label">Verfication Code</label>
+                    <input class="form-control" type="number" id="verify-code" name="verify-code">
+                    {{!-- {{ render_field(form.password, class="form-control") }} --}}
+                </div> 
+                {{>_msg}} {{!-- views/partials/_msg.handlebars --}}
+                {{>_errors}} {{!-- views/partials/_errors.handlebars --}}
+                <input type="submit" value="Verify" class="btn btn-primary btn-block">
+            </form>
+            {{!-- {% if error %}
+            <p style="color:red;" class="error"><strong>Error:</strong> {{ error }}
+                {% endif %} --}}
+        </div> <!-- card-body.// -->
+    </div> <!-- card .// -->
+    <br><br>
+    <!-- ============================ COMPONENT LOGIN  END.// ================================= -->
+
+
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->

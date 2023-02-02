@@ -1,3 +1,6 @@
+// import nodemailer from 'nodemailer';
+// import { google } from 'googleapis';
+// import { uuid } from 'uuidv4';
 const express = require('express');
 const router = express.Router();
 var bcrypt = require('bcryptjs');
@@ -9,7 +12,8 @@ console.log("Retrieved flash");
 const passport = require('passport');
 const { cookie } = require('express-validator');
 const CourseListing = require('../models/CoursesListing');
-
+const nodemailer = require('nodemailer');
+const { google } = require('googleapis');
 //express validator
 const { body, validationResult } = require('express-validator');
 
@@ -43,6 +47,23 @@ router.get('/login', (req, res) => {
     res.render('user_views/login')
     console.log("login page rendered");
 });
+
+// login with email
+
+router.get('/login/email', (req, res) => {
+    console.log("going into login page");
+    res.render('user_views/email_login')
+    console.log("email login page rendered");
+});
+
+router.get('/login/verify/:id', (req, res) => {
+    console.log("going into login page");
+    const id = req.params.id;
+  
+    console.log("verify email page rendered", );
+    res.render('user_views/verify', { email: email })
+});
+
 redirecturl = "/";
 router.post('/loginPost', [body('email').trim().isEmail().normalizeEmail().toLowerCase(), body('password')], async(req, res, next) => {
     let errors = [];
@@ -133,7 +154,7 @@ router.post('/registerPost', [
 ], (req, res) => { //when press the submit button listen to post action
     // console.log(req.body);
     let errors = [];
-    let { FirstName, LastName, Username, Email, Password, ConfirmPassword } = req.body;
+    let { FirstName, LastName, Username, Email, Password, ConfirmPassword, Audio } = req.body;
 
     const validatorErrors = validationResult(req);
     if (!validatorErrors.isEmpty()) { //if isEmpty is false
@@ -154,8 +175,8 @@ router.post('/registerPost', [
         });
     } else {
         console.log("There are no errors")
-            //user's model's findOne function, select statement and where clause
-            // If all is well, checks if user is already registered
+        //user's model's findOne function, select statement and where clause
+        // If all is well, checks if user is already registered
         User.findOne({ where: { Email: req.body.Email } })
             .then(user => { //findOne function returns a promise 
                 if (user) {
@@ -171,17 +192,20 @@ router.post('/registerPost', [
                         ConfirmPassword
                     });
                 } else {
-                    bcrypt.genSalt(10, function(err, salt) {
-                        bcrypt.hash(Password, salt, function(err, hash) {
+                    bcrypt.genSalt(10, function (err, salt) {
+                        bcrypt.hash(Password, salt, function (err, hash) {
                             // Store hash in your password DB.
                             if (err) {
                                 throw err;
                             } else {
                                 hashedpassword = hash;
                                 console.log("This is hashed pasword \n", hashedpassword);
+                                var verify_code = Math.random().toString().substr(2, 6)
+                                console.log(verify_code);
                                 // Create new user record
-                                User.create({ FirstName, LastName, Username, Email, Password: hashedpassword })
+                                User.create({ FirstName, LastName, Username, Email, Password: hashedpassword, Audio, code: verify_code})
                                     .then(user => {
+                                        send_verification(verify_code,Email, FirstName)
                                         alertMessage(res, 'success', user.Username + ' added.Please login', 'fas fa-sign-in-alt', true);
                                         res.redirect('/Login');
                                     }).catch(err => console.log(err));
@@ -196,76 +220,118 @@ router.post('/registerPost', [
                 }
             });
     }
-    // // Retrieves fields from register page from request body
-    // let {FirstName, LastName, Username,Email, Password, ConfirmPassword} = req.body;
-    // // Checks if both passwords entered are the same
-    // if(Password !== ConfirmPassword) {
-    //     errors.push({text: 'Passwords do not match'});
-    // }
-    // // Checks that password length is more than 4
-    // if(Password.length < 4) {
-    //     errors.push({text: 'Password must be at least 4 characters'});
-    // }
-    // if (errors.length > 0) {
-    //     res.render('user_views/register', {
-    //     errors,
-    //     FirstName,
-    //     LastName,
-    //     username,
-    //     Email,
-    //     Password,
-    //     ConfirmPassword
-    //     });
-    // } 
-    // else 
-    //     {
-    //         //user's model's findOne function, select statement and where clause
-    //         // If all is well, checks if user is already registered
-    //         User.findOne({ where: {Email: req.body.Email} })
-    //         .then(user => { //findOne function returns a promise 
-    //         if (user) {
-    //         // If user is found, that means email has already been
-    //         // registered
-    //             res.render('user_views/register', {
-    //                 error: user.Email + ' already registered',
-    //                 FirstName,
-    //                 LastName,
-    //                 Username,
-    //                 Email,
-    //                 Password,
-    //                 ConfirmPassword
-    //             });
-    //         }    
-    //         else {
-    //             bcrypt.genSalt(10, function (err, salt) {
-    //                 bcrypt.hash(Password, salt, function (err, hash) {
-    //                     // Store hash in your password DB.
-    //                     if (err) {
-    //                         throw err;
-    //                     } else {
-    //                         hashedpassword = hash;
-    //                         console.log("This is hashed pasword \n", hashedpassword);
-    //                         // Create new user record
-    //                         User.create({ FirstName, LastName, Username, Email, Password: hashedpassword })
-    //                             .then(user => {
-    //                                 alertMessage(res, 'success', user.Username + ' added.Please login', 'fas fa-sign-in-alt', true);
-    //                                 res.redirect('/Login');
-    //                             })
-    //                             .catch(err => console.log(err));
-    //                     }
-    //                 });
-    //             });
-    //             // // Create new user record 
-    //             // User.create({ FirstName, LastName, Email, Password }).then(user => {
-    //             //     alertMessage(res, 'success', user.name + ' added.Please login', 'fas fa-sign-in-alt', true);
-    //             //     res.redirect('/Login');
-    //             // }).catch(err => console.log(err));
-    //         }
-    //     });
-    // }
+});
+    
+router.post('/voice', function (req, res) {
+    request.post('http://127.0.0.1:5000/predict',{ json: { file: '' } }, 
+    function (error, response, body) {
+        console.error('error:', error); // Print the error
+        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        console.log('body:', body); // Print the data received
+        res.send(body); //Display the response on the website
+    });
 });
 
+    // google api
+const CLIENT_ID = '288378853501-ma7eu9kd529v7ttoa2q4oo4q0uoiq914.apps.googleusercontent.com';
+const CLEINT_SECRET = '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';
+const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
+const REFRESH_TOKEN = '1//04GTcJVcVlA1qCgYIARAAGAQSNwF-L9IrOrpPxfwmzjJB7ryuTVaubJYu66iGdSNskSjzg72RzvglTls4S_A3LUuj1z0Jq7dVL4I';
+const oAuth2Client = new google.auth.OAuth2(
+        CLIENT_ID,
+        CLEINT_SECRET,
+        REDIRECT_URI
+    );
+
+    oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+
+    
+    async function send_verification(code, email, name) {
+        const accessToken = await oAuth2Client.getAccessToken();
+        const transport = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                type: 'OAuth2',
+                user: 'ggreenr3@gmail.com',
+                clientId: CLIENT_ID,
+                clientSecret: CLEINT_SECRET,
+                refreshToken: REFRESH_TOKEN,
+                accessToken: accessToken,
+            },
+        });
+
+        //	Send email using google
+        return transport.sendMail({
+            to: email,
+            from: 'Greenr',
+            subject: `Verify your email`,
+            html: `<img id="imgborder" class="logo" style="width: 85px;" src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fgreenr.com%2F&psig=AOvVaw18KgKxlV-Oge_QzYRqhiOW&ust=1675358920635000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCODqj7zs9PwCFQAAAAAdAAAAABAE">
+		<hr>
+		 <h1>Hello, ${name}</h1>
+        <h5 class="text-muted mb-2">
+		Thank you for
+        choosing Greenr, to make
+        full use of our
+        features,
+        verify your email address.
+        Verfication code: ${code}
+       `
+        });
+    }
 
 module.exports = router;
 
 //     alertMessage(res, 'success', user.name + ' added.Please login', 'fas fa-sign-in-alt', true);
+
+router.get('/email', (req, res) => {
+    const nodemailer = require('nodemailer');
+    const { google } = require('googleapis');
+
+    // These id's and secrets should come from .env file.
+    const CLIENT_ID = '288378853501-ma7eu9kd529v7ttoa2q4oo4q0uoiq914.apps.googleusercontent.com';
+    const CLEINT_SECRET = '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';
+    const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
+    const REFRESH_TOKEN = '1//04GTcJVcVlA1qCgYIARAAGAQSNwF-L9IrOrpPxfwmzjJB7ryuTVaubJYu66iGdSNskSjzg72RzvglTls4S_A3LUuj1z0Jq7dVL4I';
+
+    const oAuth2Client = new google.auth.OAuth2(
+        CLIENT_ID,
+        CLEINT_SECRET,
+        REDIRECT_URI
+    );
+    oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+
+    async function sendMail() {
+        try {
+            const accessToken = await oAuth2Client.getAccessToken();
+
+            const transport = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    type: 'OAuth2',
+                    user: 'ggreenr3@gmail.com',
+                    clientId: CLIENT_ID,
+                    clientSecret: CLEINT_SECRET,
+                    refreshToken: REFRESH_TOKEN,
+                    accessToken: accessToken,
+                },
+            });
+
+            const mailOptions = {
+                from: 'ggreenr3@gmail.com',
+                to: 'tiwor69202@brandoza.com',
+                subject: 'Hello from gmail using API',
+                text: 'Hello from gmail email using API',
+                html: '<h1>hello saran here!!!!</h1>',
+            };
+
+            const result = await transport.sendMail(mailOptions);
+            return result;
+        } catch (error) {
+            return error;
+        }
+    }
+
+    sendMail()
+        .then((result) => console.log('Email sent...', result))
+        .catch((error) => console.log(error.message));
+});

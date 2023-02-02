@@ -32,11 +32,23 @@ const User = db.define('user', { //Creates a table called user
         type: Sequelize.STRING,
         defaultValue: "avatar2.jpg"
     },
+    Audio:{
+        type: Sequelize.STRING,
+    },
     description: {
         type: Sequelize.STRING
     },
     AccountTypeID: {
         type: Sequelize.INTEGER,
+        defaultValue: 0
+    },
+    code: {
+        type: Sequelize.STRING,
+
+    },
+
+    verify: {
+        type: Sequelize.BOOLEAN,
         defaultValue: 0
     },
     // accountType

@@ -46,6 +46,16 @@
 					    {{!-- {{ render_field(form.confirm, class="form-control") }} --}}
 					</div> <!-- form-group end.// -->
 				</div>
+				<div class="form-group">
+					{{!-- {{ render_field(form.email, class="form-control") }}
+					{% if emailerror %}
+					<p style="color:red;" class="error"><strong>Error:</strong> {{ emailerror }}
+						{% endif %} --}}
+						<label class="col-form-label">Voice Recongition</label>
+				
+						<input class="form-control" type="file" id="Audio" name="Audio" value="{{Audio}}" required>
+						<small class="form-text text-muted">This audio will be used for Voice Recongition.</small>
+				</div>
 				{{>_errors}} {{!-- views/partials/_errors.handlebars --}}
 
 			    <div class="form-group">

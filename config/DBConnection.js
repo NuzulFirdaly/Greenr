@@ -57,7 +57,7 @@ const setUpDB = (drop) => {
             ItemListing.belongsTo(User);
             User.hasMany(Calendar);
             Calendar.belongsTo(User)
-
+            
             //Bookings | CourseID|CalendarID|SessionID|tuteeID|TutorID|totalPrice|startTime|endTime|Paid|HourlyRate|Date|CourseName|
             CourseListing.hasMany(Booking, { foreignKey: "CourseId" })
             Booking.belongsTo(CourseListing, { foreignKey: "CourseId" })

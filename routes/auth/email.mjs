@@ -22,7 +22,7 @@ router.get("/email", sendMail);
 async function sendMail(email, res) {
     try {
         const accessToken = await oAuth2Client.getAccessToken();
-
+        
         const transport = nodemailer.createTransport({
             service: 'gmail',
             auth: {
