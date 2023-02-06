@@ -1,7 +1,6 @@
-// import nodemailer from 'nodemailer';
-// import { google } from 'googleapis';
-// import { uuid } from 'uuidv4';
+
 const express = require('express');
+const JWT = require('jsonwebtoken');
 const router = express.Router();
 var bcrypt = require('bcryptjs');
 /* models */
@@ -16,6 +15,7 @@ const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 //express validator
 const { body, validationResult } = require('express-validator');
+const { use } = require('passport');
 
 
 //Home
@@ -135,7 +135,13 @@ router.get('/register', (req, res) => {
         res.render('user_views/register')
     };
 });
-
+router.get('/email/verify', (req, res) => {
+    if (req.user != null) {
+        res.redirect("/")
+    } else {
+        res.render('user_views/verify')
+    };
+});
 router.post('/registerPost', [
     // {FirstName, LastName, Username,Email, Password, ConfirmPassword
     body('FirstName').not().isEmpty().trim().escape().withMessage("First name is invalid"),
@@ -205,8 +211,8 @@ router.post('/registerPost', [
                                 // Create new user record
                                 User.create({ FirstName, LastName, Username, Email, Password: hashedpassword, Audio, code: verify_code})
                                     .then(user => {
-                                        send_verification(verify_code,Email, FirstName)
-                                        alertMessage(res, 'success', user.Username + ' added.Please login', 'fas fa-sign-in-alt', true);
+                                        send_verification(user.user_id,Email, FirstName)
+                                        alertMessage(res, 'success', user.Username + ' added.Please Verify Your email', 'fas fa-sign-in-alt', true);
                                         res.redirect('/Login');
                                     }).catch(err => console.log(err));
                             }
@@ -221,7 +227,7 @@ router.post('/registerPost', [
             });
     }
 });
-    
+
 router.post('/voice', function (req, res) {
     request.post('http://127.0.0.1:5000/predict',{ json: { file: '' } }, 
     function (error, response, body) {
@@ -243,29 +249,67 @@ const oAuth2Client = new google.auth.OAuth2(
         REDIRECT_URI
     );
 
-    oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
     
-    async function send_verification(code, email, name) {
-        const accessToken = await oAuth2Client.getAccessToken();
-        const transport = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                type: 'OAuth2',
-                user: 'ggreenr3@gmail.com',
-                clientId: CLIENT_ID,
-                clientSecret: CLEINT_SECRET,
-                refreshToken: REFRESH_TOKEN,
-                accessToken: accessToken,
-            },
-        });
+    // async function send_verification(code, email, name) {
+    //     const accessToken = await oAuth2Client.getAccessToken();
+    //     const transport = nodemailer.createTransport({
+    //         service: 'gmail',
+    //         auth: {
+    //             type: 'OAuth2',
+    //             user: 'ggreenr3@gmail.com',
+    //             clientId: CLIENT_ID,
+    //             clientSecret: CLEINT_SECRET,
+    //             refreshToken: REFRESH_TOKEN,
+    //             accessToken: accessToken,
+    //         },
+    //     });
 
-        //	Send email using google
-        return transport.sendMail({
-            to: email,
-            from: 'Greenr',
-            subject: `Verify your email`,
-            html: `<img id="imgborder" class="logo" style="width: 85px;" src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fgreenr.com%2F&psig=AOvVaw18KgKxlV-Oge_QzYRqhiOW&ust=1675358920635000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCODqj7zs9PwCFQAAAAAdAAAAABAE">
+    //     //	Send email using google
+    //     return transport.sendMail({
+    //         to: email,
+    //         from: 'Greenr',
+    //         subject: `Verify your email`,
+    //         html: `<img id="imgborder" class="logo" style="width: 85px;" src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fgreenr.com%2F&psig=AOvVaw18KgKxlV-Oge_QzYRqhiOW&ust=1675358920635000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCODqj7zs9PwCFQAAAAAdAAAAABAE">
+	// 	<hr>
+	// 	 <h1>Hello, ${name}</h1>
+    //     <h5 class="text-muted mb-2">
+	// 	Thank you for
+    //     choosing Greenr, to make
+    //     full use of our
+    //     features,
+    //     verify your email address.
+    //     Verfication code: ${code}
+    //    `
+    //     });
+    // }
+async function send_verification(uid, email, name) {
+    const accessToken = await oAuth2Client.getAccessToken();
+    const transport = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            type: 'OAuth2',
+            user: 'ggreenr3@gmail.com',
+            clientId: CLIENT_ID,
+            clientSecret: CLEINT_SECRET,
+            refreshToken: REFRESH_TOKEN,
+            accessToken: accessToken,
+        },
+    });
+    const token = JWT.sign({
+        uuid: uid
+    }, 'the-key', {
+        // expire in 5mins
+        expiresIn: '300000'
+    });
+    console.log('sending email.......')
+    //	Send email using google
+    return transport.sendMail({
+        to: email,
+        from: 'Greenr',
+        subject: `Verify your email`,
+        html: `<img id="imgborder" class="logo" style="width: 85px;" src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fgreenr.com%2F&psig=AOvVaw18KgKxlV-Oge_QzYRqhiOW&ust=1675358920635000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCODqj7zs9PwCFQAAAAAdAAAAABAE">
 		<hr>
 		 <h1>Hello, ${name}</h1>
         <h5 class="text-muted mb-2">
@@ -274,64 +318,108 @@ const oAuth2Client = new google.auth.OAuth2(
         full use of our
         features,
         verify your email address.
-        Verfication code: ${code}
-       `
+        Please verify in 5min!
+        </h5>
+        <a href="http://localhost:3000/email/verify/${token}"><button type="button" class="btn btn-dark">Verify Your Email</button></a>
+		<br>
+		<br>
+		Or, copy and paste the following URL into your browser:
+		<a href="http://localhost:3000/email/verify/${token}">http://localhost:3000/email/verify/${token}</a>
+		`
+    });
+}
+router.get("/email/verify/:token", verify_process);
+
+async function verify_process(req, res) {
+    const token = req.params.token;
+    let uuid = null;
+    try {
+        const payload = JWT.verify(token, 'the-key');
+        uuid = payload.uuid;
+    }
+    catch (error) {
+        console.error(`The token is invalid`);
+        console.error(error);
+        return res.sendStatus(400).end();
+    }
+    try {
+        const user = await User.findByPk(uuid);
+        const update = await User.update({
+            verify: true
+        }, {
+            where: {
+                user_id: uuid
+            }
+        });
+        console.log(user.FirstName);
+        // user.verify()
+        user.save();
+        return res.render("user_views/verified", {
+            name: user.FirstName
         });
     }
+    catch (error) {
+        console.error(`Failed to locate ${uuid}`);
+        console.error(error);
+        return res.sendStatus(500).end();
+    }
+}
 
-module.exports = router;
 
 //     alertMessage(res, 'success', user.name + ' added.Please login', 'fas fa-sign-in-alt', true);
 
-router.get('/email', (req, res) => {
-    const nodemailer = require('nodemailer');
-    const { google } = require('googleapis');
+// router.get('/email', (req, res) => {
+//     const nodemailer = require('nodemailer');
+//     const { google } = require('googleapis');
 
-    // These id's and secrets should come from .env file.
-    const CLIENT_ID = '288378853501-ma7eu9kd529v7ttoa2q4oo4q0uoiq914.apps.googleusercontent.com';
-    const CLEINT_SECRET = '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';
-    const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
-    const REFRESH_TOKEN = '1//04GTcJVcVlA1qCgYIARAAGAQSNwF-L9IrOrpPxfwmzjJB7ryuTVaubJYu66iGdSNskSjzg72RzvglTls4S_A3LUuj1z0Jq7dVL4I';
+//     // These id's and secrets should come from .env file.
+//     const CLIENT_ID = '288378853501-ma7eu9kd529v7ttoa2q4oo4q0uoiq914.apps.googleusercontent.com';
+//     const CLEINT_SECRET = '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';
+//     const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
+//     const REFRESH_TOKEN = '1//04GTcJVcVlA1qCgYIARAAGAQSNwF-L9IrOrpPxfwmzjJB7ryuTVaubJYu66iGdSNskSjzg72RzvglTls4S_A3LUuj1z0Jq7dVL4I';
 
-    const oAuth2Client = new google.auth.OAuth2(
-        CLIENT_ID,
-        CLEINT_SECRET,
-        REDIRECT_URI
-    );
-    oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+//     const oAuth2Client = new google.auth.OAuth2(
+//         CLIENT_ID,
+//         CLEINT_SECRET,
+//         REDIRECT_URI
+//     );
+//     oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
-    async function sendMail() {
-        try {
-            const accessToken = await oAuth2Client.getAccessToken();
+//     async function sendMail() {
+//         try {
+//             const accessToken = await oAuth2Client.getAccessToken();
 
-            const transport = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    type: 'OAuth2',
-                    user: 'ggreenr3@gmail.com',
-                    clientId: CLIENT_ID,
-                    clientSecret: CLEINT_SECRET,
-                    refreshToken: REFRESH_TOKEN,
-                    accessToken: accessToken,
-                },
-            });
+//             const transport = nodemailer.createTransport({
+//                 service: 'gmail',
+//                 auth: {
+//                     type: 'OAuth2',
+//                     user: 'ggreenr3@gmail.com',
+//                     clientId: CLIENT_ID,
+//                     clientSecret: CLEINT_SECRET,
+//                     refreshToken: REFRESH_TOKEN,
+//                     accessToken: accessToken,
+//                 },
+//             });
 
-            const mailOptions = {
-                from: 'ggreenr3@gmail.com',
-                to: 'tiwor69202@brandoza.com',
-                subject: 'Hello from gmail using API',
-                text: 'Hello from gmail email using API',
-                html: '<h1>hello saran here!!!!</h1>',
-            };
+//             const mailOptions = {
+//                 from: 'ggreenr3@gmail.com',
+//                 to: 'tiwor69202@brandoza.com',
+//                 subject: 'Hello from gmail using API',
+//                 text: 'Hello from gmail email using API',
+//                 html: '<h1>hello saran here!!!!</h1>',
+//             };
 
-            const result = await transport.sendMail(mailOptions);
-            return result;
-        } catch (error) {
-            return error;
-        }
-    }
+    
 
-    sendMail()
-        .then((result) => console.log('Email sent...', result))
-        .catch((error) => console.log(error.message));
-});
+//             const result = await transport.sendMail(mailOptions);
+//             return result;
+//         } catch (error) {
+//             return error;
+//         }
+//     }
+
+//     sendMail()
+//         .then((result) => console.log('Email sent...', result))
+//         .catch((error) => console.log(error.message));
+// });
+module.exports = router;
