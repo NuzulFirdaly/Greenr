@@ -3,7 +3,7 @@ const router = express.Router();
 const alertMessage = require('../helpers/messenger');
 const fs = require('fs');
 const upload = require('../helpers/itemUpload');
-const ItemListing = require('../models/ItemListing');
+const CourseListing = require('../models/CoursesListing');
 const User = require('../models/User')
 const path = require('path');
 const Orders = require('../models/Orders');
@@ -59,7 +59,7 @@ router.post('/ItemListing', (req, res) => {
                 ItemListing.create({ Name: name, Price: price, Description: description, Picture: filename, userUserId: req.user.user_id })
                     .then(itemlist => {
                         alertMessage(res, 'success', itemlist.Name + ' added to Your Listing.', 'fas fa-plus', true);
-                        res.redirect(301, '/shop/viewShop');
+                        res.redirect(301, '/shop/viewOrderHistory');
                     })
                     .catch(err => console.log(err));
             }
@@ -154,10 +154,10 @@ router.get('/viewOrderHistory', (req, res) => {
 
 router.get('/viewOrderDetails/:id', (req, res) => {
     var orderid = req.params.id;
-    ItemListing.findAll({ include: { model: OrderDetails, where: { OrderId: orderid } } })
+    CourseListing.findAll({ include: { model: OrderDetails, where: { OrderId: orderid } } })
         .then(items => {
-            console.log(items);
-            console.log("gjfdgkjlnkjgdnljfljgjdnljdfn", JSON.parse(JSON.stringify(items, null, 2))[0].order_details);
+            console.log("this is items in vieworderdeetuks", items);
+            // console.log("gjfdgkjlnkjgdnljfljgjdnljdfn", JSON.parse(JSON.stringify(items, null, 2))[0].order_details);
             items = JSON.parse(JSON.stringify(items, null, 2));
             res.render('shop/OrderDetails', { items });
         })

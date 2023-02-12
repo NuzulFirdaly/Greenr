@@ -224,6 +224,11 @@ app.engine('handlebars', exphbs({
                 }
             }
             return boolans
+        },
+        length(a) {
+            console.log("this is length of session cart", a, Object.keys(a).length)
+            return Object.keys(a).length
+
         }
 
 
@@ -282,6 +287,7 @@ app.use(async function(req, res, next) {
     res.locals.error = req.flash('error');
     if (req.user) {
         res.locals.user = req.user.dataValues;
+        res.locals.session = req.session
         console.log("this is req.user in next", req.user.user_id)
     }
     //setup framework

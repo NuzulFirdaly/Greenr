@@ -7,56 +7,56 @@ const User = require('../models/User');
 const alertMessage = require('../helpers/messenger');
 const ensureAuthenticated = require('../helpers/auth');
 
-// router.get('/viewProfile/:id', async(req, res) => {
-//     var id = req.params.id;
-//     var tutor = await User.findOne({ where: { user_id: id } });
-//     var extra = await professionalProfile.findOne({ where: { userUserId: id } });
-//     var affiliation = await Institution.findOne({ where: { institution_id: tutor.institutionInstitutionId } });
-//     console.log(affiliation);
-//     if (req.user) {
-//         if (id === req.user.dataValues.user_id) { res.redirect('/user/Settings'); } else {
-//             if (tutor.AccountTypeID == 1) {
-//                 tutor_id = id;
-//                 var courses = await CourseListing.findAll({ where: { userUserId: tutor_id }, raw: true })
-//                 res.render('user/viewProfile', {
-//                     layout: 'userFunctions',
-//                     tutor: tutor.dataValues,
-//                     coursesarray: courses,
-//                     extra: extra.dataValues,
-//                     affiliation
-//                 })
+router.get('/viewProfile/:id', async(req, res) => {
+    var id = req.params.id;
+    var tutor = await User.findOne({ where: { user_id: id } });
+    // var extra = await professionalProfile.findOne({ where: { userUserId: id } });
+    // var affiliation = await Institution.findOne({ where: { institution_id: tutor.institutionInstitutionId } });
+    // console.log(affiliation);
+    if (req.user) {
+        if (id === req.user.dataValues.user_id) { res.redirect('/user/Settings'); } else {
+            if (tutor.AccountTypeID == 1) {
+                tutor_id = id;
+                var courses = await CourseListing.findAll({ where: { userUserId: tutor_id }, raw: true })
+                res.render('user/viewProfile', {
+                    layout: 'userFunctions',
+                    tutor: tutor.dataValues,
+                    coursesarray: courses,
+                    // extra: extra.dataValues,
+                    // affiliation
+                })
 
-//             } else {
-//                 res.render('user/viewProfile', {
-//                     layout: 'userFunctions',
-//                     tutor: tutor.dataValues,
-//                     extra: extra.dataValues,
-//                     affiliation
-//                 });
-//             }
-//         }
-//     } else {
-//         if (tutor.AccountTypeID == 1) {
-//             tutor_id = id;
-//             var courses = await CourseListing.findAll({ where: { userUserId: tutor_id }, raw: true })
-//             res.render('user/viewProfile', {
-//                 layout: 'userFunctions',
-//                 tutor: tutor.dataValues,
-//                 coursesarray: courses,
-//                 extra: extra.dataValues,
-//                 affiliation
-//             })
+            } else {
+                res.render('user/viewProfile', {
+                    layout: 'userFunctions',
+                    tutor: tutor.dataValues,
+                    // extra: extra.dataValues,
+                    // affiliation
+                });
+            }
+        }
+    } else {
+        if (tutor.AccountTypeID == 1) {
+            tutor_id = id;
+            var courses = await CourseListing.findAll({ where: { userUserId: tutor_id }, raw: true })
+            res.render('user/viewProfile', {
+                layout: 'userFunctions',
+                tutor: tutor.dataValues,
+                coursesarray: courses,
+                // extra: extra.dataValues,
+                // affiliation
+            })
 
-//         } else {
-//             res.render('user/viewProfile', {
-//                 layout: 'userFunctions',
-//                 tutor: tutor.dataValues,
-//                 extra: extra.dataValues,
-//                 affiliation
-//             });
-//         }
-//     }
-// })
+        } else {
+            res.render('user/viewProfile', {
+                layout: 'userFunctions',
+                tutor: tutor.dataValues,
+                // extra: extra.dataValues,
+                // affiliation
+            });
+        }
+    }
+})
 
 router.get('/Settings', ensureAuthenticated, async(req, res) => {
     if (req.user !== null) {

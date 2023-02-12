@@ -26,7 +26,7 @@
 		<div class="widgets-wrap float-lg-right">
 			<div class="widget-header  mr-3">
 				<a href="/shop/viewCart" class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></a>
-				<span class="badge badge-pill badge-danger notify">{{cart}}</span>
+				<span class="badge badge-pill badge-danger notify">{{#length session.cart}} {{/length}}</span>
 			</div>
 			<div class="widget-header dropdown">
 				<a href="#" class="ml-3 icontext" data-toggle="dropdown" data-offset="20,10">
@@ -39,8 +39,6 @@
 				<div class="dropdown-menu dropdown-menu-right">
 					<a class="dropdown-item" href="/seller_onboarding/becometutor">Become A Seller</a>
 					<a class="dropdown-item" href="/user/Settings">Profile setting</a>
-					<a class="dropdown-item" href="#">My Products</a>
-					<a class="dropdown-item" href="/myschedule/user/{{user.user_id}}">My Bookings</a>
 					<hr class="dropdown-divider">
 					<a class="dropdown-item" href="/logout">Log out</a>
 				</div> <!--  dropdown-menu .// -->

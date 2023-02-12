@@ -26,7 +26,7 @@ const CourseListing = db.define('course_listing', { //Creates a table called use
         type: Sequelize.STRING,
     },
     Description: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT('long')
     },
     Course_thumbnail: {
         type: Sequelize.STRING,
@@ -42,6 +42,10 @@ const CourseListing = db.define('course_listing', { //Creates a table called use
         defaultValue: 0
     },
     Minimumdays: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+    },
+    GHG: {
         type: Sequelize.INTEGER,
         defaultValue: 0
     }

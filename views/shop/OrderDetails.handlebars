@@ -2,30 +2,36 @@
   <table class="table table-striped">
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Description</th>
+        <th>Title</th>
+        <th>Short Description</th>
         <th>Picture</th>
         <th>Price($)</th>
         <th>Quantity</th>
         <th>Total Price($)</th>
+        <th>Link to product</th>
+
+
       </tr>
     </thead>
     <tbody>
       {{#each items}}
       <tr>
-        <td>{{ this.Name }}</td>
+        <td>{{ this.Title }}</td>
         <td>
-          <p style="height: 40px; scroll:auto;">{{ this.Description }}</p>
+          <p style="height: 40px; scroll:auto;">{{ this.Short_description }}</p>
         </td>
-        <td><img height="40px" width="40px" src="/images/itemlisting/{{this.Picture}}" alt=""></td>
+        <td><img height="40px" width="40px" src="/images/coursethumbnails/{{this.Course_thumbnail}}" alt=""></td>
         <td>
-          {{this.Price}}
+          {{this.Hourlyrate}}
         </td>
         <td>
             {{this.order_details.[0].quantity}}
         </td>
         <td>
             {{this.order_details.[0].total_price}}
+        </td>
+        <td>
+          <a class="btn btn-success" href="/course/viewcourse/{{this.course_id}}">Link</a>
         </td>
       </tr>
       {{/each}}

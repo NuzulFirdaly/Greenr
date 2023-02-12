@@ -23,6 +23,7 @@ router.get('/', (req, res) => {
         if (req.user != null) {
             var cart = Object.keys(req.session.cart).length;
 
+
             res.render('home', {
                 user: req.user.dataValues,
                 courseArray,

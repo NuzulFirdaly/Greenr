@@ -385,7 +385,7 @@ router.get('/success', (req, res) => {
                         dict = {};
                         dict["quantity"] = cart[key][1];
                         dict["total_price"] = cart[key][2];
-                        dict["item_id"] = key;
+                        dict["course_id"] = key;
                         dict["OrderId"] = order_id;
                         details.push(dict);
                     }

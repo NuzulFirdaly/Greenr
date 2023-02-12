@@ -49,8 +49,8 @@ const setUpDB = (drop) => {
             Orders.hasMany(OrderDetails, { foreignKey: "OrderId" });
             OrderDetails.belongsTo(Orders, { foreignKey: "OrderId" });
 
-            ItemListing.hasMany(OrderDetails, { foreignKey: "item_id" });
-            OrderDetails.belongsTo(ItemListing, { foreignKey: "item_id" });
+            CourseListing.hasMany(OrderDetails, { foreignKey: "course_id" });
+            OrderDetails.belongsTo(CourseListing, { foreignKey: "course_id" });
 
             // Itemlisting
             User.hasMany(ItemListing);

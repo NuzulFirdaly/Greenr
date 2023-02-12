@@ -18,6 +18,9 @@ const { body, validationResult } = require('express-validator');
 const courseThumbnailUpload = require('../helpers/thumbnailUploads');
 const RateReview = require('../models/RateReview');
 const ensureAuthenticated = require('../helpers/auth');
+var stringSimilarity = require("string-similarity");
+
+
 
 
 //change this to database where admin can add
@@ -72,7 +75,7 @@ router.post("/CreateCourse", [
     body('subcategory').not().isEmpty().trim().escape().withMessage("subcategory is invalid")
 ], async(req, res) => {
     console.log(req.body);
-    let { coursetitle, category, subcategory, short_description, description, courseThumbnailUpload, trueFileName } = req.body;
+    let { coursetitle, category, subcategory, short_description, description, courseThumbnailUpload, trueFileName, wattage } = req.body;
     let errors = [];
     const validatorErrors = validationResult(req);
     if (!validatorErrors.isEmpty()) { //if isEmpty is false
@@ -90,34 +93,49 @@ router.post("/CreateCourse", [
             courseThumbnailUpload,
             trueFileName,
             user: req.user.dataValues, //have to do this for all pages
-            errors
+            errors,
+            wattage: wattage,
         })
     } else {
+        //calculate ghg /year
+        let GHG = 0
+            //(wattage * hours)  / 1000hours = kwh 
+            //kwh * CO2/kwh = GHG
+        GHG = ((wattage * 8760) / 1000) * 0.4057
         userid = req.user.dataValues.user_id;
-        console.log(userid)
+        console.log("this is ghg", GHG, wattage)
             //check if course with the same name has been created
         Course.findOne({ where: { title: coursetitle } }).then(course => {
             if (course !== null) {
                 errors.push({ text: "There already exists a product with the same name, please think of unique title!" })
                 res.render("course/coursecreation", {
                     user: req.user.dataValues, //have to do this for all pages
-                    errors
+                    coursetitle,
+                    category,
+                    subcategory,
+                    short_description,
+                    description,
+                    courseThumbnailUpload,
+                    trueFileName,
+                    user: req.user.dataValues, //have to do this for all pages
+                    errors,
+                    wattage: wattage,
                 })
 
             } else {
                 if (req.user.institutionInstitutionId != null) {
-                    Course.create({ Title: coursetitle, Category: category, Subcategory: subcategory, Short_description: short_description, Description: description, userUserId: userid, Course_thumbnail: trueFileName, institutionInstitutionId: req.user.institutionInstitutionId })
+                    Course.create({ Title: coursetitle, Category: category, Subcategory: subcategory, Short_description: short_description, Description: description, userUserId: userid, Course_thumbnail: trueFileName, institutionInstitutionId: req.user.institutionInstitutionId, GHG: GHG })
                         .then(course => {
                             alertMessage(res, 'success', course.Title + ` added. \n Product will be displayed under your institution's page`, 'fas fa-check', true);
-                            res.redirect(301, '/course/addpricing/' + req.params.courseid)
+                            res.redirect(301, '/course/editpricing/' + course.course_id)
                         })
                         .catch(err => console.log(err));
 
                 } else {
-                    Course.create({ Title: coursetitle, Category: category, Subcategory: subcategory, Short_description: short_description, Description: description, userUserId: userid, Course_thumbnail: trueFileName })
+                    Course.create({ Title: coursetitle, Category: category, Subcategory: subcategory, Short_description: short_description, Description: description, userUserId: userid, Course_thumbnail: trueFileName, GHG: GHG })
                         .then(course => {
                             alertMessage(res, 'success', course.Title + ' added.', 'fas fa-sign-in-alt', true);
-                            res.redirect(301, '/course/addpricing/' + req.params.courseid)
+                            res.redirect(301, '/course/editpricing/' + course.course_id)
                         })
                         .catch(err => console.log(err));
                 }
@@ -410,10 +428,46 @@ function getAverageRating(list) {
 function getAllSentiments(list) {
     listOfAspects_Sentiments = []
     for (let i = 0; i < list.length; i++) {
-        listObjects = JSON.parse(list[i].Aspect_Sentiments)
-            // console.log("this is listObjects in getAllSentiments", listObjects)
-        listOfAspects_Sentiments = listOfAspects_Sentiments.concat(listObjects)
+        if (list[i].Aspect_Sentiments) {
+            listObjects = JSON.parse(list[i].Aspect_Sentiments)
+                // console.log("this is listObjects in getAllSentiments", listObjects)
+            for (let j = 0; j < listObjects.length; j++) {
+                //check wether the aspect is similar to any word 
+                similarity = 0
+                    //compare current aspect to all aspect in listofaspectsentment
+                for (let k = 0; k < listOfAspects_Sentiments.length; k++)
+                    if (listOfAspects_Sentiments.length > 0) { //if not empty
+                        console.log("check this", listObjects[j].aspect)
+                        console.log("against this", listOfAspects_Sentiments[k].aspect)
+                        var currsimilarity = stringSimilarity.compareTwoStrings(listObjects[j].aspect, listOfAspects_Sentiments[k].aspect);
+                        console.log("this is the similarity", similarity)
+                        if (currsimilarity > similarity) {
+                            similarity = currsimilarity
+                        }
+                    } else { //if empty just push
+                        console.log("=== this is the final similarity", similarity)
+                        console.log("=== pushing this", listObjects[j])
+                        listOfAspects_Sentiments.push(listObjects[j])
+
+                    }
+
+                if (similarity < 0.5) {
+                    console.log("=== this is the final similarity", similarity)
+                    console.log("=== pushing this", listObjects[j])
+
+                    listOfAspects_Sentiments.push(listObjects[j])
+
+                } else {
+                    console.log("=== this is the final similarity", similarity)
+                    console.log("=== ignoring this", listObjects[j])
+                }
+            }
+        }
+
+        // listOfAspects_Sentiments = listOfAspects_Sentiments.concat(listObjects)
     }
+    //loop through each aspect and see if it is similar to all other aspects
+    // var similarity = stringSimilarity.compareTwoStrings("healed", "sealed");
     console.log("this is getAllSentiments", listOfAspects_Sentiments)
     return listOfAspects_Sentiments
 }
@@ -421,124 +475,144 @@ function getAllSentiments(list) {
 router.get("/viewcourse/:courseid", async(req, res) => {
     console.log("we are at view course now")
     courseid = req.params.courseid;
+    let course = []
+    let recommendedcourselst = []
+
     await CourseListing.findAll({
             where: { course_id: courseid },
-            include: [Lessons, User],
-            order: [
-                [Lessons, 'session_no', 'ASC']
-            ]
+            include: [User]
         })
-        .then(course => {
+        .then(async(data) => {
+            course = data
+            console.log("this is course", course)
+                // console.log("this is course description", course[0].Description)
+                //get recommendation
+            await fetch("http://34.142.175.75/get_recommendation", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ essay: course[0].Description })
+                }).then((response) => { return response.json() })
+                .then((recommendedcourses) => {
+                    recommendedcourselst = recommendedcourses.filter(item => (!(item.course_id == course[0].course_id)))
+
+                })
+
             // console.log("THIS IS COURSE NUZULLLLLLLL")
-            // console.log(course)
             // console.log("this is course user", course[0].user) //checking if tutor created the course
             //if user is logged in
-            if (req.user) {
-                if (course[0].user.user_id == req.user.user_id) {
-                    res.redirect('/course/updatecourse/' + req.params.courseid)
-                } else {
-                    avgRating = 0
-                    allSentiments = []
-                    RateReview.findAll({ where: { CourseId: courseid }, include: [User] })
-                        .then(ratereviews => {
-                            RateReview.findAll({
-                                    where: { CourseId: courseid },
-                                    attributes: [
-                                        'Aspect_Sentiments', 'Rating'
-                                    ],
-                                    raw: true,
-                                })
-                                .then(async function(data) {
-                                    console.log("this is data in view course", data)
-                                    if (!data) {
-                                        avgRating = 0;
-                                    } else {
-                                        avgRating = getAverageRating(data)
-                                        allSentiments = getAllSentiments(data)
-                                    }
 
-                                    if (req.user) {
-                                        console.log("ymca")
-                                        console.log(req.user.user_id)
-                                        console.log("this allsentiments", allSentiments)
-                                        await RateReview.findOne({ where: { CourseId: courseid, UserId: req.user.user_id }, include: [User] })
-                                            .then(yourRateReview => {
+        }).catch(error => console.log(error));
 
-                                                console.log('gjfdjgjldfgj')
-                                                course = JSON.parse(JSON.stringify(course, null, 2))[0]
-                                                yourRateReview = yourRateReview
-                                                if (yourRateReview) { //user has commented 
-                                                    console.log("kms")
-                                                    console.log(JSON.parse(JSON.stringify(ratereviews, null, 2)))
-                                                    res.render("course/viewcourse", {
-                                                        users: req.user.dataValues, //have to do this for all pages
-                                                        course,
-                                                        avgRating: avgRating,
-                                                        yourRateReview: yourRateReview.dataValues,
-                                                        ratereviews: JSON.parse(JSON.stringify(ratereviews, null, 2)),
-                                                        allSentiments: { allSentiments }
-                                                    })
-                                                } else {
-                                                    // user hasnt commented 
-                                                    console.log(JSON.parse(JSON.stringify(ratereviews, null, 2)))
-                                                    console.log(ratereviews)
-                                                    console.log(avgRating)
-                                                    console.log("yopopropr")
-                                                    res.render("course/viewcourse", {
-                                                        users: req.user.dataValues, //have to do this for all pages
-                                                        course,
-                                                        avgRating: avgRating,
-                                                        allSentiments: { allSentiments },
-                                                        ratereviews: JSON.parse(JSON.stringify(ratereviews, null, 2))
-                                                    })
-                                                }
-                                            })
-                                            .catch(error => console.log(error));
-                                    } else { // console.log(course);
-                                        course = JSON.parse(JSON.stringify(course, null, 2))[0]
-                                        res.render("course/viewcourse", {
-                                            course: course,
-                                            avgRating: avgRating,
-                                            allSentiments: { allSentiments },
-                                            ratereviews: JSON.parse(JSON.stringify(ratereviews, null, 2))
-                                        })
-
-                                    }
-
-                                });
+    if (req.user) {
+        if (course[0].userUserId == req.user.user_id) {
+            res.redirect('/course/updatecourse/' + req.params.courseid)
+        } else {
+            console.log("this is recommended courselst", recommendedcourselst)
+            avgRating = 0
+            allSentiments = []
+            RateReview.findAll({ where: { CourseId: courseid }, include: [User] })
+                .then(ratereviews => {
+                    RateReview.findAll({
+                            where: { CourseId: courseid },
+                            attributes: [
+                                'Aspect_Sentiments', 'Rating'
+                            ],
                         })
-                }
-            } else {
-                //user not logged in
-                RateReview.findAll({ where: { CourseId: courseid }, include: [User] })
-                    .then(ratereviews => {
-                        RateReview.findAll({
-                                where: { CourseId: courseid },
-                                attributes: [
-                                    'Aspect_Sentiments', 'Rating'
-                                ],
-                                raw: true,
-                            })
-                            .then(async function(data) {
-                                console.log("this is data in view course", data)
-                                if (!data) {
-                                    avgRating = 0;
-                                } else {
-                                    avgRating = getAverageRating(data)
-                                    allSentiments = getAllSentiments(data)
-                                }
-                                console.log("this is allSentiments outside else", allSentiments)
+                        .then(async function(data) {
+                            console.log("this is data in view course", data)
+                            if (!data) {
+                                avgRating = 0;
+                            } else {
+                                avgRating = getAverageRating(data)
+                                allSentiments = getAllSentiments(data)
+                            }
+
+                            if (req.user) {
+                                console.log("ymca")
+                                console.log(req.user.user_id)
+                                console.log("this allsentiments", allSentiments)
+                                await RateReview.findOne({ where: { CourseId: courseid, UserId: req.user.user_id }, include: [User] })
+                                    .then(yourRateReview => {
+
+                                        console.log('this is recommendedcourselst', recommendedcourselst)
+                                        course = JSON.parse(JSON.stringify(course, null, 2))[0]
+                                        yourRateReview = yourRateReview
+                                        if (yourRateReview) { //user has commented 
+                                            console.log("this is avgRating", avgRating)
+                                            console.log(JSON.parse(JSON.stringify(ratereviews, null, 2)))
+                                            res.render("course/viewcourse", {
+                                                recommendedcourseslist: recommendedcourselst,
+                                                users: req.user.dataValues, //have to do this for all pages
+                                                course,
+                                                avgRating: avgRating,
+                                                yourRateReview: yourRateReview.dataValues,
+                                                ratereviews: JSON.parse(JSON.stringify(ratereviews, null, 2)),
+                                                allSentiments: { allSentiments }
+                                            })
+                                        } else {
+                                            // user hasnt commented 
+                                            console.log(JSON.parse(JSON.stringify(ratereviews, null, 2)))
+                                            console.log(ratereviews)
+                                            console.log(avgRating)
+                                            console.log("yopopropr")
+                                            res.render("course/viewcourse", {
+                                                recommendedcourseslist: recommendedcourselst,
+                                                users: req.user.dataValues, //have to do this for all pages
+                                                course,
+                                                avgRating: avgRating,
+                                                allSentiments: { allSentiments },
+                                                ratereviews: JSON.parse(JSON.stringify(ratereviews, null, 2))
+                                            })
+                                        }
+                                    })
+                                    .catch(error => console.log(error));
+                            } else { // console.log(course);
                                 course = JSON.parse(JSON.stringify(course, null, 2))[0]
                                 res.render("course/viewcourse", {
+                                    recommendedcourseslist: recommendedcourselst,
                                     course: course,
                                     avgRating: avgRating,
-                                    ratereviews: JSON.parse(JSON.stringify(ratereviews, null, 2)),
-                                    allSentiments: { allSentiments }
+                                    allSentiments: { allSentiments },
+                                    ratereviews: JSON.parse(JSON.stringify(ratereviews, null, 2))
                                 })
-                            })
+
+                            }
+
+                        });
+                })
+        }
+    } else {
+        //user not logged in
+        RateReview.findAll({ where: { CourseId: courseid }, include: [User] })
+            .then(ratereviews => {
+                RateReview.findAll({
+                        where: { CourseId: courseid },
+                        attributes: [
+                            'Aspect_Sentiments', 'Rating'
+                        ],
+                        raw: true,
                     })
-            }
-        }).catch(error => console.log(error));
+                    .then(async function(data) {
+                        console.log("this is data in view course", data)
+                        if (!data) {
+                            avgRating = 0;
+                        } else {
+                            avgRating = getAverageRating(data)
+                            allSentiments = getAllSentiments(data)
+                        }
+                        console.log("this is allSentiments outside else", allSentiments)
+                        course = JSON.parse(JSON.stringify(course, null, 2))[0]
+                        res.render("course/viewcourse", {
+                            recommendedcourseslist: recommendedcourselst,
+
+                            course: course,
+                            avgRating: avgRating,
+                            ratereviews: JSON.parse(JSON.stringify(ratereviews, null, 2)),
+                            allSentiments: { allSentiments }
+                        })
+                    })
+            })
+    }
 })
 
 
@@ -579,13 +653,18 @@ router.get("/updatecourse/:courseid", ensureAuthenticated, (req, res) => {
 })
 
 router.get("/editcourse/:courseid", (req, res) => {
-    CourseListing.findOne({ where: { course_id: req.params.courseid }, raw: true })
+    CourseListing.findOne({ where: { course_id: req.params.courseid } })
         .then(course => {
-            console.log(course);
+            console.log("this is course", course)
+            console.log("this is wattage calculated from ghg", course.GHG);
+
+            wattage = Math.ceil((parseInt(course.GHG) / 0.4057) * 1000 / 8760)
+            console.log("this is wattage calculated from ghg", wattage);
             if ((req.user != null) && (req.user.AccountTypeID == 1)) {
                 res.render("course/editcourse", {
                     user: req.user.dataValues, //have to do this for all pages
-                    course: course
+                    course: course,
+                    wattage: wattage
                 })
             } else {
                 alertMessage(res, 'danger', 'You dont have access to that page!', 'fas fa-exclamation-triangle', true)
@@ -593,14 +672,20 @@ router.get("/editcourse/:courseid", (req, res) => {
             };
         })
 })
+
 router.post("/editcourse/:courseid", (req, res) => {
-    let { coursetitle, category, subcategory, short_description, description } = req.body;
+    let { coursetitle, category, subcategory, short_description, description, wattage } = req.body;
     console.log(coursetitle, category, short_description, description)
 
+    //calculate ghg /year
+    let GHG = 0
+        //(wattage * hours)  / 1000hours = kwh 
+        //kwh * CO2/kwh = GHG
+    GHG = ((wattage * 8760) / 1000) * 0.4057
     CourseListing.findOne({ where: { course_id: req.params.courseid } })
         .then(course => {
-            course.update({ Title: coursetitle, Category: category, Subcategory: subcategory, Short_description: short_description, Description: description })
-            res.redirect(301, '/course/updatecourse/' + req.params.courseid)
+            course.update({ Title: coursetitle, Category: category, Subcategory: subcategory, Short_description: short_description, Description: description, GHG: GHG })
+            res.redirect('/course/editpricing/' + req.params.courseid)
         })
         .catch(err => console.log(err));
 })
@@ -724,32 +809,46 @@ router.post("/editlesson/:courseid", async(req, res) => {
             }
         })
 })
+
 router.get("/editpricing/:courseid", (req, res) => {
     if ((req.user != null) && (req.user.AccountTypeID == 1)) {
         course_id = req.params.courseid
         console.log(course_id)
-        Lessons.findAll({
-                where: { courseListingCourseId: course_id },
-                raw: true,
-                order: [
-                    ['session_no', 'ASC']
-                ]
+        CourseListing.findOne({ where: { course_id: req.params.courseid }, raw: true })
+            .then(course => {
+                console.log("this is course in editpricing", course)
+                if ((req.user != null) && (req.user.AccountTypeID == 1)) {
+                    res.render("course/addpricing", {
+                        user: req.user.dataValues, //have to do this for all pages
+                        course: course,
+                    })
+                } else {
+                    alertMessage(res, 'danger', 'You dont have access to that page!', 'fas fa-exclamation-triangle', true)
+                    res.render("/")
+                };
             })
-            //lessons are all the lessons from the course id(return multiple lessons)
-            .then((lessons) => {
-                sessioncount = lessons.length;
-                let totalhours = 0
-                for (let i = 0; i < sessioncount; i++) {
-                    totalhours += parseInt(lessons[i].time_approx)
-                }
-                res.render("course/editpricing", {
-                    sessionarray: lessons,
-                    course_id: course_id,
-                    user: req.user.dataValues,
-                    sessioncount: sessioncount,
-                    totalhours
-                })
-            });
+            // Lessons.findAll({
+            //         where: { courseListingCourseId: course_id },
+            //         raw: true,
+            //         order: [
+            //             ['session_no', 'ASC']
+            //         ]
+            //     })
+            //     //lessons are all the lessons from the course id(return multiple lessons)
+            //     .then((lessons) => {
+            //         sessioncount = lessons.length;
+            //         let totalhours = 0
+            //         for (let i = 0; i < sessioncount; i++) {
+            //             totalhours += parseInt(lessons[i].time_approx)
+            //         }
+            //         res.render("course/addpricing", {
+            //             sessionarray: lessons,
+            //             course_id: course_id,
+            //             user: req.user.dataValues,
+            //             sessioncount: sessioncount,
+            //             totalhours
+            //         })
+            //     });
     } else {
         alertMessage(res, 'danger', 'You dont have access to that page!', 'fas fa-exclamation-triangle', true)
         res.redirect("/")
@@ -827,6 +926,7 @@ router.post("/updatelesson/:sessionid", (req, res) => {
             res.redirect(301, "/course/CreateSession/" + lesson.courseListingCourseId)
         })
 })
+
 router.get("/editupdatesession/:sessionid", (req, res) => {
     if ((req.user != null) && (req.user.AccountTypeID == 1)) {
         Lessons.findOne({ where: { session_id: req.params.sessionid }, raw: true })

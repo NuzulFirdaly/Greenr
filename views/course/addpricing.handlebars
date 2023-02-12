@@ -6,11 +6,11 @@
         <div class="col-md-6">
          <div class="card">
         <article class="card-body">
-        <form class="block-register" method="POST" action="/course/addnewpricing/{{course_id}}" >
+        <form class="block-register" method="POST" action="/course/addnewpricing/{{course.course_id}}" >
           <div class="form-group form-row">
             <label class="col-md-3 col-form-label">Price</label>
             <div class="col">
-                    <input class="form-control" type="number" id="hourlyrate" name="hourlyrate" min="1" placeholder="How much do you charge for the product?" required>        
+                    <input class="form-control" type="number" id="hourlyrate" value="{{course.Hourlyrate}}"  name="hourlyrate" min="1" placeholder="How much do you charge for the product?" required>        
             </div>
           </div>
             <div class="form-group form-row">
@@ -19,7 +19,7 @@
                   <p class="text-muted">Minimum number of days needed to deliver</p>
                 </div>
                  <div class="col">
-                    <input class="form-control" type="number" id="minimumdays" name="minimumdays" min='1' placeholder="Minimum No. Days to finish course" required>        
+                    <input class="form-control" type="number"value="{{course.Minimumdays}}" id="minimumdays" name="minimumdays" min='1' placeholder="Minimum No. Days to finish course" required>        
                 </div>
           </div>
             <div class="form-group form-row">
@@ -28,7 +28,7 @@
                   <p class="text-muted">Maximum number of days requried to deliver</p>
                 </div>
                 <div class="col">
-                    <input class="form-control" type="number" id="maximumdays" name="maximumdays" min="1" placeholder="Maximum No. Days that can be spent on one tutee" required>        
+                    <input class="form-control" type="number" value="{{course.Maximumdays}}"  id="maximumdays" name="maximumdays" min="1" placeholder="Maximum No. Days that can be spent on one tutee" required>        
                 </div>
           </div>
           <button class="btn btn-lg btn-primary float-right" type="submit" value="Submit">Finish</button>

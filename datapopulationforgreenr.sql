@@ -21,7 +21,7 @@ INSERT INTO `greenr_nuzul`.`users` (`user_id`, `Username`, `FirstName`, `LastNam
 
 
 -- Phase 4 create the product listings
-INSERT INTO `greenr_nuzul`.`course_listings` (`course_id`, `Title`, `Category`, `Subcategory`, `Short_description`, `Description`, `Course_thumbnail`, `Hourlyrate`, `Maximumdays`, `Minimumdays`, `userUserId`) VALUES (
+INSERT INTO `greenr_nuzul`.`course_listings` (`course_id`, `Title`, `Category`, `Subcategory`, `Short_description`, `Description`, `Course_thumbnail`, `Hourlyrate`, `Maximumdays`, `Minimumdays`, `userUserId`,`GHG`) VALUES (
 "36e0a573-65f5-455a-bc0b-8e622ce140a9",	
 "617L Side by Side Fridge with InstaView Door-in-Doorâ„¢ in Matt Black",	
 "Fridge"	, 
@@ -58,9 +58,9 @@ Seals in Farm Freshness Longer
 LinearCoolingâ„¢ reduces temperature fluctuations, locking in the flavor of fresh for up to 7 days.
 *Based on LGâ€™s internal test results measuring the time it took to reach the 5% weight reduction rate of vegetables on the shelf of the fresh food compartment of the LGE LinearCooling model. Applicable models only. The result may vary in actual usage.",
 "8b298012-e570-4fd5-84b5-0cb21c19d696-courseThumbnailUpload-1675187330130.png",
-"399","0", "0","9b7cffce-ae4e-4aef-a5a7-0f6d76f3592e"
+"399","0", "0","9b7cffce-ae4e-4aef-a5a7-0f6d76f3592e", "2000"
 );
-INSERT INTO `greenr_nuzul`.`course_listings` (`course_id`, `Title`, `Category`, `Subcategory`, `Short_description`, `Description`, `Course_thumbnail`, `Hourlyrate`, `Maximumdays`, `Minimumdays`, `userUserId`) VALUES (
+INSERT INTO `greenr_nuzul`.`course_listings` (`course_id`, `Title`, `Category`, `Subcategory`, `Short_description`, `Description`, `Course_thumbnail`, `Hourlyrate`, `Maximumdays`, `Minimumdays`, `userUserId`, `GHG`) VALUES (
 "99f1d82e-6610-4e4b-bdae-5ed80e579245",
 "395L Top Freezer with Smart Inverter Compressor in Objet Collection Beige", "Fridge","Top Freezer", "Seals in Farm Freshness Longer",
 "Smart Inverter Compressor
@@ -68,9 +68,9 @@ Linear Cooling+â„¢
 Door Cooling+â„¢users
 Tempered Glass Shelf
 Moving Twist Ice Maker
-Smart Diagnosis", "8b298012-e570-4fd5-84b5-0cb21c19d696-courseThumbnailUpload-1675187247758.png", "199", "0", "0", "9b7cffce-ae4e-4aef-a5a7-0f6d76f3592e"
+Smart Diagnosis", "8b298012-e570-4fd5-84b5-0cb21c19d696-courseThumbnailUpload-1675187247758.png", "199", "0", "0", "9b7cffce-ae4e-4aef-a5a7-0f6d76f3592e", "2000"
 );
-INSERT INTO `greenr_nuzul`.`course_listings` (`course_id`, `Title`, `Category`, `Subcategory`, `Short_description`, `Description`, `Course_thumbnail`, `Hourlyrate`, `Maximumdays`, `Minimumdays`, `userUserId`) VALUES (
+INSERT INTO `greenr_nuzul`.`course_listings` (`course_id`, `Title`, `Category`, `Subcategory`, `Short_description`, `Description`, `Course_thumbnail`, `Hourlyrate`, `Maximumdays`, `Minimumdays`, `userUserId`, `GHG`) VALUES (
 'a2e842ff-93f9-42a7-aabd-30934fea4250','90L White Built-in freezer Refrigerator',	'Fridge',	'Top Freezer',	'Pocket Handle',	
 "Design
 Polyurethane insulated cabinet and door with complete magnetic gasket sealing
@@ -81,5 +81,5 @@ Includes ice cube tray and compact freezer door
 Compact design
 Rounded-edge door with horizontal built-in handle and a flat back that saves space
 
-", '8b298012-e570-4fd5-84b5-0cb21c19d696-courseThumbnailUpload-1675187825374.png',	'299',	'0',	'0',	'9b7cffce-ae4e-4aef-a5a7-0f6d76f3592e'
+", '8b298012-e570-4fd5-84b5-0cb21c19d696-courseThumbnailUpload-1675187825374.png',	'299',	'0',	'0',	'9b7cffce-ae4e-4aef-a5a7-0f6d76f3592e', "2000"
 );
