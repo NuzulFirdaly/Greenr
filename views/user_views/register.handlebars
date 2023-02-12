@@ -1,4 +1,7 @@
 <!-- ========================= SECTION CONTENT ========================= -->
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 <section class="section-content padding-y">
 
 <!-- ============================ COMPONENT REGISTER   ================================= -->
@@ -37,12 +40,29 @@
 					<div class="form-group col-md-6">
                         <label class="col-form-label">Password</label>
                         <input class="form-control" type="password" id="Password" name="Password" value="{{Password}}" required >
-					    {{!-- {{ render_field(form.password, class="form-control") }} --}}
+						<div class="row">
+							<div class="col-sm">
+								<span id="8char" class="glyphicon glyphicon-remove" style="color:#FF0004;"></span> 8 Characters
+								Long<br>
+								<span id="ucase" class="glyphicon glyphicon-remove" style="color:#FF0004;"></span> One Uppercase
+								Letter
+							<br>
+								<span id="lcase" class="glyphicon glyphicon-remove" style="color:#FF0004;"></span> One Lowercase
+								Letter<br>
+								<span id="num" class="glyphicon glyphicon-remove" style="color:#FF0004;"></span> One Number
+							</div>
+						</div>
 					</div> <!-- form-group end.// -->
 					<div class="form-group col-md-6">
                         <label class="col-form-label">Confirm Password</label>
 
                         <input class="form-control" type="password" id="ConfirmPassword" name="ConfirmPassword" value ="{{ConfirmPassword}}" required>
+						<div class="row">
+							<div class="col-sm-12">
+								<span id="pwmatch" class="glyphicon glyphicon-remove" style="color:#FF0004;"></span> Passwords
+								Match
+							</div>
+						</div>
 					    {{!-- {{ render_field(form.confirm, class="form-control") }} --}}
 					</div> <!-- form-group end.// -->
 				</div>
@@ -78,4 +98,61 @@
 
 
 </section>
+<script>
+	$("input[type=password]").keyup(function () {
+		var ucase = new RegExp("[A-Z]+");
+		var lcase = new RegExp("[a-z]+");
+		var num = new RegExp("[0-9]+");
+
+		if ($("#Password").val().length >= 8) {
+			$("#8char").removeClass("glyphicon-remove");
+			$("#8char").addClass("glyphicon-ok");
+			$("#8char").css("color", "#00A41E");
+		} else {
+			$("#8char").removeClass("glyphicon-ok");
+			$("#8char").addClass("glyphicon-remove");
+			$("#8char").css("color", "#FF0004");
+		}
+
+		if (ucase.test($("#Password").val())) {
+			$("#ucase").removeClass("glyphicon-remove");
+			$("#ucase").addClass("glyphicon-ok");
+			$("#ucase").css("color", "#00A41E");
+		} else {
+			$("#ucase").removeClass("glyphicon-ok");
+			$("#ucase").addClass("glyphicon-remove");
+			$("#ucase").css("color", "#FF0004");
+		}
+
+		if (lcase.test($("#Password").val())) {
+			$("#lcase").removeClass("glyphicon-remove");
+			$("#lcase").addClass("glyphicon-ok");
+			$("#lcase").css("color", "#00A41E");
+		} else {
+			$("#lcase").removeClass("glyphicon-ok");
+			$("#lcase").addClass("glyphicon-remove");
+			$("#lcase").css("color", "#FF0004");
+		}
+
+		if (num.test($("#Password").val())) {
+			$("#num").removeClass("glyphicon-remove");
+			$("#num").addClass("glyphicon-ok");
+			$("#num").css("color", "#00A41E");
+		} else {
+			$("#num").removeClass("glyphicon-ok");
+			$("#num").addClass("glyphicon-remove");
+			$("#num").css("color", "#FF0004");
+		}
+
+		if ($("#Password").val() == $("#ConfirmPassword").val()) {
+			$("#pwmatch").removeClass("glyphicon-remove");
+			$("#pwmatch").addClass("glyphicon-ok");
+			$("#pwmatch").css("color", "#00A41E");
+		} else {
+			$("#pwmatch").removeClass("glyphicon-ok");
+			$("#pwmatch").addClass("glyphicon-remove");
+			$("#pwmatch").css("color", "#FF0004");
+		}
+	});
+</script>
 <!-- ========================= SECTION CONTENT END// ========================= -->

@@ -1,12 +1,11 @@
 const express = require('express');
 const CourseListing = require('../models/CoursesListing');
 const router = express.Router();
-const upload = require('../helpers/backgroundUpload');
+const upload = require('../helpers/backgroundUpload')
 const profupload = require('../helpers/imageUploads');
 const User = require('../models/User');
 const alertMessage = require('../helpers/messenger');
 const ensureAuthenticated = require('../helpers/auth');
-
 // router.get('/viewProfile/:id', async(req, res) => {
 //     var id = req.params.id;
 //     var tutor = await User.findOne({ where: { user_id: id } });

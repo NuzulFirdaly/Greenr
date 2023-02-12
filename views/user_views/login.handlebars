@@ -180,20 +180,28 @@
     <!-- ============================ COMPONENT LOGIN   ================================= -->
     <div class="card mx-auto" style="max-width: 380px; margin-top:100px;">
         <div class="card-body">
-            <h4 class="card-title mb-4">Sign in</h4>
-            <a href="/login/email" class="float-right">Login With Email?</a>
+            <h4 class="card-title mb-4">Two-Factor Authentication using voice</h4>
+            {{!-- <a href="/login/email" class="float-right">Login With Email?</a> --}}
             <form action="/voice" method="POST">
                 <div class="form-group">
-                    <label class="col-form-label">Voice Recongition</label>
+                    {{!-- <label class="col-form-label">Voice Recongition</label> --}}
                     <div class="holder">
                         <div data-role="controls">
-                            <button>Record</button>
+                            {{!-- <button>Record</button> --}}
                         </div>
                     </div>
-                    {{!-- {{ render_field(form.username, class="form-control") }} --}}
                 </div>
-                <!-- form-group// -->
                 <div class="form-group">
+                    <div class="form-group">
+                       
+                        <label class="col-form-label">Voice Verification</label>
+                        <input class="form-control" type="file" id="audio" name="audio">
+                        <input class="form-control" type="text" hidden value="{{user.user_id}}" id="user_id" name="user_id">
+                        
+                    </div>
+                  
+                    </div>
+                    <input type="submit" class="btn btn-primary btn-block">
                     
                     {{!-- {{ render_field(form.password, class="form-control") }} --}}
                 </div> <!-- form-group// -->
