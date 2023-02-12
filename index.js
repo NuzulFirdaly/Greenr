@@ -36,6 +36,7 @@ const userRoute = require("./routes/user");
 const shopRoute = require("./routes/shop");
 const rateRoute = require("./routes/ratereview");
 const paymentRoute = require('./routes/payment');
+const fridgeRoute = require('./routes/classifyfridge');
 
 
 
@@ -304,6 +305,7 @@ app.use("/shop", shopRoute);
 app.use("/rate", rateRoute);
 
 app.use("/payment", paymentRoute);
+app.use("/fridge", fridgeRoute);
 
 
 

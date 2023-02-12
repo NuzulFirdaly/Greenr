@@ -1,0 +1,15 @@
+<head>
+    <title>Fridge Brand Prediction</title>
+</head>
+
+<body>
+    <div class="prediction-container">
+        <h1>The predicted fridge brand is: <span id="brand"></span></h1>
+    </div>
+    <script>
+        const brandElement = document.getElementById("brand");
+        const urlParams = new URLSearchParams(window.location.search);
+        const brand = urlParams.get('brand');
+        brandElement.textContent = brand;
+    </script>
+</body>

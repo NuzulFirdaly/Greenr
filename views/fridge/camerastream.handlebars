@@ -1,0 +1,127 @@
+<html>
+<head>
+    <title>Webcam Fridge Classification</title>
+    <script type="text/javascript">
+        function askForCameraAccess() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) {
+                    openWebCam(stream);
+                })
+                .catch(function (err) {
+                    console.log("Camera access denied");
+                });
+        }
+
+        //Function to open the webcam and view the stream mirrored
+        function openWebCam(stream) {
+            const video = document.querySelector('video');
+            video.srcObject = stream;
+            //video.style.transform = "scale(-1, 1)"; // code to flip the stream
+            video.onloadedmetadata = function (e) {
+                video.style.display = "block";
+                video.play();
+            };
+        }
+        //Function to stop the webcam and close the stream
+        function stopWebCam() {
+            const video = document.querySelector('video');
+            const stream = video.srcObject;
+            video.style.display = "none";
+            video.pause();
+            stream.getTracks().forEach(track => track.stop());
+        }
+
+        //function predictCamera() {
+            //const video = document.querySelector('video');
+            //const canvas = document.createElement('canvas');
+            //const ctx = canvas.getContext('2d');
+            //canvas.width = video.videoWidth;
+            //canvas.height = video.videoHeight;
+            //ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            //const imageDataURL = canvas.toDataURL('image/jpeg');
+            //const imageBase64 = imageDataURL.split(',')[1];
+            //console.log(imageBase64)
+            //const xhr = new XMLHttpRequest();
+            //xhr.open('POST', 'http://localhost:5000/camerapredict');
+            //xhr.setRequestHeader('Content-Type', 'application/json');
+            ////xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            //xhr.onload = function () {
+                //console.log("xhr.status: ", xhr.status);
+                //console.log("xhr.responseText: ", xhr.responseText);
+                //if (xhr.getResponseHeader('Content-Type').includes('application/json')) {
+                    //// if (this.status === 200 && xhr.getResponseHeader('Content-Type') === 'application/json') {
+                    //const response = JSON.parse(xhr.responseText);
+                    //console.log(response);
+                    //// console.log('Request successful with status code:', xhr.status);
+                    //// window.location.assign('http://localhost:5000/camerapredict');
+                    //// Do something with the response from the API
+                //} else {
+                    //console.error('Response was not in JSON format');
+                //}
+            //};
+            //xhr.onerror = function () {
+                //console.error(xhr.status, xhr.statusText);
+            //};
+            //xhr.send(JSON.stringify({ image_b64: imageBase64 }));
+        //}
+
+        async function predictCamera() {
+                const video = document.querySelector('video');
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                const image = new Image();
+
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+
+                context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+                image.src = canvas.toDataURL('image/jpeg');
+
+                const imageBlob = await fetch(image.src).then(res => res.blob());
+                const imageB64 = await new Promise(resolve => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(imageBlob);
+                    reader.onloadend = () => resolve(reader.result.split(',')[1]);
+                });
+
+                fetch('/fridge/camera', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ image_b64: imageB64 })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                    // Redirect to the cameraresults page with the brand value
+                    let brand = data.brand;
+                    if (typeof brand !== 'string') {
+                        brand = JSON.stringify(brand);
+                    }
+                    window.location.href = '/fridge/cameraresults?brand=' + encodeURIComponent(brand);
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+            }
+
+    </script>
+</head>
+
+<body>
+    <h1>Use Webcam for Fridge Classification</h1>
+    <button onclick="askForCameraAccess()">Open Webcam</button>
+    <video id="video" style="display:none"></video>
+    <br>
+    <button onclick="stopWebCam()">Stop Webcam</button>
+    <br>
+    <button onclick="predictCamera()">Predict</button>
+</body>
+
+</html>
