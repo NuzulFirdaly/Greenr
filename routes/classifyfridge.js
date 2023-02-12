@@ -13,15 +13,10 @@ const fs = require('fs');
 const { response } = require('express');
 
 
-
-// router.use(
-//     fileUpload({
-//         limits: {
-//             fileSize: 10000000,
-//         },
-//         abortOnLimit: true,
-//     })
-// );
+router.get('/fileorcamera', (req, res) => {
+    console.log("going into the file or camera page")
+    res.render('fridge/fileorcamera');
+});
 
 //For predicting with file
 router.get('/fileresults', (req, res) => {

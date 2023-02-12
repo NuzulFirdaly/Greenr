@@ -1,6 +1,14 @@
 <html>
 <head>
-    <title>Webcam Fridge Classification</title>
+    <style>
+        /* add margin between the buttons */
+        button {
+            margin-bottom: 10px;
+        }
+        h1 {
+            
+        }
+    </style>
     <script type="text/javascript">
         function askForCameraAccess() {
             navigator.mediaDevices.getUserMedia({ video: true })
@@ -115,7 +123,7 @@
 </head>
 
 <body>
-    <h1>Use Webcam for Fridge Classification</h1>
+    <h1>Use camera to identify brand</h1>
     <button onclick="askForCameraAccess()">Open Webcam</button>
     <video id="video" style="display:none"></video>
     <br>

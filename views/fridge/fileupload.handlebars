@@ -1,5 +1,24 @@
-<h1>Upload a Fridge Image for Prediction of Brand</h1>
-<form action="/fridge/file" method="post" enctype="multipart/form-data">
-    <input type="file" name="image">
-    <input type="submit" value="Predict">
-</form>
+<html>
+<head>
+    <style>
+        b1 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 20vh;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+    <h1>Upload an image to identify the brand</h1>
+    <b1>
+    <form action="/fridge/file" method="post" enctype="multipart/form-data">
+        <input type="file" name="image">
+        <input type="submit" value="Predict">
+    </form>
+    </b1>
+</html>
