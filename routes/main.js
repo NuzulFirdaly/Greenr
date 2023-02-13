@@ -1,4 +1,3 @@
-
 const express = require('express');
 const JWT = require('jsonwebtoken');
 const router = express.Router();
@@ -48,23 +47,23 @@ router.get('/', (req, res) => {
 });
 
 
-router.get('/voice-recongition', async function (req, res) {
+router.get('/voice-recongition', async function(req, res) {
     console.log("going into login page");
     const id = req.user.user_id;
     // const payload = JWT.verify(token, 'the-key');
     // uuid = payload.uuid;
     console.log(id);
-    const Email  = await User.findOne({ where: { user_id: id }, raw: true })
-    // console.log(user);
+    const Email = await User.findOne({ where: { user_id: id }, raw: true })
+        // console.log(user);
     res.render('user_views/login', {
-        Email:Email.Email
+        Email: Email.Email
     });
-  
+
 });
 // login with email
 
 router.get('/login', (req, res) => {
-    
+
     console.log("going into login page");
     res.render('user_views/email_login')
     console.log("email login page rendered");
@@ -73,14 +72,14 @@ router.get('/login', (req, res) => {
 router.get('/login/verify/:id', (req, res) => {
     console.log("going into login page");
     const id = req.params.id;
-  
+
     console.log("verify email page rendered", );
     res.render('user_views/verify', { email: email })
 });
 
 redirecturl = "/";
 
-router.post('/loginPost', [body('email').trim().isEmail().normalizeEmail().toLowerCase(), body('password')], async (req, res, next) => {
+router.post('/loginPost', [body('email').trim().isEmail().normalizeEmail().toLowerCase(), body('password')], async(req, res, next) => {
     let errors = [];
     const validationErrors = validationResult(req)
     if (!validationErrors.isEmpty()) {
@@ -92,16 +91,21 @@ router.post('/loginPost', [body('email').trim().isEmail().normalizeEmail().toLow
     }
     console.log(req.body.email);
     console.log(req.body.password);
-    const user = await User.findOne({ where: { Email: req.body.email }, raw: true });
-    if(user.verify == false){
-        var name = user.FirstName + ' ' + user.LastName;
-        alertMessage(res, 'info', 'Please verify your email before using our service', 'fa fa-envelope', true);
-        send_verification(user.user_id, user.Email, name);
-        
-        res.redirect('/login');
-    }
+    const user = await User.findOne({ where: { Email: req.body.email }, raw: true }).then((user) => {
+        if (user) {
+            if (user.verify == false) {
+                var name = user.FirstName + ' ' + user.LastName;
+                alertMessage(res, 'info', 'Please verify your email before using our service', 'fa fa-envelope', true);
+                send_verification(user.user_id, user.Email, name);
+
+                res.redirect('/login');
+            }
+        }
+
+    })
+
     // console.log(user.user_id);
-    
+
     await User.findOne({ where: { Email: req.body.email }, raw: true }).then(user => {
         console.log(user.AccountTypeID);
         switch (user.AccountTypeID) {
@@ -129,14 +133,14 @@ router.post('/loginPost', [body('email').trim().isEmail().normalizeEmail().toLow
     }).catch(err => console.log(err));
     console.log("Printing redirecturl")
     console.log(redirecturl)
-    console.log(typeof (redirecturl))
-    //suppose to nest this but idk so im gonna leave here than make it efficient later... idk how to nest in inside switch
+    console.log(typeof(redirecturl))
+        //suppose to nest this but idk so im gonna leave here than make it efficient later... idk how to nest in inside switch
     await passport.authenticate('local', {
         // if (req.user.accountType.dataValues == 1){
         successRedirect: "/voice-recongition", // Route to /video/listVideos URL
         failureRedirect: '/login', // Route to /login URL
         failureFlash: true
-        /* Setting the failureFlash option to true instructs Passport to flash an error message using the
+            /* Setting the failureFlash option to true instructs Passport to flash an error message using the
    message given by the strategy's verify callback, if any. When a failure occur passport passes the message
    object as error */
     })(req, res, next);
@@ -149,7 +153,7 @@ const FormData = require('form-data');
 let request = require('request');
 const axios = require('axios');
 const console = require('console');
-router.post('/voice', async function (req, res) {
+router.post('/voice', async function(req, res) {
     const form = new FormData();
     console.log(req.body);
     const user = await User.findOne({ where: { Email: req.body.Email }, raw: true });
@@ -182,50 +186,49 @@ router.post('/voice', async function (req, res) {
         console.log(form);
         try {
             let errors = [];
-            await axios.post("http://saran-greenr-speaker-recongition.chhba7cyd9ekdwc5.southeastasia.azurecontainer.io/predict", form,
-                {
+            await axios.post("http://saran-greenr-speaker-recongition.chhba7cyd9ekdwc5.southeastasia.azurecontainer.io/predict", form, {
                     headers: {
                         'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
                     }
-                }).then(response =>{
+                }).then(response => {
                     console.log(response.data);
                     if (response.data == 'yes') {
                         res.redirect("/twofa/" + user.user_id);
-                    }
-                    else if (response.data == 'no') {
+                    } else if (response.data == 'no') {
                         console.log('Print Error');
                         errors = errors.concat({ text: "Invalid!!!" });
                         // alertMessage(res, 'danger', 'Invalid Voice', 'fa fa-exclamation-circle', true);
                         res.render('user_views/login', {
-                            errors:errors,
-                            Email: user.Email});
+                            errors: errors,
+                            Email: user.Email
+                        });
                     }
-                   
+
                 })
                 .catch(error => {
                     console.error(error);
                 });
 
+        } catch (e) { console.log(e, "getFileError") }
     }
-        catch (e) { console.log(e, "getFileError") }
-}});
+});
 
-router.get('/twofa/:id', async function (req, res) {
-    const uuid = req.params.id
-    const user = await User.findByPk(uuid);
-    const update = await User.update({
-        twofa: true
-    }, {
-        where: {
-            user_id: uuid
-        }
-    });
-    user.save();
-    console.log(user);
-    res.redirect('/');
-})
-// Logout User
-router.get('/logout', async function (req, res) {
+router.get('/twofa/:id', async function(req, res) {
+        const uuid = req.params.id
+        const user = await User.findByPk(uuid);
+        const update = await User.update({
+            twofa: true
+        }, {
+            where: {
+                user_id: uuid
+            }
+        });
+        user.save();
+        console.log(user);
+        res.redirect('/');
+    })
+    // Logout User
+router.get('/logout', async function(req, res) {
     const uuid = req.user.user_id
     const user = await User.findByPk(uuid);
     const update = await User.update({
@@ -317,8 +320,8 @@ router.post('/registerPost', [
         });
     } else {
         console.log("There are no errors")
-        //user's model's findOne function, select statement and where clause
-        // If all is well, checks if user is already registered
+            //user's model's findOne function, select statement and where clause
+            // If all is well, checks if user is already registered
         User.findOne({ where: { Email: req.body.Email } })
             .then(user => { //findOne function returns a promise 
                 if (user) {
@@ -334,8 +337,8 @@ router.post('/registerPost', [
                         ConfirmPassword
                     });
                 } else {
-                    bcrypt.genSalt(10, function (err, salt) {
-                        bcrypt.hash(Password, salt, function (err, hash) {
+                    bcrypt.genSalt(10, function(err, salt) {
+                        bcrypt.hash(Password, salt, function(err, hash) {
                             // Store hash in your password DB.
                             if (err) {
                                 throw err;
@@ -345,10 +348,10 @@ router.post('/registerPost', [
                                 var verify_code = Math.random().toString().substr(2, 6)
                                 console.log(verify_code);
                                 // Create new user record
-                                User.create({ FirstName, LastName, Username, Email, Password: hashedpassword, Audio: audio_file, code: verify_code})
+                                User.create({ FirstName, LastName, Username, Email, Password: hashedpassword, Audio: audio_file, code: verify_code })
                                     .then(user => {
-                                        
-                                        send_verification(user.user_id,Email, FirstName);
+
+                                        send_verification(user.user_id, Email, FirstName);
                                         alertMessage(res, 'success', 'Please Verify Your Email', 'fas fa-sign-in-alt', true);
                                         res.redirect('/Login');
                                     }).catch(err => console.log(err));
@@ -377,15 +380,14 @@ async function train(audio1, audio2) {
         filename: 'temp.wav'
     });
     console.log(form);
-    await axios.post("http://saran-greenr-speaker-recongition.chhba7cyd9ekdwc5.southeastasia.azurecontainer.io/same", form,
-            {
-                headers: {
-                    'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
-                }
-            }).then(response => {
-                console.log(response.data);
-                console.log("Done training")
-            })
+    await axios.post("http://saran-greenr-speaker-recongition.chhba7cyd9ekdwc5.southeastasia.azurecontainer.io/same", form, {
+        headers: {
+            'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
+        }
+    }).then(response => {
+        console.log(response.data);
+        console.log("Done training")
+    })
 };
 router.get("/forgot-password", (req, res, next) => {
     console.log("Forgot password page accessed.");
@@ -393,33 +395,30 @@ router.get("/forgot-password", (req, res, next) => {
 });
 
 
-router.post("/forgot-password", async function (req, res, next) {
+router.post("/forgot-password", async function(req, res, next) {
     let errors = [];
     try {
         if (!regexEmail.test(req.body.email)) {
             errors = errors.concat({ text: "Invalid email address!" });
-        }
-        else {
+        } else {
             const user = await User.findOne({ where: { Email: req.body.email } });
             if (user === null) {
                 errors = errors.concat({ text: "This email is not registered!" });
                 return res.render('user/forgot_password', { errors: errors });
             }
         }
-    }
-    catch (error) {
+    } catch (error) {
         console.error("There is errors with the forgot form body.");
         console.error(error);
         return res.render('user/forgot_password', { errors: errors });
     }
     try {
         const user = await User.findOne({ where: { Email: req.body.email } });
-        
+
         alertMessage(res, 'success', 'Successfully Sent Password reset link to your email. Please Check It!', 'fas fa-sign-in-alt', true);
         await send_resetlink(user.FirstName, user.Email, user.user_id);
         return res.redirect("/login");
-    }
-    catch (error) {
+    } catch (error) {
         //	Else internal server error
         console.error(`Failed to create a new user: ${req.body.email} `);
         console.error(error);
@@ -537,7 +536,7 @@ async function send_resetlink(name, email, id) {
     });
 }
 
-router.get("/reset-password/:token", async function (req, res, next) {
+router.get("/reset-password/:token", async function(req, res, next) {
     const token = req.params.token;
     console.log('password reseting page accesed')
     let uuid = null;
@@ -546,8 +545,7 @@ router.get("/reset-password/:token", async function (req, res, next) {
         const payload = JWT.verify(token, 'the-key');
         uuid = payload.uuid;
         console.log(uuid);
-    }
-    catch (error) {
+    } catch (error) {
         console.error(`The token is invalid`);
         console.error(error);
         return res.sendStatus(400).end();
@@ -556,13 +554,12 @@ router.get("/reset-password/:token", async function (req, res, next) {
         const user = await User.findByPk(uuid);
         console.log(user);
         return res.render('user/reset_password', { email: user.Email, user })
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error);
     }
 });
 
-router.post("/reset-password/:id", async function (req, res, next) {
+router.post("/reset-password/:id", async function(req, res, next) {
     let errors = [];
     const id = req.params.id;
     const { password, password2 } = req.body;
@@ -570,44 +567,42 @@ router.post("/reset-password/:id", async function (req, res, next) {
     try {
         if (!regexPwd.test(req.body.password)) {
             errors = errors.concat({ text: "Password requires minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one symbol!" });
-        }
-        else if (req.body.password !== req.body.password2) {
+        } else if (req.body.password !== req.body.password2) {
             errors = errors.concat({ text: "Password do not match!" });
         }
-    }
-    catch (error) {
+    } catch (error) {
         console.error("There is errors with the reset password form.");
         console.error(error);
         return res.render('/', { errors: errors });
     }
     try {
         var hashedpassword = '';
-        bcrypt.genSalt(10, function (err, salt) {
-            bcrypt.hash(req.body.password1, salt, function (err, hash) {
+        bcrypt.genSalt(10, function(err, salt) {
+            bcrypt.hash(req.body.password1, salt, function(err, hash) {
                 hashedpassword = hash;
             })
         })
-    
+
         if (req.session) {
             req.session.destroy();
         }
         alertMessage(res, 'success', 'Successfully changed password. ', 'fas fa-sign-in-alt', true);
-        return res.render('user_views/email_login',)
+        return res.render('user_views/email_login', )
     } catch (error) {
         console.log(error);
     }
 });
 
-    // google api
+// google api
 const CLIENT_ID = '288378853501-ma7eu9kd529v7ttoa2q4oo4q0uoiq914.apps.googleusercontent.com';
 const CLEINT_SECRET = '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';
 const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
 const REFRESH_TOKEN = '1//04GTcJVcVlA1qCgYIARAAGAQSNwF-L9IrOrpPxfwmzjJB7ryuTVaubJYu66iGdSNskSjzg72RzvglTls4S_A3LUuj1z0Jq7dVL4I';
 const oAuth2Client = new google.auth.OAuth2(
-        CLIENT_ID,
-        CLEINT_SECRET,
-        REDIRECT_URI
-    );
+    CLIENT_ID,
+    CLEINT_SECRET,
+    REDIRECT_URI
+);
 
 oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
@@ -631,7 +626,7 @@ async function send_verification(uid, email, name) {
         expiresIn: '300000'
     });
     console.log('sending email.......')
-    //	Send email using google
+        //	Send email using google
     return transport.sendMail({
         to: email,
         from: 'Greenr',
@@ -663,8 +658,7 @@ async function verify_process(req, res) {
     try {
         const payload = JWT.verify(token, 'the-key');
         uuid = payload.uuid;
-    }
-    catch (error) {
+    } catch (error) {
         console.error(`The token is invalid`);
         console.error(error);
         return res.sendStatus(400).end();
@@ -684,8 +678,7 @@ async function verify_process(req, res) {
         return res.render("user_views/verified", {
             name: user.FirstName
         });
-    }
-    catch (error) {
+    } catch (error) {
         console.error(`Failed to locate ${uuid}`);
         console.error(error);
         return res.sendStatus(500).end();
