@@ -6,7 +6,9 @@ var bcrypt = require('bcryptjs');
 const regexEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const regexPwd = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 fs = require('fs');
+const path = require('path');
 /* models */
+
 const User = require('../models/User');
 // console.log("Retrieve messenger helper flash");
 const alertMessage = require('../helpers/messenger');
@@ -151,6 +153,19 @@ router.post('/voice', async function (req, res) {
     console.log(req.body);
     const user = await User.findOne({ where: { Email: req.body.Email }, raw: true });
     console.log(user);
+    const ext = path.extname("audio/" + req.body.audio).toLowerCase();
+    if (ext !== '.wav') {
+        let errors = [];
+        errors = errors.concat({ text: "Format is wrong. Please Use .wav format!" });
+        // alertMessage(res, 'danger', 'Invalid Voice', 'fa fa-exclamation-circle', true);
+        res.render('user_views/login', {
+            errors: errors,
+            Email: user.Email
+        });
+
+    }
+    // const isWAV = validateWAVFile('sample.wav');
+    // onsole.log(isWAV); // true
     const audio_path = "audio/" + req.body.audio;
     for (let i = 0; i < 1; i++) {
         const audioFile1 = user.Audio;
@@ -191,7 +206,6 @@ router.post('/voice', async function (req, res) {
                 });
 
     }
-
         catch (e) { console.log(e, "getFileError") }
 }});
 
@@ -257,10 +271,26 @@ router.post('/registerPost', [
         }
         return true
     })
-], (req, res) => { //when press the submit button listen to post action
+], (req, res, next) => { //when press the submit button listen to post action
     // console.log(req.body);
     let errors = [];
     let { FirstName, LastName, Username, Email, Password, ConfirmPassword, Audio } = req.body;
+    // const ext = path.extname("audio/" + req.body.Audio).toLowerCase();
+    // const ext2 = path.extname("audio/" + req.body.Audio2).toLowerCase();
+    // if (ext !== '.wav' || ext2 !== '.wav') {
+    //     let errors = [];
+    //     errors = errors.concat({ text: "Format is wrong. Please Use .wav format!" });
+    //     res.render('user_views/register', {
+    //         errors: errors,
+    //         FirstName,
+    //         LastName,
+    //         Username,
+    //         Email,
+    //         Password,
+    //         ConfirmPassword
+    //     });
+
+    // }
     const file = "audio/" + req.body.Audio;
     const audio_file = fs.readFileSync(file);
     const file2 = "audio/" + req.body.Audio2;
