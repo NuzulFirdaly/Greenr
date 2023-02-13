@@ -57,7 +57,8 @@ router.post('/file', upload.single('image'), async (req, res) => {
             console.log(data);
             // Send the prediction result back to the client
             // Redirects the response to client with the response body
-            res.render('fridge/fileresults', { brand: data.prediction.brand });
+            // res.render('fridge/fileresults', { brand: data.prediction.brand });
+            res.redirect(301, '/course/CreateCourse/' + data.prediction.brand)
         })
         .catch((error) => {
             console.error(error);
@@ -93,7 +94,8 @@ router.post('/camera', async (req, res) => {
         console.log(data);
         // Send the prediction result back to the client
         // Redirects the response to client with the response body
-        res.json({ brand: data.prediction.brand });
+        //res.json({ brand: data.prediction.brand });
+        res.redirect(301,'/course/CreateCourse/'+ data.prediction.brand)
         //res.render('fridge/cameraresults', { brand: data.prediction.brand });
     } catch (error) {
         console.error(error);
