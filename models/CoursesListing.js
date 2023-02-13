@@ -44,6 +44,10 @@ const CourseListing = db.define('course_listing', { //Creates a table called use
     Minimumdays: {
         type: Sequelize.INTEGER,
         defaultValue: 0
+    },
+    Brand: {
+        type: Sequelize.STRING,
+        defaultValue: "LG"
     }
 });
 module.exports = CourseListing;

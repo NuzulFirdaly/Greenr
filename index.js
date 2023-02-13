@@ -69,6 +69,12 @@ app.use(bodyParser.urlencoded({
 app.engine('handlebars', exphbs({
     defaultLayout: 'main',
     helpers: {
+        select: function(selected, options) {
+            return options.fn(this).replace(
+                new RegExp(' value=\"' + selected + '\"'),
+                '$& selected="selected"');
+        },
+
         loopcourse: function(value, options) {
             return options.fn({ test: value })
         },

@@ -30,11 +30,26 @@ router.get("/category/:category", (req, res) => {
     choicesArray = categories[req.params.category]
     res.end(JSON.stringify({ "subcategories": choicesArray }));
 });
-router.get("/CreateCourse", (req, res) => {
+router.get("/CreateCourse/", (req, res) => {
     // console.log(req.user.AccountTypeID)
     if (((req.user != null) && (req.user.AccountTypeID == 1)) && (req.user.AccountTypeID == 1)) {
         res.render("course/coursecreation", {
-            user: req.user.dataValues, //have to do this for all pages
+            user: req.user.dataValues,
+        })
+    } else {
+        alertMessage(res, 'danger', 'You dont have access to that page!', 'fas fa-exclamation-triangle', true)
+        res.redirect("/")
+    };
+
+});
+
+router.get("/CreateCourse/:brandprediction", (req, res) => {
+    brandprediction = req.params.brandprediction
+        // console.log(req.user.AccountTypeID)
+    if (((req.user != null) && (req.user.AccountTypeID == 1)) && (req.user.AccountTypeID == 1)) {
+        res.render("course/coursecreation", {
+            user: req.user.dataValues,
+            Brand: brandprediction //have to do this for all pages
         })
     } else {
         alertMessage(res, 'danger', 'You dont have access to that page!', 'fas fa-exclamation-triangle', true)
