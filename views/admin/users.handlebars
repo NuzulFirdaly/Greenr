@@ -418,13 +418,13 @@
                                 {{#ifEquals this.AccountTypeID 0}}
                                 
                                 <div id="admin">
-                                <a href="/admin/email"  class="table-link">
+                                <a href="/admin/email/{{this.user_id}}"  class="table-link">
                                     <span class="fa-stack">
                                         <i class="fa fa-envelope"></i>
                                     </span>
                                 </a>
                                 <a onclick="return confirm('Are you sure you want to remove this User? Email will be send to him or her!');"
-                                    href="/admin/Users/Delete"  class="table-link danger">
+                                    href="/admin/Users/Delete/{{this.user_id}}"  class="table-link danger">
                                     <span class="fa-stack">
                                         <i class="fa fa-square fa-stack-2x"></i>
                                         <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>

@@ -51,6 +51,10 @@ const User = db.define('user', { //Creates a table called user
         type: Sequelize.BOOLEAN,
         defaultValue: 0
     },
+    twofa: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: 0
+    },
     
     // accountType
 });

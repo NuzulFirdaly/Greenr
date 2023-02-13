@@ -20,6 +20,24 @@
 		</form> <!-- search-wrap .end// -->
 	</div> <!-- col.// -->
 		<!-- User Specific navigations -->
+		<!-- Default, user is not logged-->
+		{{#ifEquals user.AccountTypeID null}}
+		<div class="col-lg-4 col-sm-6 col-12">
+			<div class="widgets-wrap float-lg-right">
+				<div class="widget-header icontext">
+					<a href="#" class="icon icon-sm rounded-circle border"><i class="fa fa-user"></i></a>
+					<div class="text">
+						<span class="text-muted">Welcome!</span>
+						<div>
+							<a href="/login">Sign in</a> |
+							<a href="/register"> Register</a>
+						</div>
+					</div>
+				</div>
+			</div> <!-- widgets-wrap.// -->
+		</div> <!-- col.// -->
+		{{/ifEquals}}
+	{{#ifEquals user.twofa 1}}
 	{{#ifEquals user.AccountTypeID 0}}
 	<div class="col-lg-4 col-sm-6 col-12">
 		<div class="widgets-wrap float-lg-right">
@@ -47,23 +65,7 @@
 		</div> <!-- widgets-wrap.// -->
 	</div> <!-- col.// -->
 	{{/ifEquals}}
-	<!-- Default, user is not logged-->
-	{{#ifEquals user.AccountTypeID null}}
-	<div class="col-lg-4 col-sm-6 col-12">
-		<div class="widgets-wrap float-lg-right">
-			<div class="widget-header icontext">
-				<a href="#" class="icon icon-sm rounded-circle border"><i class="fa fa-user"></i></a>
-				<div class="text">
-					<span class="text-muted">Welcome!</span>
-					<div>
-						<a href="/login">Sign in</a> |
-						<a href="/register"> Register</a>
-					</div>
-				</div>
-			</div>
-		</div> <!-- widgets-wrap.// -->
-	</div> <!-- col.// -->
-	{{/ifEquals}}
+	
 
 	{{#ifEquals user.AccountTypeID 1}} 
 	<div class="col-lg-6 col-sm-6 col-12">
@@ -133,6 +135,7 @@
 			</div> <!-- widget  dropdown.// -->
 		</div> <!-- widgets-wrap.// -->
 	</div> <!-- col.// -->
+	{{/ifEquals}}
 	{{/ifEquals}}
 
 </div> <!-- row.// -->

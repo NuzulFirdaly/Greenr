@@ -8,9 +8,9 @@ const regexPwd = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&
 fs = require('fs');
 /* models */
 const User = require('../models/User');
-console.log("Retrieve messenger helper flash");
+// console.log("Retrieve messenger helper flash");
 const alertMessage = require('../helpers/messenger');
-console.log("Retrieved flash");
+// console.log("Retrieved flash");
 const passport = require('passport');
 const { cookie } = require('express-validator');
 const CourseListing = require('../models/CoursesListing');
@@ -44,21 +44,21 @@ router.get('/', (req, res) => {
     }).catch(err => console.log(err));
 });
 
-//login
-router.get('/voice-recongition/:token', async function (req, res) {
+
+router.get('/voice-recongition/:id', async function (req, res) {
     console.log("going into login page");
-    const token = req.params.token;
-    const payload = JWT.verify(token, 'the-key');
-    uuid = payload.uuid;
-    console.log(uuid);
-    const user = await User.findOne({ where: { user_id: uuid }, raw: true })
-    console.log(user);
+    const id = req.params.id;
+    // const payload = JWT.verify(token, 'the-key');
+    // uuid = payload.uuid;
+    console.log(id);
+    const Email  = await User.findOne({ where: { user_id: id }, raw: true })
+    
+
+    // console.log(user);
     res.render('user_views/login', {
-        user: user
+        Email:Email.Email
     });
-    // console.log("login page rendered", {
-    //    user:user
-    // });
+  
 });
 // login with email
 
@@ -77,6 +77,7 @@ router.get('/login/verify/:id', (req, res) => {
 });
 
 redirecturl = "/";
+
 router.post('/loginPost', [body('email').trim().isEmail().normalizeEmail().toLowerCase(), body('password')], async (req, res, next) => {
     let errors = [];
     const validationErrors = validationResult(req)
@@ -89,6 +90,9 @@ router.post('/loginPost', [body('email').trim().isEmail().normalizeEmail().toLow
     }
     console.log(req.body.email);
     console.log(req.body.password);
+    const user = await User.findOne({ where: { Email: req.body.email }, raw: true });
+    // console.log(user.user_id);
+    
     await User.findOne({ where: { Email: req.body.email }, raw: true }).then(user => {
         console.log(user.AccountTypeID);
         switch (user.AccountTypeID) {
@@ -120,7 +124,7 @@ router.post('/loginPost', [body('email').trim().isEmail().normalizeEmail().toLow
     //suppose to nest this but idk so im gonna leave here than make it efficient later... idk how to nest in inside switch
     await passport.authenticate('local', {
         // if (req.user.accountType.dataValues == 1){
-        successRedirect: redirecturl, // Route to /video/listVideos URL
+        successRedirect: "/voice-recongition/" + user.user_id, // Route to /video/listVideos URL
         failureRedirect: '/login', // Route to /login URL
         failureFlash: true
         /* Setting the failureFlash option to true instructs Passport to flash an error message using the
@@ -131,137 +135,82 @@ router.post('/loginPost', [body('email').trim().isEmail().normalizeEmail().toLow
     // console.log("printing req usr from login post")
     // console.log(req.user);
 });
-// router.post('/loginPost', [body('email').trim().isEmail().normalizeEmail().toLowerCase(), body('password')], async(req, res, next) => {
-//     let errors = [];
-//     const validationErrors = validationResult(req)
-//     if (!validationErrors.isEmpty()) {
-//         validationErrors.array().forEach(error => {
-//             console.log(error)
-//             console.log(error.msg)
-//             errors.push({ text: error.msg })
-//         })
-//     }
-//     const user = await User.findOne({ where: { Email: req.body.email }, raw: true })
-//     console.log(user);
-//     if(user == null ){
-//         console.log('user is not found');
-        
-//         res.redirect("/login");
-//     }
-//     else{
-//     const token = JWT.sign({
-//         uuid: user.user_id
-//     }, 'the-key', {
-//         expiresIn: '300000'
-//     });
-//         res.redirect("/voice-recongition/" + token)
-// }
 
-//     // console.log(req.body.email);
-//     // console.log(req.body.password);
-//     // res.redirect("/voice-recongition/" + token)
-//         //suppose to nest this but idk so im gonna leave here than make it efficient later... idk how to nest in inside switch
- 
-// });
 const FormData = require('form-data');
 let request = require('request');
 const axios = require('axios');
-// router.post('/voice', async function (req, res, next) {
-//     const form = new FormData();
-//     console.log(req.body);
-//     const user_voice = await User.findOne({ where: { user_id: req.body.user_id }, raw: true })
-//     console.log(user_voice);
-//     for (let i = 0; i < 1; i++) {
-//         const audioFile1 = user_voice.Audio;
-//         const audioFile2 = fs.createReadStream(req.body.audio);
-//         form.append('file1', audioFile1, {
-//             contentType: 'audio/wav',
-//             filename: 'temp.wav'
-//         });
-//         form.append('file2', audioFile2, {
-//             contentType: 'audio/wav',
-//             filename: 'temp.wav'
-//         });
-//         console.log(form);
-//         try {
-//             await axios.post("http://saran-greenr-speaker-recongition.chhba7cyd9ekdwc5.southeastasia.azurecontainer.io/predict", form,
-//                 {
-//                     headers: {
-//                         'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
-//                         // 'Ocp-Apim-Subscription-Key': 'ac20f98e-22a7-4b61-a104-4d5e359e2966'
-//                     }
+const console = require('console');
+router.post('/voice', async function (req, res, next) {
+    const form = new FormData();
+    console.log(req.body);
+    const user = await User.findOne({ where: { Email: req.body.Email }, raw: true });
+    console.log(user);
+    const audio_path = "audio/" + req.body.audio;
+    for (let i = 0; i < 1; i++) {
+        const audioFile1 = user.Audio;
+        const audioFile2 = fs.createReadStream(audio_path);
+        form.append('file1', audioFile1, {
+            contentType: 'audio/wav',
+            filename: 'temp.wav'
+        });
+        form.append('file2', audioFile2, {
+            contentType: 'audio/wav',
+            filename: 'temp.wav'
+        });
+        console.log(form);
+        try {
+            await axios.post("http://saran-greenr-speaker-recongition.chhba7cyd9ekdwc5.southeastasia.azurecontainer.io/predict", form,
+                {
+                    headers: {
+                        'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
+                    }
+                }).then(response =>{
+                    console.log(response.data);
+                    if (response.data == 'yes') {
+                        res.redirect("/twofa/" + user.user_id);
+                    }
+                    else if (response.data == 'no') {
+                        alertMessage(res, 'error', 'Invalid voice', '', true);
+                        res.redirect("/voice-recongition/" + user.user_id);
 
-//                 }).then(response =>{
-//                     console.log(response.data);
-//                     if (response.data = 'no') {
-//                         User.findOne({ where: { user_id: req.body.user_id }, raw: true }).then(user => {
-//                             console.log(user.AccountTypeID);
-//                             switch (user.AccountTypeID) {
-//                                 case 0: //user
-//                                     redirecturl = "/"
-//                                     console.log("user is logged in as normal user")
-//                                     break;
-//                                 case 1: //tutor
-//                                     redirecturl = "/course/CreateCourse"
-//                                     console.log("user is logged in as seller")
-//                                     break
-//                                 case 2: //InstitutionAdmin
-//                                     redirecturl = "/institution_admin/showyourpage"
-//                                     break;
-//                                 case 3: //admin
-//                                     redirecturl = "/admin"
-//                                     break;
-//                                 case 7: //SuperAdmin
-//                                     redirecturl = "/admin"
-//                                     break;
-//                                 default:
-//                                     console.log("user does not exist")
-//                                     redirecturl = "/"
-//                             }
-//                         })
-//                         // const validationErrors = validationResult(req)
-//                         // if (!validationErrors.isEmpty()) {
-//                         //     validationErrors.array().forEach(error => {
-//                         //         console.log(error)
-//                         //         console.log(error.msg)
-//                         //         errors.push({ text: error.msg })
-//                         //     })
-//                         // }
-//                         console.log("Printing redirecturl")
-//                         console.log(redirecturl)
-//                         console.log(typeof (redirecturl))
-//                     }
-//                     else if (response.data == 'yes') {
-//                         const token = JWT.sign({
-//                             uuid: user_voice.user_id
-//                         }, 'the-key', {
-//                             expiresIn: '300000'
-//                         });
-//                         alertMessage(res, 'error', 'Invalid voice', '', true);
-//                     }
+                    }
 
-//                 })
-//                 .catch(error => {
-//                     console.error(error);
-//                 });
-//             await passport.authenticate('local', {
-//                 // if (req.user.accountType.dataValues == 1){
-//                 successRedirect: redirecturl, // Route to /video/listVideos URL
-//                 failureRedirect: '/login', // Route to /login URL
-//                 failureFlash: true
-//                 /* Setting the failureFlash option to true instructs Passport to flash an error message using the
-//            message given by the strategy's verify callback, if any. When a failure occur passport passes the message
-//            object as error */
-//             })(req, res, next);
-//             req.session.cart = {};
-           
-//     }
+                })
+                .catch(error => {
+                    console.error(error);
+                });
 
-//         catch (e) { console.log(e, "getFileError") }
-// }});
+    }
 
+        catch (e) { console.log(e, "getFileError") }
+}});
+router.get('/twofa/:id', async function (req, res) {
+    const uuid = req.params.id
+    const user = await User.findByPk(uuid);
+    const update = await User.update({
+        twofa: true
+    }, {
+        where: {
+            user_id: uuid
+        }
+    });
+    user.save();
+    console.log(user);
+    res.redirect('/');
+})
 // Logout User
-router.get('/logout', (req, res) => {
+router.get('/logout', async function (req, res) {
+    const uuid = req.user.user_id
+    const user = await User.findByPk(uuid);
+    const update = await User.update({
+        twofa: false
+    }, {
+        where: {
+            user_id: uuid
+        }
+    });
+    user.save();
+    console.log(user);
     req.logout();
     alertMessage(res, 'success', 'You haved logged out! See you again...', 'fas fa-door-open', true)
     res.redirect('/');
@@ -301,7 +250,9 @@ router.post('/registerPost', [
     // console.log(req.body);
     let errors = [];
     let { FirstName, LastName, Username, Email, Password, ConfirmPassword, Audio } = req.body;
-
+    const file = "audio/" + req.body.Audio;
+    const audio_file = fs.readFileSync(file);
+    console.log(audio_file);
     const validatorErrors = validationResult(req);
     if (!validatorErrors.isEmpty()) { //if isEmpty is false
         console.log("There are errors")
@@ -349,9 +300,9 @@ router.post('/registerPost', [
                                 var verify_code = Math.random().toString().substr(2, 6)
                                 console.log(verify_code);
                                 // Create new user record
-                                User.create({ FirstName, LastName, Username, Email, Password: hashedpassword, Audio, code: verify_code})
+                                User.create({ FirstName, LastName, Username, Email, Password: hashedpassword, Audio: audio_file, code: verify_code})
                                     .then(user => {
-                                
+                                        
                                         send_verification(user.user_id,Email, FirstName);
                                         alertMessage(res, 'success', 'Please Verify Your Email', 'fas fa-sign-in-alt', true);
                                         res.redirect('/Login');
@@ -519,7 +470,6 @@ async function send_resetlink(name, email, id) {
     </table>
     <!--/100% body table-->
 </body>
-
 </html>
 		`
     });
@@ -575,15 +525,7 @@ router.post("/reset-password/:id", async function (req, res, next) {
                 hashedpassword = hash;
             })
         })
-        const user = await User.findByPk(id);
-        const update = await User.update({
-            password: hashedpassword
-        }, {
-            where: {
-                user_id: id
-            }
-        });
-        user.save();
+    
         if (req.session) {
             req.session.destroy();
         }
@@ -607,39 +549,6 @@ const oAuth2Client = new google.auth.OAuth2(
 
 oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
-    
-    // async function send_verification(code, email, name) {
-    //     const accessToken = await oAuth2Client.getAccessToken();
-    //     const transport = nodemailer.createTransport({
-    //         service: 'gmail',
-    //         auth: {
-    //             type: 'OAuth2',
-    //             user: 'ggreenr3@gmail.com',
-    //             clientId: CLIENT_ID,
-    //             clientSecret: CLEINT_SECRET,
-    //             refreshToken: REFRESH_TOKEN,
-    //             accessToken: accessToken,
-    //         },
-    //     });
-
-    //     //	Send email using google
-    //     return transport.sendMail({
-    //         to: email,
-    //         from: 'Greenr',
-    //         subject: `Verify your email`,
-    //         html: `<img id="imgborder" class="logo" style="width: 85px;" src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fgreenr.com%2F&psig=AOvVaw18KgKxlV-Oge_QzYRqhiOW&ust=1675358920635000&source=images&cd=vfe&ved=0CBAQjRxqFwoTCODqj7zs9PwCFQAAAAAdAAAAABAE">
-	// 	<hr>
-	// 	 <h1>Hello, ${name}</h1>
-    //     <h5 class="text-muted mb-2">
-	// 	Thank you for
-    //     choosing Greenr, to make
-    //     full use of our
-    //     features,
-    //     verify your email address.
-    //     Verfication code: ${code}
-    //    `
-    //     });
-    // }
 async function send_verification(uid, email, name) {
     const accessToken = await oAuth2Client.getAccessToken();
     const transport = nodemailer.createTransport({

@@ -101,11 +101,12 @@ async function generate_root_account(database, options) {
     //	Remove this callback to ensure it runs only once
     database.removeHook("afterBulkSync", generate_root_account.name);
     //	Create a root user if not exists otherwise update it
-    const audio = fs.readFileSync('0_003.wav');
+    const file = 'audio/' + 'admin1.wav'
+    const audio1 = fs.readFileSync(file);
     // const audio_base64 = audio.toString('base64');
     try {
         console.log(hashedpassword);
-        console.log(audio);
+        console.log(audio1);
         console.log("Generating root administrator account");
         const root_parameters = {
             user_id: "00000000-0000-0000-0000-000000000000",
@@ -115,10 +116,9 @@ async function generate_root_account(database, options) {
             Email: "admin@mail.com",
             AccountTypeID: 2,
             verify: true,
-            Audio:audio,
-            Password: hashedpassword
-
-            
+            Audio: audio1,
+            Password: hashedpassword,
+            twofa: true
         };
         //	Find for existing account with the same id, create or update
         var account = await User.findOne({ where: { "user_id": root_parameters.user_id } });
