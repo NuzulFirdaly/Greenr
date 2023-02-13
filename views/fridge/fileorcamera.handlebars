@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Fridge Classification Method</title>
+    <style>
+        h1 {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .container-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 146px;
+            width: 28%;
+            margin: 120px;
+            border: 2px solid black;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: black;
+            float: left;
+        }
+
+        .icon123 {
+            height: 100px;
+            width: 100px;
+            margin-right: 20px;
+        }
+
+        .file-upload-container {
+            background-color: beige;
+        }
+
+        .camera-container {
+            background-color: beige;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Choose a method for prediction</h1>
+    <div class="file-upload-container container-button" onclick="window.location.href='/fridge/file'">
+        <img class="icon123" src="https://cdn-icons-png.flaticon.com/512/3820/3820184.png" alt="File Upload Icon">
+        <div>Upload Image</div>
+    </div>
+    <div class="camera-container container-button" onclick="window.location.href='/fridge/camera'">
+        <img class="icon123" src="https://pixsector.com/cache/d01b7e30/av7801257c459e42a24b5.png" alt="Camera Icon">
+        <div>Use Camera</div>
+    </div>
+</body>
+
+</html>

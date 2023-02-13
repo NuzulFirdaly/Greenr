@@ -33,11 +33,26 @@ router.get("/category/:category", (req, res) => {
     choicesArray = categories[req.params.category]
     res.end(JSON.stringify({ "subcategories": choicesArray }));
 });
-router.get("/CreateCourse", (req, res) => {
+router.get("/CreateCourse/", (req, res) => {
     // console.log(req.user.AccountTypeID)
     if (((req.user != null) && (req.user.AccountTypeID == 1)) && (req.user.AccountTypeID == 1)) {
         res.render("course/coursecreation", {
-            user: req.user.dataValues, //have to do this for all pages
+            user: req.user.dataValues,
+        })
+    } else {
+        alertMessage(res, 'danger', 'You dont have access to that page!', 'fas fa-exclamation-triangle', true)
+        res.redirect("/")
+    };
+
+});
+
+router.get("/CreateCourse/:brandprediction", (req, res) => {
+    brandprediction = req.params.brandprediction
+        // console.log(req.user.AccountTypeID)
+    if (((req.user != null) && (req.user.AccountTypeID == 1)) && (req.user.AccountTypeID == 1)) {
+        res.render("course/coursecreation", {
+            user: req.user.dataValues,
+            Brand: brandprediction //have to do this for all pages
         })
     } else {
         alertMessage(res, 'danger', 'You dont have access to that page!', 'fas fa-exclamation-triangle', true)
@@ -75,7 +90,7 @@ router.post("/CreateCourse", [
     body('subcategory').not().isEmpty().trim().escape().withMessage("subcategory is invalid")
 ], async(req, res) => {
     console.log(req.body);
-    let { coursetitle, category, subcategory, short_description, description, courseThumbnailUpload, trueFileName, wattage } = req.body;
+    let { coursetitle, category, subcategory, short_description, description, courseThumbnailUpload, trueFileName, Brand, wattage } = req.body;
     let errors = [];
     const validatorErrors = validationResult(req);
     if (!validatorErrors.isEmpty()) { //if isEmpty is false
@@ -92,9 +107,75 @@ router.post("/CreateCourse", [
             description,
             courseThumbnailUpload,
             trueFileName,
-            user: req.user.dataValues, //have to do this for all pages
-            errors,
-            wattage: wattage,
+            user: req.user.dataValues,
+            Brand, //have to do this for all pages
+            errors
+        })
+    } else {
+        userid = req.user.dataValues.user_id;
+        console.log(userid)
+            //check if course with the same name has been created
+        Course.findOne({ where: { title: coursetitle } }).then(course => {
+            if (course !== null) {
+                errors.push({ text: "There already exists a product with the same name, please think of unique title!" })
+                res.render("course/coursecreation", {
+                    user: req.user.dataValues, //have to do this for all pages
+                    errors,
+                    wattage: wattage,
+                })
+
+            } else {
+                if (req.user.institutionInstitutionId != null) {
+                    Course.create({ Title: coursetitle, Category: category, Subcategory: subcategory, Short_description: short_description, Description: description, userUserId: userid, Course_thumbnail: trueFileName, institutionInstitutionId: req.user.institutionInstitutionId, Brand: Brand })
+                        .then(course => {
+                            alertMessage(res, 'success', course.Title + ` added. \n Product will be displayed under your institution's page`, 'fas fa-check', true);
+                            res.redirect(301, '/course/addpricing/' + req.params.courseid)
+                        })
+                        .catch(err => console.log(err));
+
+                } else {
+                    Course.create({ Title: coursetitle, Category: category, Subcategory: subcategory, Short_description: short_description, Description: description, userUserId: userid, Course_thumbnail: trueFileName, Brand: Brand })
+                        .then(course => {
+                            alertMessage(res, 'success', course.Title + ' added.', 'fas fa-sign-in-alt', true);
+                            res.redirect(301, '/course/addpricing/' + req.params.courseid)
+                        })
+                        .catch(err => console.log(err));
+                }
+            }
+        })
+    }
+});
+
+router.post("/CreateCourse/:brandprediction", [
+    body('coursetitle').not().isEmpty().trim().escape().withMessage("Product name is invalid"),
+    body('courseThumbnailUpload').not().isEmpty().trim().escape().withMessage("please select a product thumbnail"),
+    body('trueFileName').not().isEmpty().trim().escape().withMessage("please select a product thumbnail"),
+    body('short_description').not().isEmpty().withMessage("Short description is invalid").isLength({ max: 100 }).withMessage("Short description too long, Must be below 100 characters"),
+    body('description').not().isEmpty().withMessage("description is invalid").isLength({ min: 100, max: 2500 }).withMessage("Description must be between 100 to 2500 characters"),
+    body('category').not().isEmpty().trim().escape().withMessage("please select a category"),
+    body('subcategory').not().isEmpty().trim().escape().withMessage("subcategory is invalid")
+], async(req, res) => {
+    console.log(req.body);
+    let { coursetitle, category, subcategory, short_description, description, courseThumbnailUpload, trueFileName, Brand } = req.body;
+    let errors = [];
+    const validatorErrors = validationResult(req);
+    if (!validatorErrors.isEmpty()) { //if isEmpty is false
+        console.log("There are errors")
+        validatorErrors.array().forEach(error => {
+            console.log(error);
+            errors.push({ text: error.msg })
+        })
+        res.render("course/coursecreation", {
+            coursetitle,
+            category,
+            subcategory,
+            short_description,
+            description,
+            courseThumbnailUpload,
+            trueFileName,
+            user: req.user.dataValues,
+            Brand, //have to do this for all pages
+            errors
         })
     } else {
         //calculate ghg /year
@@ -124,7 +205,7 @@ router.post("/CreateCourse", [
 
             } else {
                 if (req.user.institutionInstitutionId != null) {
-                    Course.create({ Title: coursetitle, Category: category, Subcategory: subcategory, Short_description: short_description, Description: description, userUserId: userid, Course_thumbnail: trueFileName, institutionInstitutionId: req.user.institutionInstitutionId, GHG: GHG })
+                    Course.create({ Title: coursetitle, Category: category, Subcategory: subcategory, Short_description: short_description, Description: description, userUserId: userid, Course_thumbnail: trueFileName, institutionInstitutionId: req.user.institutionInstitutionId, Brand: Brand, GHG: GHG })
                         .then(course => {
                             alertMessage(res, 'success', course.Title + ` added. \n Product will be displayed under your institution's page`, 'fas fa-check', true);
                             res.redirect(301, '/course/editpricing/' + course.course_id)
@@ -132,7 +213,7 @@ router.post("/CreateCourse", [
                         .catch(err => console.log(err));
 
                 } else {
-                    Course.create({ Title: coursetitle, Category: category, Subcategory: subcategory, Short_description: short_description, Description: description, userUserId: userid, Course_thumbnail: trueFileName, GHG: GHG })
+                    Course.create({ Title: coursetitle, Category: category, Subcategory: subcategory, Short_description: short_description, Description: description, userUserId: userid, Course_thumbnail: trueFileName, Brand: Brand, GHG: GHG })
                         .then(course => {
                             alertMessage(res, 'success', course.Title + ' added.', 'fas fa-sign-in-alt', true);
                             res.redirect(301, '/course/editpricing/' + course.course_id)

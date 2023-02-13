@@ -36,6 +36,7 @@ const userRoute = require("./routes/user");
 const shopRoute = require("./routes/shop");
 const rateRoute = require("./routes/ratereview");
 const paymentRoute = require('./routes/payment');
+const fridgeRoute = require('./routes/classifyfridge');
 const admin = require('./routes/admin.js');
 
 
@@ -68,6 +69,12 @@ app.use(bodyParser.urlencoded({
 app.engine('handlebars', exphbs({
     defaultLayout: 'main',
     helpers: {
+        select: function(selected, options) {
+            return options.fn(this).replace(
+                new RegExp(' value=\"' + selected + '\"'),
+                '$& selected="selected"');
+        },
+
         loopcourse: function(value, options) {
             return options.fn({ test: value })
         },
@@ -311,6 +318,7 @@ app.use("/shop", shopRoute);
 app.use("/rate", rateRoute);
 app.use("/admin", admin);
 app.use("/payment", paymentRoute);
+app.use("/fridge", fridgeRoute);
 
 
 

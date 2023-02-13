@@ -47,6 +47,18 @@
          <input class="form-control" type="text" id="short_description" name="short_description" value="{{short_description}}" placeholder="Brief summary of what will be taught" required>    
      </div>
   </div>
+   <div class="form-group form-row">
+    <label class="col-md-3 col-form-label">Brand</label>
+     <div class="col-9">
+          <select class="form-control" id="Brand" name="Brand" value="{{category}}" required>
+                  {{#select Brand}}
+                    <option disabled selected>Brands</option>
+                    <option value="LG">LG</option>
+                    <option value="Samsung">Samsung</option>
+                  </select>
+                  {{/select}}
+             </div>
+  </div>
   <div class="form-group form-row">
     <label class="col-md-3 col-form-label">Description</label>
      <div class="col-9">
