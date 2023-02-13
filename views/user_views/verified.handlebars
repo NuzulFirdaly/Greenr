@@ -1,0 +1,32 @@
+<style>
+    #hello:hover {
+  letter-spacing: 0.8em;
+  background-color: rgb(0, 255, 8);
+  color: #000000;
+  border: 3px solid rgb(0, 0, 0);
+}
+
+#hello {
+  color: white;
+}
+.button {
+    height: 4em;
+    width: auto;
+    padding: 1.5em auto;
+    margin: 1em auto;
+    margin-left: 6em;
+    left: 10px;
+    background-color: #000000;
+    border: 3px solid rgb(244, 244, 244);
+    border-radius: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+    transition: all 0.2s cubic-bezier(.4,0,.2,1);
+}
+</style>
+<div>
+    <h1 style="color: rgb(0, 0, 0);">Thank you {{name}} for choosing our services, your email has been verified.</h1>
+    <h2 style="color: rgb(0, 0, 0);">Please proceed to login page to login!</h2>
+    <a href="/"><button id="hello" class="button">Home</button></a>
+    <a href="/Login"><button id="hello" class="button">Login</button></a>
+</div>

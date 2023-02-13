@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser'); //to retrieve req.body
 const Sequelize = require('sequelize');
 const paypal = require('paypal-rest-sdk');
-
+const template_helpers = require('./helpers/helpers.js');
 paypal.configure({
     'mode': 'sandbox', //sandbox or live
     'client_id': 'Aeuvefajm5Nbw4eenWEdpZdb8nSIjQsBJwSBkHF8rZevg96mG18ELIHnZzFM8yaFfCMHJKXzcO3d8GUn',
@@ -36,7 +36,7 @@ const userRoute = require("./routes/user");
 const shopRoute = require("./routes/shop");
 const rateRoute = require("./routes/ratereview");
 const paymentRoute = require('./routes/payment');
-
+const admin = require('./routes/admin.js');
 
 
 //mysql init
@@ -71,6 +71,7 @@ app.engine('handlebars', exphbs({
         loopcourse: function(value, options) {
             return options.fn({ test: value })
         },
+        template_helpers,
         ifEquals(a, b, options) {
             // console.log("helper function")
             // console.log(a)
@@ -308,7 +309,7 @@ app.use("/myschedule", scheduleRoute);
 app.use("/user", userRoute);
 app.use("/shop", shopRoute);
 app.use("/rate", rateRoute);
-
+app.use("/admin", admin);
 app.use("/payment", paymentRoute);
 
 
