@@ -45,7 +45,7 @@ router.get('/', (req, res) => {
 });
 
 
-router.get('/voice-recongition/', async function (req, res) {
+router.get('/voice-recongition', async function (req, res) {
     console.log("going into login page");
     const id = req.user.user_id;
     // const payload = JWT.verify(token, 'the-key');
@@ -130,7 +130,7 @@ router.post('/loginPost', [body('email').trim().isEmail().normalizeEmail().toLow
     //suppose to nest this but idk so im gonna leave here than make it efficient later... idk how to nest in inside switch
     await passport.authenticate('local', {
         // if (req.user.accountType.dataValues == 1){
-        successRedirect: "/voice-recongition/" + user.user_id, // Route to /video/listVideos URL
+        successRedirect: "/voice-recongition", // Route to /video/listVideos URL
         failureRedirect: '/login', // Route to /login URL
         failureFlash: true
         /* Setting the failureFlash option to true instructs Passport to flash an error message using the
