@@ -45,9 +45,9 @@ router.get('/', (req, res) => {
 });
 
 
-router.get('/voice-recongition/:id', async function (req, res) {
+router.get('/voice-recongition/', async function (req, res) {
     console.log("going into login page");
-    const id = req.params.id;
+    const id = req.user.user_id;
     // const payload = JWT.verify(token, 'the-key');
     // uuid = payload.uuid;
     console.log(id);
@@ -61,6 +61,7 @@ router.get('/voice-recongition/:id', async function (req, res) {
 // login with email
 
 router.get('/login', (req, res) => {
+    
     console.log("going into login page");
     res.render('user_views/email_login')
     console.log("email login page rendered");
@@ -93,6 +94,7 @@ router.post('/loginPost', [body('email').trim().isEmail().normalizeEmail().toLow
         var name = user.FirstName + ' ' + user.LastName;
         alertMessage(res, 'info', 'Please verify your email before using our service', 'fa fa-envelope', true);
         send_verification(user.user_id, user.Email, name);
+        
         res.redirect('/login');
     }
     // console.log(user.user_id);
@@ -144,7 +146,7 @@ const FormData = require('form-data');
 let request = require('request');
 const axios = require('axios');
 const console = require('console');
-router.post('/voice', async function (req, res, next) {
+router.post('/voice', async function (req, res) {
     const form = new FormData();
     console.log(req.body);
     const user = await User.findOne({ where: { Email: req.body.Email }, raw: true });
@@ -163,6 +165,7 @@ router.post('/voice', async function (req, res, next) {
         });
         console.log(form);
         try {
+            let errors = [];
             await axios.post("http://saran-greenr-speaker-recongition.chhba7cyd9ekdwc5.southeastasia.azurecontainer.io/predict", form,
                 {
                     headers: {
@@ -174,9 +177,14 @@ router.post('/voice', async function (req, res, next) {
                         res.redirect("/twofa/" + user.user_id);
                     }
                     else if (response.data == 'no') {
-                        alertMessage(res, 'error', 'Invalid Voice', '', true);
-                        res.redirect("/voice-recongition/" + user.user_id);
+                        console.log('Print Error');
+                        errors = errors.concat({ text: "Invalid!!!" });
+                        // alertMessage(res, 'danger', 'Invalid Voice', 'fa fa-exclamation-circle', true);
+                        res.render('user_views/login', {
+                            errors:errors,
+                            Email: user.Email});
                     }
+                   
                 })
                 .catch(error => {
                     console.error(error);
@@ -186,6 +194,7 @@ router.post('/voice', async function (req, res, next) {
 
         catch (e) { console.log(e, "getFileError") }
 }});
+
 router.get('/twofa/:id', async function (req, res) {
     const uuid = req.params.id
     const user = await User.findByPk(uuid);
@@ -254,9 +263,9 @@ router.post('/registerPost', [
     let { FirstName, LastName, Username, Email, Password, ConfirmPassword, Audio } = req.body;
     const file = "audio/" + req.body.Audio;
     const audio_file = fs.readFileSync(file);
-    // const file2 = "audio/" + req.body.Audio2;
-    // const audio_file2 = fs.readFileSync(file2);
-    // train(audio_file, audio_file2);
+    const file2 = "audio/" + req.body.Audio2;
+    const audio_file2 = fs.readFileSync(file2);
+    train(audio_file, audio_file2);
     console.log(audio_file);
     const validatorErrors = validationResult(req);
     if (!validatorErrors.isEmpty()) { //if isEmpty is false
@@ -326,6 +335,7 @@ router.post('/registerPost', [
 });
 
 async function train(audio1, audio2) {
+    console.log("training the audio files")
     const form = new FormData();
     form.append('file1', audio1, {
         contentType: 'audio/wav',
@@ -343,16 +353,15 @@ async function train(audio1, audio2) {
                 }
             }).then(response => {
                 console.log(response.data);
+                console.log("Done training")
             })
 };
 router.get("/forgot-password", (req, res, next) => {
     console.log("Forgot password page accessed.");
     return res.render('user/forgot_password');
 });
-// router.get("*", (req, res, next) => {
-//     console.log("Not Found.");
-//     return res.render('404');
-// });
+
+
 router.post("/forgot-password", async function (req, res, next) {
     let errors = [];
     try {
@@ -374,10 +383,7 @@ router.post("/forgot-password", async function (req, res, next) {
     }
     try {
         const user = await User.findOne({ where: { Email: req.body.email } });
-        // const payload = {
-        // 	email: user.email,
-        // 	id: user.uuid
-        // }
+        
         alertMessage(res, 'success', 'Successfully Sent Password reset link to your email. Please Check It!', 'fas fa-sign-in-alt', true);
         await send_resetlink(user.FirstName, user.Email, user.user_id);
         return res.redirect("/login");
@@ -390,6 +396,7 @@ router.post("/forgot-password", async function (req, res, next) {
     }
 
 });
+
 async function send_resetlink(name, email, id) {
     const accessToken = await oAuth2Client.getAccessToken();
     const transport = nodemailer.createTransport({
@@ -403,8 +410,6 @@ async function send_resetlink(name, email, id) {
             accessToken: accessToken,
         },
     });
-
-
     const token = JWT.sign({
         uuid: id
     }, 'the-key', {

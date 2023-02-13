@@ -120,6 +120,10 @@ async function email(req, res) {
 }
 
 router.get('/approve', async function (req, res) {
+    try{
+    if (req.user.AccountTypeID != 2) {
+        res.render('404')
+    }
      pendingseller.count({ raw: true }).then(total => {
         // console.log(pInstList)
         pendingseller.findAll({ raw: true }).then(seller => {
@@ -130,9 +134,16 @@ router.get('/approve', async function (req, res) {
             })
         });
     });
+}
+    catch (error) {
+        console.log(error)
+        return res.render('404');;
+    };
 });
-
 router.get('/approve/delete/:uuid', async function (req, res) {
+    if (req.user.AccountTypeID != 2) {
+        res.render('404')
+    }
         // console.log(pInstList)
         const id = req.params.uuid;
     const user = await ModelUser.findByPk(id);
