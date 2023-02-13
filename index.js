@@ -10,8 +10,8 @@ const paypal = require('paypal-rest-sdk');
 
 paypal.configure({
     'mode': 'sandbox', //sandbox or live
-    'client_id': 'AXO5V1rlutZynF0Ki1rO2imjUeM8bI1RE5duaqKPKaaptEE97kMhkMpu2IIWBZ30H09LCyUheBlDI6dC',
-    'client_secret': 'EDjmtzb5OjJTZBmkEoCea9WykI5XnUTBtqgk57w8RfLcOON_I0G0Y--mXIyQdJodkkM_Z3BUzoDzw9gJ'
+    'client_id': 'Aeuvefajm5Nbw4eenWEdpZdb8nSIjQsBJwSBkHF8rZevg96mG18ELIHnZzFM8yaFfCMHJKXzcO3d8GUn',
+    'client_secret': 'EBZZiY8G6lTZr2wjyogWXctn7T2Cw3n-IW_MlHBGRmDBwfx5CQiR9m9kUyh1gGXTmemEVo8QcJGAT1Lf'
 })
 
 const Handlebars = require('handlebars');
