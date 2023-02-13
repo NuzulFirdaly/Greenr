@@ -29,9 +29,12 @@
     <label class="col-md-3 col-form-label">Categories</label>
     <div class="col">
         <select class="form-control" id="category" name="category" value="{{Category}}" required>
+          {{#select Category}}
           <option disabled selected>CATEGORIES</option>
           <option value="Fridge">Fridge</option>
           <option value="Computers">Computers</option>
+          {{/select}}
+
         </select>
     </div>
       <div class="col">
@@ -39,6 +42,18 @@
     </div>
     <div>
     </div>
+  </div>
+     <div class="form-group form-row">
+    <label class="col-md-3 col-form-label">Brand</label>
+     <div class="col-9">
+          <select class="form-control" id="Brand" name="Brand" value="{{category}}" required>
+                  {{#select Brand}}
+                    <option disabled selected>Brands</option>
+                    <option value="LG">LG</option>
+                    <option value="Samsung">Samsung</option>
+                  </select>
+                  {{/select}}
+             </div>
   </div>
      <div class="form-group form-row">
     <label class="col-md-3 col-form-label">Short Description</label>
