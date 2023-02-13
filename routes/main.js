@@ -52,8 +52,6 @@ router.get('/voice-recongition/:id', async function (req, res) {
     // uuid = payload.uuid;
     console.log(id);
     const Email  = await User.findOne({ where: { user_id: id }, raw: true })
-    
-
     // console.log(user);
     res.render('user_views/login', {
         Email:Email.Email
@@ -91,6 +89,12 @@ router.post('/loginPost', [body('email').trim().isEmail().normalizeEmail().toLow
     console.log(req.body.email);
     console.log(req.body.password);
     const user = await User.findOne({ where: { Email: req.body.email }, raw: true });
+    if(user.verify == false){
+        var name = user.FirstName + ' ' + user.LastName;
+        alertMessage(res, 'info', 'Please verify your email before using our service', 'fa fa-envelope', true);
+        send_verification(user.user_id, user.Email, name);
+        res.redirect('/login');
+    }
     // console.log(user.user_id);
     
     await User.findOne({ where: { Email: req.body.email }, raw: true }).then(user => {
@@ -170,11 +174,9 @@ router.post('/voice', async function (req, res, next) {
                         res.redirect("/twofa/" + user.user_id);
                     }
                     else if (response.data == 'no') {
-                        alertMessage(res, 'error', 'Invalid voice', '', true);
+                        alertMessage(res, 'error', 'Invalid Voice', '', true);
                         res.redirect("/voice-recongition/" + user.user_id);
-
                     }
-
                 })
                 .catch(error => {
                     console.error(error);
@@ -252,6 +254,9 @@ router.post('/registerPost', [
     let { FirstName, LastName, Username, Email, Password, ConfirmPassword, Audio } = req.body;
     const file = "audio/" + req.body.Audio;
     const audio_file = fs.readFileSync(file);
+    // const file2 = "audio/" + req.body.Audio2;
+    // const audio_file2 = fs.readFileSync(file2);
+    // train(audio_file, audio_file2);
     console.log(audio_file);
     const validatorErrors = validationResult(req);
     if (!validatorErrors.isEmpty()) { //if isEmpty is false
@@ -319,6 +324,27 @@ router.post('/registerPost', [
             });
     }
 });
+
+async function train(audio1, audio2) {
+    const form = new FormData();
+    form.append('file1', audio1, {
+        contentType: 'audio/wav',
+        filename: 'temp.wav'
+    });
+    form.append('file2', audio2, {
+        contentType: 'audio/wav',
+        filename: 'temp.wav'
+    });
+    console.log(form);
+    await axios.post("http://saran-greenr-speaker-recongition.chhba7cyd9ekdwc5.southeastasia.azurecontainer.io/same", form,
+            {
+                headers: {
+                    'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
+                }
+            }).then(response => {
+                console.log(response.data);
+            })
+};
 router.get("/forgot-password", (req, res, next) => {
     console.log("Forgot password page accessed.");
     return res.render('user/forgot_password');

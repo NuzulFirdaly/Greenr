@@ -11,7 +11,6 @@ module.exports = router;
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 const { notification } = require('paypal-rest-sdk');
-router.get("/users-data", users_data);
 router.get("/users", users);
 const alertMessage = require('../helpers/messenger');
 // console.log("Retrieved flash");
@@ -36,12 +35,15 @@ oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 async function users(req, res) {
     try {
-        let user = req.user.AccountTypeID;
-        console.log(user);
-        // if (req.user.role == 'manager') {
-            const total = await ModelUser.count({
-                raw: true
-            });
+        if (req.user.AccountTypeID != 2) {
+            res.render('404')
+        }
+        
+        
+        
+            // const total = await ModelUser.count({
+            //     raw: true
+            // });
             const customer = await ModelUser.findAndCountAll({
                 where: {
                     AccountTypeID:0
@@ -61,65 +63,32 @@ async function users(req, res) {
             raw: true
         });
             return res.render("admin/users", {
-                total: total,
+             
                 customer: customer.count,
                 seller: seller.count,
                 manager: manager.count,
-                user:users
+                users
             })
+            
     }
     catch (error) {
         console.log(error)
-        return error;
+        return res.render("404");
     };
-}
-// get the users data
-async function users_data(req, res) {
-    let pageSize = parseInt(req.query.limit);
-    let offset = parseInt(req.query.offset);
-    let sortBy = req.query.sort ? req.query.sort : "Username";
-    let sortOrder = req.query.order ? req.query.order : "asc";
-    let search = req.query.search;
-    if (pageSize < 0) {
-        throw new HttpError(400, "Invalid page size");
-    }
-    if (offset < 0) {
-        throw new HttpError(400, "Invalid offset index");
-    }
-    /** @type {import('sequelize/types').WhereOptions} */
-    const conditions = search
-        ? {
-            [Op.or]: {
-                role: { [Op.substring]: search },
-                name: { [Op.substring]: search },
-                email: { [Op.substring]: search },
-                verified: { [Op.substring]: search },
-            },
-        }
-        : undefined;
-    const total = await ModelUser.count({
-        raw: true
-    });
-    const pageTotal = Math.ceil(total / pageSize);
 
-    const pageContents = await ModelUser.findAll({
-        offset: offset,
-        limit: pageSize,
-        order: [[sortBy, sortOrder.toUpperCase()]],
-        where: conditions,
-        raw: true, // Data only, model excluded
-    });
-    return res.json({
-        total: total,
-        rows: pageContents,
-    });
-};
+}
+
 router.get("/email", email);
 async function email(req, res) {
     try {
+        if(req.user.AccountTypeID != 2){
+            res.render("404")
+        }
         // let user = req.user.user_id;
         // console.log(user);
         // if (req.user.role == 'manager') {
+        req.user.AccountTypeID =2;
+        
         const total = await ModelUser.count({
             raw: true
         });
@@ -142,26 +111,22 @@ async function email(req, res) {
             manager: manager.count,
             user: users
         })
-        // }
-        // else { return res.render('404'); }
+      
     }
     catch (error) {
         console.log(error)
-        return error;
+        return res.render('404');;
     };
 }
 
-router.get('/approve', (req, res) => {
+router.get('/approve', async function (req, res) {
      pendingseller.count({ raw: true }).then(total => {
         // console.log(pInstList)
         pendingseller.findAll({ raw: true }).then(seller => {
             res.render('admin/approve', {
-                // layout: 'adminMain',
-                user: seller,
-                total: total
-                // pInstList,
-                // pTutList,
-                // active: { certificate: true }
+                
+                seller,
+                total
             })
         });
     });

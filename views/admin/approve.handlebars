@@ -322,16 +322,6 @@
     });
 
 </script>
-<script>
-    var element = document.getElementById("admin");
-    var inputField = document.getElementById("role");
-    inputField.addEventListener("keyup", function () {
-
-        if (inputField.value == "admin") {
-            element.remove();
-        }
-    });
-</script>
 <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
 <div class="container">
     <div class="row">
@@ -371,7 +361,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{#each user}}
+                        {{#each seller}}
                         <tr>
                             <td>
                                 <img src="/images/profilepictures/{{this.Profile_pic}}" alt="">

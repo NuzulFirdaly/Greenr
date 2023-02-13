@@ -114,6 +114,7 @@ async function generate_root_account(database, options) {
             LastName:"admin",
             Username:"greenr_admin",
             Email: "admin@mail.com",
+            Profile_pic: "avatar1.jpg", 
             AccountTypeID: 2,
             verify: true,
             Audio: audio1,
