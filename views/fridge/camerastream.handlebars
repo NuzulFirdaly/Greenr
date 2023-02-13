@@ -86,6 +86,7 @@
             image.src = canvas.toDataURL('image/jpeg');
 
             const imageBlob = await fetch(image.src).then(res => res.blob());
+            console.log(image.src)
             const imageB64 = await new Promise(resolve => {
                 const reader = new FileReader();
                 reader.readAsDataURL(imageBlob);
@@ -112,14 +113,26 @@
                     }
                     return response.json();
                 })
-                .then(data => {
-                    console.log(data);
+                //.then(data => {
+                    //console.log(data);
+                    //console.log(data.image_b64)
                     // Redirect to the cameraresults page with the brand value
-                    let brand = data.brand;
-                    if (typeof brand !== 'string') {
-                        brand = JSON.stringify(brand);
+                    //let brand = data.brand;
+                    //if (typeof brand !== 'string') {
+                    //    brand = JSON.stringify(brand);
+                    //}
+                    //window.location.href = '/fridge/cameraresults?brand=' + encodeURIComponent(brand);
+                    //window.location.href = '/course/CreateCourse/' + data.prediction.brand;
+                //})
+                .then(data => {
+                    if (data.brand) {
+                        console.log(data.image_b64);
+                        console.log(data.brand);
+                        // Redirect to the cameraresults page with the brand value
+                        window.location.href = '/course/CreateCourse/' + encodeURIComponent(data.brand);
+                    } else {
+                        console.error('Brand data not found');
                     }
-                    window.location.href = '/fridge/cameraresults?brand=' + encodeURIComponent(brand);
                 })
                 .catch(error => {
                     console.error('There was a problem with the fetch operation:', error);

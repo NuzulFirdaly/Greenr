@@ -95,8 +95,9 @@ router.post('/camera', async (req, res) => {
         // Send the prediction result back to the client
         // Redirects the response to client with the response body
         //res.json({ brand: data.prediction.brand });
-        res.redirect(301,'/course/CreateCourse/'+ data.prediction.brand)
         //res.render('fridge/cameraresults', { brand: data.prediction.brand });
+        //res.redirect(301, '/course/CreateCourse/' + data.prediction.brand)
+        res.json({ brand: data.prediction.brand, image_b64: image_b64 });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error occurred while predicting the fridge brand.' });
