@@ -36,6 +36,7 @@ const userRoute = require("./routes/user");
 const shopRoute = require("./routes/shop");
 const rateRoute = require("./routes/ratereview");
 const paymentRoute = require('./routes/payment');
+const modelRoute = require('./routes/classifymodel');
 
 
 
@@ -308,6 +309,7 @@ app.use("/myschedule", scheduleRoute);
 app.use("/user", userRoute);
 app.use("/shop", shopRoute);
 app.use("/rate", rateRoute);
+app.use("/model", modelRoute);
 
 app.use("/payment", paymentRoute);
 

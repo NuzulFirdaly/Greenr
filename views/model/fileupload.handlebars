@@ -1,0 +1,45 @@
+<html>
+
+<head>
+    <style>
+        b1 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 20vh;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .error-message {
+            display: none;
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Upload an image to identify the model</h1>
+    <b1>
+        <form id="image-form" action="/model/modelfile" method="post" enctype="multipart/form-data">
+            <input type="file" name="image">
+            <input type="submit" value="Predict" onclick="checkFileUpload()">
+        </form>
+        <div id="error-message" class="error-message">Please select a file to upload</div>
+    </b1>
+    <script>
+        function checkFileUpload() {
+            const fileInput = document.querySelector('input[type="file"]');
+            if (!fileInput.files || fileInput.files.length === 0) {
+                event.preventDefault();
+                document.querySelector('#error-message').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+
+</html>
