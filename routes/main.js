@@ -299,7 +299,7 @@ router.post('/registerPost', [
     const audio_file = fs.readFileSync(file);
     const file2 = "audio/" + req.body.Audio2;
     const audio_file2 = fs.readFileSync(file2);
-    train(audio_file, audio_file2);
+    // train(audio_file, audio_file2);
     console.log(audio_file);
     const validatorErrors = validationResult(req);
     if (!validatorErrors.isEmpty()) { //if isEmpty is false

@@ -108,7 +108,8 @@ router.post("/CreateCourse", [
             courseThumbnailUpload,
             trueFileName,
             user: req.user.dataValues,
-            Brand, //have to do this for all pages
+            Brand,
+            wattage, //have to do this for all pages
             errors
         })
     } else {
@@ -129,7 +130,7 @@ router.post("/CreateCourse", [
                     Course.create({ Title: coursetitle, Category: category, Subcategory: subcategory, Short_description: short_description, Description: description, userUserId: userid, Course_thumbnail: trueFileName, institutionInstitutionId: req.user.institutionInstitutionId, Brand: Brand })
                         .then(course => {
                             alertMessage(res, 'success', course.Title + ` added. \n Product will be displayed under your institution's page`, 'fas fa-check', true);
-                            res.redirect(301, '/course/addpricing/' + req.params.courseid)
+                            res.redirect(301, '/course/addpricing/' + course.course_id)
                         })
                         .catch(err => console.log(err));
 
@@ -137,7 +138,7 @@ router.post("/CreateCourse", [
                     Course.create({ Title: coursetitle, Category: category, Subcategory: subcategory, Short_description: short_description, Description: description, userUserId: userid, Course_thumbnail: trueFileName, Brand: Brand })
                         .then(course => {
                             alertMessage(res, 'success', course.Title + ' added.', 'fas fa-sign-in-alt', true);
-                            res.redirect(301, '/course/addpricing/' + req.params.courseid)
+                            res.redirect(301, '/course/addpricing/' + course.course_id)
                         })
                         .catch(err => console.log(err));
                 }
@@ -156,7 +157,7 @@ router.post("/CreateCourse/:brandprediction", [
     body('subcategory').not().isEmpty().trim().escape().withMessage("subcategory is invalid")
 ], async(req, res) => {
     console.log(req.body);
-    let { coursetitle, category, subcategory, short_description, description, courseThumbnailUpload, trueFileName, Brand } = req.body;
+    let { coursetitle, category, subcategory, short_description, description, courseThumbnailUpload, trueFileName, Brand, wattage } = req.body;
     let errors = [];
     const validatorErrors = validationResult(req);
     if (!validatorErrors.isEmpty()) { //if isEmpty is false
@@ -174,7 +175,8 @@ router.post("/CreateCourse/:brandprediction", [
             courseThumbnailUpload,
             trueFileName,
             user: req.user.dataValues,
-            Brand, //have to do this for all pages
+            Brand,
+            wattage, //have to do this for all pages
             errors
         })
     } else {
@@ -430,26 +432,14 @@ router.get("/addpricing/:courseid", (req, res) => {
     if ((req.user != null) && (req.user.AccountTypeID == 1)) {
         course_id = req.params.courseid
         console.log(course_id)
-        Lessons.findAll({
-                where: { courseListingCourseId: course_id },
-                raw: true,
-                order: [
-                    ['session_no', 'ASC']
-                ]
-            })
-            //lessons are all the lessons from the course id(return multiple lessons)
-            .then((lessons) => {
-                sessioncount = lessons.length;
-                let totalhours = 0
-                for (let i = 0; i < sessioncount; i++) {
-                    totalhours += parseInt(lessons[i].time_approx)
-                }
+        CourseListing.findOne({ where: { course_id: req.params.courseid } })
+            .then(course => {
+                console.log("this is course", course)
+                console.log("this is wattage calculated from ghg", course.GHG);
                 res.render("course/addpricing", {
-                    sessionarray: lessons,
-                    course_id: course_id,
+                    course: course,
                     user: req.user.dataValues,
-                    sessioncount: sessioncount,
-                    totalhours
+
                 })
             });
     } else {
@@ -457,6 +447,7 @@ router.get("/addpricing/:courseid", (req, res) => {
         res.redirect("/")
     };
 })
+
 
 router.post("/addnewpricing/:courseid", (req, res) => {
     let { hourlyrate, minimumdays, maximumdays } = req.body;
