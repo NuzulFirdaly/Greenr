@@ -38,7 +38,11 @@
         </select>
     </div>
       <div class="col">
-        <select class="form-control" id="subcategory" name="subcategory" value="{{Subcategory}}" required></select>
+        <select class="form-control" id="subcategory" name="subcategory" value="{{Subcategory}}" required>
+            {{#select Subcategory}}
+                      <option value="Top Freezer">Top Freezer</option><option value="Bottom Freezer">Bottom Freezer</option><option value="Side-by-side">Side-by-side</option><option value="French door">French door</option><option value="door-in-door">door-in-door</option><option value="Smart/Wifi enabled">Smart/Wifi enabled</option>
+            {{/select}}
+        </select>
     </div>
     <div>
     </div>

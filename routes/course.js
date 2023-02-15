@@ -544,6 +544,16 @@ function getAllSentiments(list) {
     return listOfAspects_Sentiments
 }
 
+function compare(a, b) {
+    if (a.GHG < b.GHG) {
+        return -1;
+    }
+    if (a.GHG > b.GHG) {
+        return 1;
+    }
+    return 0;
+}
+
 router.get("/viewcourse/:courseid", async(req, res) => {
     console.log("we are at view course now")
     courseid = req.params.courseid;
@@ -565,7 +575,8 @@ router.get("/viewcourse/:courseid", async(req, res) => {
                     body: JSON.stringify({ essay: course[0].Description })
                 }).then((response) => { return response.json() })
                 .then((recommendedcourses) => {
-                    recommendedcourselst = recommendedcourses.filter(item => (!(item.course_id == course[0].course_id)))
+                    recommendedcourselst = recommendedcourses.filter(item => (!(item.course_id == course[0].course_id)) && item.similarity_score > 0.2)
+                    recommendedcourselst = recommendedcourselst.sort(compare)
 
                 })
 

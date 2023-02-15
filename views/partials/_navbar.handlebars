@@ -22,7 +22,6 @@
 		<!-- User Specific navigations -->
 		<!-- Default, user is not logged-->
 	
-	{{#ifEquals user.twofa 1}}
 	{{#ifEquals user.AccountTypeID 0}}
 	<div class="col-lg-4 col-sm-6 col-12">
 		<div class="widgets-wrap float-lg-right">
@@ -56,7 +55,7 @@
 					</div>
 			<div class="widget-header  mr-3">
 				<a href="viewCart" class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></a>
-				<span class="badge badge-pill badge-danger notify">{{cart}}</span>
+				<span class="badge badge-pill badge-danger notify">{{#length session.cart}} {{/length}}</span>
 			</div>
 			<div class="widget-header  mr-3">
 				<a href="/course/CreateCourse" class="icontext mr-4" >
@@ -119,7 +118,6 @@
 			</div> <!-- widget  dropdown.// -->
 		</div> <!-- widgets-wrap.// -->
 	</div> <!-- col.// -->
-	{{/ifEquals}}
 	{{/ifEquals}}
 		{{#ifEquals user.AccountTypeID null}}
 		<div class="col-lg-4 col-sm-6 col-12">

@@ -7,6 +7,9 @@
 {% block title %}TutorHub - Profile Page{% endblock %}
 
 {% block content %} --}}
+
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
 <script type="text/javascript">
     /// some script
 
@@ -99,16 +102,14 @@
                         Affiliated with
                         <img src="/images/Institutionpictures/{{affiliation.dataValues.mainlogo}}" width="80px" height="40px" alt="">
                         {{/if}}
-                        <div class="col-md-1"></div>
                         <ul class="list-inline mb-0">
                             <li class="list-inline-item">
-                                <h5 class="font-weight-bold mb-0 d-block">0</h5><small class="text-muted"> <i
-                                        class="fas fa-image mr-1"></i>No. of Sessions</small>
-                            </li>
-                            <li class="list-inline-item">
-                                <h5 class="font-weight-bold mb-0 d-block">0</h5><small class="text-muted"> <i class="fas fa-clock"></i>Total No. of Hours</small>
+                                <h5 class="font-weight-bold mb-0 d-block">{{totalGHG}}</h5>
+                                <small class="text-muted"> <i class="fas fa-image mr-"></i>Total GHG/Year</small>
                             </li>
                         </ul>
+                                                        <a class="twitter-share-button mr-1" target="_blank"  data-size="large" href="https://twitter.com/intent/tweet?text=My Total GHG from my purchases is {{totalGHG}}! Playing my part to reduce my carbon footprint by buying more sustainable product with Greenr">Tweet
+                                    </a>
                     </div>
                     <div class="px-4 py-3">
                         <h5 class="mb-0">About</h5>
