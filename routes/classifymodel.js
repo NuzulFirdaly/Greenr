@@ -53,7 +53,7 @@ router.post('/modelfile', upload.single('image'), async (req, res) => {
     formData.append('image', file.buffer, { filename: file.originalname });
 
     // Send the file to the prediction server
-    fetch('samboey-greenr.gsejbabxf7b7h6ar.eastus.azurecontainer.io/filepredict', {
+    fetch('http://greenr-fridge-model.e5hkcje3hpamb9cz.southeastasia.azurecontainer.io/filepredict', {
         method: 'POST',
         body: formData
     })
