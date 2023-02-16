@@ -35,10 +35,10 @@ Nuzul
 - [Aspect Based Sentiment Analysis Model Service]()
 
 - [Recommendation System Service]() -> When pulling this docker image, you will have to configure the environment variable to allow it to access the MySQL server 
-## Change Environment Variable
+## Change Environment Variable & and other credentials
 
 After deploying the containers above, you will have to create a .env file in the project folder and add the following environment variables
-
+>when assigning the values in the variables, do not include the double quotations.
 ```
 db_host = "ip address of mysql server"
 db_database = "database name"
@@ -49,8 +49,7 @@ absa_service_address = "address to the absa service"
 recommendation_system_address = "address to the recommendation service"
 
 ```
->when assigning the values in the variables, do not include the double quotations.
-
+>we might also be retiring our paypal sandbox and google auth credentials. Please generate new ones and update them in index.js for paypal credentials and  main.js for google api credentials
 
 # 3. Features
 ##  Nuzul
