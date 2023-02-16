@@ -1,154 +1,86 @@
-# Welcome to GreenR
+# Table of Contents
+1. Welcome to to GreenR
+2. How to use our app
+3. Features
+# 1. Welcome to GreenR
 
 >Introduction about Greenr
 
-
+# 2. How to use our app
 ## Pre-requisites
 
-> Familiarity with MySQL
-> Famillarity with Docker
+- Familiarity with environment variables, MySQL, Docker container local hosting or cloud hosting
 
 ## Basic Set-Up
 
 1. Clone the repository
 2. Go to terminal, and type ``` npm install```
-3. All the necessary packages for the application will be installed 
-
+4. Create and host a MySQL server
+5. Create and name a database in MySQL
+6. Create a new connection (with password) to the server and allow access to the newly created database
+7. Follow the next steps below
+8. Once you have hosted the containers, created a MySQL server and configured the environment variables. Go to terminal and run ```nodemon```
 
 ## Deploy and configure AI Model Containers
 
 Due to the nature of AI libraries, we have utilized docker containers to make deployment and usage of our AI models easier. Our docker containers are configured to run uwsgi-nginx-flask at startup. For more information on uwsgi-nginx-flask please refer [here](https://hub.docker.com/r/tiangolo/uwsgi-nginx-flask/). 
 
-As deployment of AI models on the cloud is costly, to test our application you may have to deploy it in the cloud. AWS, GCP and Azure provides container hosting services, and they offer free credits for new users. Do utilize them.
+As we come to an end to the project, we will be retiring our hosted container services due to cost concern. To test our application you may have to deploy the docker containers in the cloud. AWS, GCP and Azure provides container hosting services, and they offer free credits for new users. Do utilize them.
 
 The following are our docker images that we have published on docker hub categorized by members :
+
 Nuzul
-- [Aspect Extraction Model](https://hub.docker.com/repository/docker/nuzulfirdaly/aspect-extract) When pullling this docker image, please specify the **:fixed** tag
+- [Aspect Extraction Model Service](https://hub.docker.com/repository/docker/nuzulfirdaly/aspect-extract) -> When pullling this docker image, please specify the **:fixed** tag
 
-After the deploy
-## Rename a file
+- [Aspect Based Sentiment Analysis Model Service]()
 
-You can rename the current file by clicking the file name in the navigation bar or by clicking the **Rename** button in the file explorer.
+- [Recommendation System Service]() -> When pulling this docker image, you will have to configure the environment variable to allow it to access the MySQL server 
+## Change Environment Variable
 
-## Delete a file
+After deploying the containers above, you will have to create a .env file in the project folder and add the following environment variables
 
-You can delete the current file by clicking the **Remove** button in the file explorer. The file will be moved into the **Trash** folder and automatically deleted after 7 days of inactivity.
-
-## Export a file
-
-You can export the current file by clicking **Export to disk** in the menu. You can choose to export the file as plain Markdown, as HTML using a Handlebars template or as a PDF.
-
-
-# Synchronization
-
-Synchronization is one of the biggest features of StackEdit. It enables you to synchronize any file in your workspace with other files stored in your **Google Drive**, your **Dropbox** and your **GitHub** accounts. This allows you to keep writing on other devices, collaborate with people you share the file with, integrate easily into your workflow... The synchronization mechanism takes place every minute in the background, downloading, merging, and uploading file modifications.
-
-There are two types of synchronization and they can complement each other:
-
-- The workspace synchronization will sync all your files, folders and settings automatically. This will allow you to fetch your workspace on any other device.
-	> To start syncing your workspace, just sign in with Google in the menu.
-
-- The file synchronization will keep one file of the workspace synced with one or multiple files in **Google Drive**, **Dropbox** or **GitHub**.
-	> Before starting to sync files, you must link an account in the **Synchronize** sub-menu.
-
-## Open a file
-
-You can open a file from **Google Drive**, **Dropbox** or **GitHub** by opening the **Synchronize** sub-menu and clicking **Open from**. Once opened in the workspace, any modification in the file will be automatically synced.
-
-## Save a file
-
-You can save any file of the workspace to **Google Drive**, **Dropbox** or **GitHub** by opening the **Synchronize** sub-menu and clicking **Save on**. Even if a file in the workspace is already synced, you can save it to another location. StackEdit can sync one file with multiple locations and accounts.
-
-## Synchronize a file
-
-Once your file is linked to a synchronized location, StackEdit will periodically synchronize it by downloading/uploading any modification. A merge will be performed if necessary and conflicts will be resolved.
-
-If you just have modified your file and you want to force syncing, click the **Synchronize now** button in the navigation bar.
-
-> **Note:** The **Synchronize now** button is disabled if you have no file to synchronize.
-
-## Manage file synchronization
-
-Since one file can be synced with multiple locations, you can list and manage synchronized locations by clicking **File synchronization** in the **Synchronize** sub-menu. This allows you to list and remove synchronized locations that are linked to your file.
-
-
-# Publication
-
-Publishing in StackEdit makes it simple for you to publish online your files. Once you're happy with a file, you can publish it to different hosting platforms like **Blogger**, **Dropbox**, **Gist**, **GitHub**, **Google Drive**, **WordPress** and **Zendesk**. With [Handlebars templates](http://handlebarsjs.com/), you have full control over what you export.
-
-> Before starting to publish, you must link an account in the **Publish** sub-menu.
-
-## Publish a File
-
-You can publish your file by opening the **Publish** sub-menu and by clicking **Publish to**. For some locations, you can choose between the following formats:
-
-- Markdown: publish the Markdown text on a website that can interpret it (**GitHub** for instance),
-- HTML: publish the file converted to HTML via a Handlebars template (on a blog for example).
-
-## Update a publication
-
-After publishing, StackEdit keeps your file linked to that publication which makes it easy for you to re-publish it. Once you have modified your file and you want to update your publication, click on the **Publish now** button in the navigation bar.
-
-> **Note:** The **Publish now** button is disabled if your file has not been published yet.
-
-## Manage file publication
-
-Since one file can be published to multiple locations, you can list and manage publish locations by clicking **File publication** in the **Publish** sub-menu. This allows you to list and remove publication locations that are linked to your file.
-
-
-# Markdown extensions
-
-StackEdit extends the standard Markdown syntax by adding extra **Markdown extensions**, providing you with some nice features.
-
-> **ProTip:** You can disable any **Markdown extension** in the **File properties** dialog.
-
-
-## SmartyPants
-
-SmartyPants converts ASCII punctuation characters into "smart" typographic punctuation HTML entities. For example:
-
-|                |ASCII                          |HTML                         |
-|----------------|-------------------------------|-----------------------------|
-|Single backticks|`'Isn't this fun?'`            |'Isn't this fun?'            |
-|Quotes          |`"Isn't this fun?"`            |"Isn't this fun?"            |
-|Dashes          |`-- is en-dash, --- is em-dash`|-- is en-dash, --- is em-dash|
-
-
-## KaTeX
-
-You can render LaTeX mathematical expressions using [KaTeX](https://khan.github.io/KaTeX/):
-
-The *Gamma function* satisfying $\Gamma(n) = (n-1)!\quad\forall n\in\mathbb N$ is via the Euler integral
-
-$$
-\Gamma(z) = \int_0^\infty t^{z-1}e^{-t}dt\,.
-$$
-
-> You can find more information about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).
-
-
-## UML diagrams
-
-You can render UML diagrams using [Mermaid](https://mermaidjs.github.io/). For example, this will produce a sequence diagram:
-
-```mermaid
-sequenceDiagram
-Alice ->> Bob: Hello Bob, how are you?
-Bob-->>John: How about you John?
-Bob--x Alice: I am good thanks!
-Bob-x John: I am good thanks!
-Note right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.
-
-Bob-->Alice: Checking with John...
-Alice->John: Yes... John, how are you?
 ```
+db_host = "ip address of mysql server"
+db_database = "database name"
+db_username =  "user connection name"
+db_password = "password for the user connection"
+aspect_extract_service_address = "address to the aspect extraction service"
+absa_service_address = "address to the absa service"
+recommendation_system_address = "address to the recommendation service"
 
-And this will produce a flow chart:
-
-```mermaid
-graph LR
-A[Square Rect] -- Link text --> B((Circle))
-A --> C(Round Rect)
-B --> D{Rhombus}
-C --> D
 ```
+>when assigning the values in the variables, do not include the double quotations.
+
+
+# 3. Features
+##  Nuzul
+
+> AI Features
+### **Aspect Extraction (AE)**
+- Utilized a pretrained BERT model on NER task to extract aspects in IOB format. 
+- Fine-tuned the model on [SemEval 2016 laptop reviews dataset](http://metashare.ilsp.gr:8080/repository/browse/semeval-2016-absa-laptop-reviews-english-train-data-subtask-1/0ec1d3b0563211e58a25842b2b6a04d77d2f0983ccfa4936a25ddb821d46e220/)
+
+- Then used  **RPA** to scrape reviews from [consumer affairs](https://www.consumeraffairs.com/homeowners/lg_refrigerator.html), annotated them on **LabelStudio** and fine-tuned the model further for fridge domain.
+ The model returns an **IOB** formatted output. ![](/readME_Images/AE%20Training.jpg)
+
+
+### **Aspect Based Sentiment Analysis (ABSA)**
+- Utilized [ABSA library](https://github.com/ScalaConsultants/Aspect-Based-Sentiment-Analysis) that takes a text and aspects as input and classify sentiments based in relation to its aspect. ![](/readME_Images/ABSA_library.jpg)
+
+
+### **AE + ABSA = Better review consolidation**
+- With both models combined, we will have a better consolidation of all reviews about a fridge. ![](/readME_Images/absa.jpg)
+### **Recommendation system**
+- Utilized [Sentence-Transformers](https://huggingface.co/sentence-transformers) as a content based recomnmendation system. 
+- Generate embeddings for a description of a currently viewed fridge and compares it to all the other embeddings of different product description. Utilized cosine similarity to compute similarity score
+
+
+> Other notable features
+- User Authentication with passport
+- Add to cart | Orders | Buy
+- Buyer -> Seller Onboarding
+- Product listing |  Sell
+- Payment with Paypal
+-  Intellitick Chatbot
+
+

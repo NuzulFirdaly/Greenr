@@ -569,7 +569,8 @@ router.get("/viewcourse/:courseid", async(req, res) => {
             console.log("this is course", course)
                 // console.log("this is course description", course[0].Description)
                 //get recommendation
-            await fetch("http://34.142.175.75/get_recommendation", {
+            let recommendation_service = process.env.recommendation_system_address
+            await fetch(recommendation_service, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ essay: course[0].Description })
