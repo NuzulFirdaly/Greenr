@@ -47,19 +47,19 @@ router.get('/', (req, res) => {
 });
 
 
-// router.get('/voice-recongition', async function(req, res) {
-//     console.log("going into login page");
-//     const id = req.user.user_id;
-//     // const payload = JWT.verify(token, 'the-key');
-//     // uuid = payload.uuid;
-//     console.log(id);
-//     const Email = await User.findOne({ where: { user_id: id }, raw: true })
-//         // console.log(user);
-//     res.render('user_views/login', {
-//         Email: Email.Email
-//     });
+router.get('/voice-recongition', async function(req, res) {
+    console.log("going into login page");
+    const id = req.user.user_id;
+    // const payload = JWT.verify(token, 'the-key');
+    // uuid = payload.uuid;
+    console.log(id);
+    const Email = await User.findOne({ where: { user_id: id }, raw: true })
+        // console.log(user);
+    res.render('user_views/login', {
+        Email: Email.Email
+    });
 
-// });
+});
 // // login with email
 
 router.get('/login', (req, res) => {
@@ -137,7 +137,7 @@ router.post('/loginPost', [body('email').trim().isEmail().normalizeEmail().toLow
         //suppose to nest this but idk so im gonna leave here than make it efficient later... idk how to nest in inside switch
     await passport.authenticate('local', {
         // if (req.user.accountType.dataValues == 1){
-        successRedirect: "/", // Route to /video/listVideos URL
+        successRedirect: "/voice-recongition", // Route to /video/listVideos URL
         failureRedirect: '/login', // Route to /login URL
         failureFlash: true
             /* Setting the failureFlash option to true instructs Passport to flash an error message using the
@@ -153,91 +153,91 @@ const FormData = require('form-data');
 let request = require('request');
 const axios = require('axios');
 const console = require('console');
-// router.post('/voice', async function(req, res) {
-//     const form = new FormData();
-//     console.log(req.body);
-//     const user = await User.findOne({ where: { Email: req.body.Email }, raw: true });
-//     console.log(user);
-//     const ext = path.extname("audio/" + req.body.audio).toLowerCase();
-//     if (ext !== '.wav') {
-//         let errors = [];
-//         errors = errors.concat({ text: "Format is wrong. Please Use .wav format!" });
-//         // alertMessage(res, 'danger', 'Invalid Voice', 'fa fa-exclamation-circle', true);
-//         res.render('user_views/login', {
-//             errors: errors,
-//             Email: user.Email
-//         });
+router.post('/voice', async function(req, res) {
+    const form = new FormData();
+    console.log(req.body);
+    const user = await User.findOne({ where: { Email: req.body.Email }, raw: true });
+    console.log(user);
+    const ext = path.extname("audio/" + req.body.audio).toLowerCase();
+    if (ext !== '.wav') {
+        let errors = [];
+        errors = errors.concat({ text: "Format is wrong. Please Use .wav format!" });
+        // alertMessage(res, 'danger', 'Invalid Voice', 'fa fa-exclamation-circle', true);
+        res.render('user_views/login', {
+            errors: errors,
+            Email: user.Email
+        });
 
-//     }
-//     // const isWAV = validateWAVFile('sample.wav');
-//     // onsole.log(isWAV); // true
-//     const audio_path = "audio/" + req.body.audio;
-//     for (let i = 0; i < 1; i++) {
-//         const audioFile1 = user.Audio;
-//         const audioFile2 = fs.createReadStream(audio_path);
-//         form.append('file1', audioFile1, {
-//             contentType: 'audio/wav',
-//             filename: 'temp.wav'
-//         });
-//         form.append('file2', audioFile2, {
-//             contentType: 'audio/wav',
-//             filename: 'temp.wav'
-//         });
-//         console.log(form);
-//         try {
-//             let errors = [];
-//             await axios.post("http://saran-greenr-speaker-recongition.chhba7cyd9ekdwc5.southeastasia.azurecontainer.io/predict", form, {
-//                     headers: {
-//                         'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
-//                     }
-//                 }).then(response => {
-//                     console.log(response.data);
-//                     if (response.data == 'yes') {
-//                         res.redirect("/twofa/" + user.user_id);
-//                     } else if (response.data == 'no') {
-//                         console.log('Print Error');
-//                         errors = errors.concat({ text: "Invalid!!!" });
-//                         // alertMessage(res, 'danger', 'Invalid Voice', 'fa fa-exclamation-circle', true);
-//                         res.render('user_views/login', {
-//                             errors: errors,
-//                             Email: user.Email
-//                         });
-//                     }
+    }
+    // const isWAV = validateWAVFile('sample.wav');
+    // onsole.log(isWAV); // true
+    const audio_path = "audio/" + req.body.audio;
+    for (let i = 0; i < 1; i++) {
+        const audioFile1 = user.Audio;
+        const audioFile2 = fs.createReadStream(audio_path);
+        form.append('file1', audioFile1, {
+            contentType: 'audio/wav',
+            filename: 'temp.wav'
+        });
+        form.append('file2', audioFile2, {
+            contentType: 'audio/wav',
+            filename: 'temp.wav'
+        });
+        console.log(form);
+        try {
+            let errors = [];
+            await axios.post("http://saran-greenr-speaker-recongition.chhba7cyd9ekdwc5.southeastasia.azurecontainer.io/predict", form, {
+                    headers: {
+                        'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
+                    }
+                }).then(response => {
+                    console.log(response.data);
+                    if (response.data == 'yes') {
+                        res.redirect("/twofa/" + user.user_id);
+                    } else if (response.data == 'no') {
+                        console.log('Print Error');
+                        errors = errors.concat({ text: "Invalid!!!" });
+                        // alertMessage(res, 'danger', 'Invalid Voice', 'fa fa-exclamation-circle', true);
+                        res.render('user_views/login', {
+                            errors: errors,
+                            Email: user.Email
+                        });
+                    }
 
-//                 })
-//                 .catch(error => {
-//                     console.error(error);
-//                 });
+                })
+                .catch(error => {
+                    console.error(error);
+                });
 
-//         } catch (e) { console.log(e, "getFileError") }
-//     }
-// });
+        } catch (e) { console.log(e, "getFileError") }
+    }
+});
 
-// router.get('/twofa/:id', async function(req, res) {
-//         const uuid = req.params.id
-//         const user = await User.findByPk(uuid);
-//         const update = await User.update({
-//             twofa: true
-//         }, {
-//             where: {
-//                 user_id: uuid
-//             }
-//         });
-//         user.save();
-//         console.log(user);
-//         res.redirect('/');
-//     })
-// Logout User
+router.get('/twofa/:id', async function(req, res) {
+        const uuid = req.params.id
+        const user = await User.findByPk(uuid);
+        const update = await User.update({
+            twofa: true
+        }, {
+            where: {
+                user_id: uuid
+            }
+        });
+        user.save();
+        console.log(user);
+        res.redirect('/');
+    })
+    // Logout User
 router.get('/logout', async function(req, res) {
     const uuid = req.user.user_id
     const user = await User.findByPk(uuid);
-    // const update = await User.update({
-    //     twofa: false
-    // }, {
-    //     where: {
-    //         user_id: uuid
-    //     }
-    // });
+    const update = await User.update({
+        twofa: false
+    }, {
+        where: {
+            user_id: uuid
+        }
+    });
     user.save();
     console.log(user);
     req.logout();
@@ -279,28 +279,28 @@ router.post('/registerPost', [
     // console.log(req.body);
     let errors = [];
     let { FirstName, LastName, Username, Email, Password, ConfirmPassword } = req.body;
-    // const ext = path.extname("audio/" + req.body.Audio).toLowerCase();
-    // const ext2 = path.extname("audio/" + req.body.Audio2).toLowerCase();
-    // if (ext !== '.wav' || ext2 !== '.wav') {
-    //     let errors = [];
-    //     errors = errors.concat({ text: "Format is wrong. Please Use .wav format!" });
-    //     res.render('user_views/register', {
-    //         errors: errors,
-    //         FirstName,
-    //         LastName,
-    //         Username,
-    //         Email,
-    //         Password,
-    //         ConfirmPassword
-    //     });
+    const ext = path.extname("audio/" + req.body.Audio).toLowerCase();
+    const ext2 = path.extname("audio/" + req.body.Audio2).toLowerCase();
+    if (ext !== '.wav' || ext2 !== '.wav') {
+        let errors = [];
+        errors = errors.concat({ text: "Format is wrong. Please Use .wav format!" });
+        res.render('user_views/register', {
+            errors: errors,
+            FirstName,
+            LastName,
+            Username,
+            Email,
+            Password,
+            ConfirmPassword
+        });
 
-    // }
-    // const file = "audio/" + req.body.Audio;
-    // const audio_file = fs.readFileSync(file);
-    // const file2 = "audio/" + req.body.Audio2;
-    // const audio_file2 = fs.readFileSync(file2);
-    // // train(audio_file, audio_file2);
-    // console.log(audio_file);
+    }
+    const file = "audio/" + req.body.Audio;
+    const audio_file = fs.readFileSync(file);
+    const file2 = "audio/" + req.body.Audio2;
+    const audio_file2 = fs.readFileSync(file2);
+    // train(audio_file, audio_file2);
+    console.log(audio_file);
     const validatorErrors = validationResult(req);
     if (!validatorErrors.isEmpty()) { //if isEmpty is false
         console.log("There are errors")
@@ -368,27 +368,27 @@ router.post('/registerPost', [
     }
 });
 
-// // async function train(audio1, audio2) {
-// console.log("training the audio files")
-// const form = new FormData();
-// form.append('file1', audio1, {
-//     contentType: 'audio/wav',
-//     filename: 'temp.wav'
-// });
-// form.append('file2', audio2, {
-//     contentType: 'audio/wav',
-//     filename: 'temp.wav'
-// });
-// console.log(form);
-// await axios.post("http://saran-greenr-speaker-recongition.chhba7cyd9ekdwc5.southeastasia.azurecontainer.io/same", form, {
-//     headers: {
-//         'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
-//     }
-// }).then(response => {
-//     console.log(response.data);
-//     console.log("Done training")
-// })
-// };
+async function train(audio1, audio2) {
+    console.log("training the audio files")
+    const form = new FormData();
+    form.append('file1', audio1, {
+        contentType: 'audio/wav',
+        filename: 'temp.wav'
+    });
+    form.append('file2', audio2, {
+        contentType: 'audio/wav',
+        filename: 'temp.wav'
+    });
+    console.log(form);
+    await axios.post("http://saran-greenr-speaker-recongition.chhba7cyd9ekdwc5.southeastasia.azurecontainer.io/same", form, {
+        headers: {
+            'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
+        }
+    }).then(response => {
+        console.log(response.data);
+        console.log("Done training")
+    })
+};
 router.get("/forgot-password", (req, res, next) => {
     console.log("Forgot password page accessed.");
     return res.render('user/forgot_password');

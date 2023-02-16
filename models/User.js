@@ -37,11 +37,11 @@ const User = db.define('user', { //Creates a table called user
         type: Sequelize.STRING,
         defaultValue: "avatar2.jpg"
     },
-    Audio:{
+    Audio: {
         type: Sequelize.BLOB('long'),
     },
     description: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT('long')
     },
     AccountTypeID: {
         type: Sequelize.INTEGER,
@@ -55,9 +55,8 @@ const User = db.define('user', { //Creates a table called user
         type: Sequelize.BOOLEAN,
         defaultValue: 0
     },
-    
+
     // accountType
 });
 console.log("Connected to user table");
 module.exports = User;
-
