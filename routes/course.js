@@ -544,6 +544,16 @@ function getAllSentiments(list) {
     return listOfAspects_Sentiments
 }
 
+function compare(a, b) {
+    if (a.GHG < b.GHG) {
+        return -1;
+    }
+    if (a.GHG > b.GHG) {
+        return 1;
+    }
+    return 0;
+}
+
 router.get("/viewcourse/:courseid", async(req, res) => {
     console.log("we are at view course now")
     courseid = req.params.courseid;
@@ -559,13 +569,15 @@ router.get("/viewcourse/:courseid", async(req, res) => {
             console.log("this is course", course)
                 // console.log("this is course description", course[0].Description)
                 //get recommendation
-            await fetch("http://34.142.175.75/get_recommendation", {
+            let recommendation_service = process.env.recommendation_system_address
+            await fetch(recommendation_service, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ essay: course[0].Description })
                 }).then((response) => { return response.json() })
                 .then((recommendedcourses) => {
-                    recommendedcourselst = recommendedcourses.filter(item => (!(item.course_id == course[0].course_id)))
+                    recommendedcourselst = recommendedcourses.filter(item => (!(item.course_id == course[0].course_id)) && item.similarity_score > 0.2)
+                    recommendedcourselst = recommendedcourselst.sort(compare)
 
                 })
 

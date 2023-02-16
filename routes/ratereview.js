@@ -38,7 +38,9 @@ router.post('/giveRating/:type/:id', async(req, res) => {
 
         console.log("this is review", review)
         aspectslist = []
-        fetch("http://35.247.148.130/extract_aspects", {
+        let aspect_extract_service = process.env.aspect_extract_service_address
+        let absa_service = process.env.absa_service_address
+        fetch(aspect_extract_service, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -52,7 +54,7 @@ router.post('/giveRating/:type/:id', async(req, res) => {
                 if (aspects.length >= 1) {
                     aspectslist = aspects
                         // console.log('i wonder what this is ', data.json())
-                    fetch("http://34.124.151.204/extract_sentiments", {
+                    fetch(absa_service, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -133,7 +135,9 @@ router.post('/editRating/:type/:id', (req, res) => {
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = today.getFullYear();
     today = yyyy + '-' + mm + '-' + dd;
-    fetch("http://35.247.148.130/extract_aspects", {
+    let aspect_extract_service = process.env.aspect_extract_service_address
+    let absa_service = process.env.absa_service_address
+    fetch(aspect_extract_service, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -147,7 +151,7 @@ router.post('/editRating/:type/:id', (req, res) => {
             if (aspects.length >= 1) {
                 aspectslist = aspects
                     // console.log('i wonder what this is ', data.json())
-                fetch("http://34.124.151.204/extract_sentiments", {
+                fetch(absa_service, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'

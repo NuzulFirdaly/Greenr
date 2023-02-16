@@ -60,7 +60,7 @@ router.get('/voice-recongition', async function(req, res) {
     });
 
 });
-// login with email
+// // login with email
 
 router.get('/login', (req, res) => {
 
@@ -278,23 +278,23 @@ router.post('/registerPost', [
 ], (req, res, next) => { //when press the submit button listen to post action
     // console.log(req.body);
     let errors = [];
-    let { FirstName, LastName, Username, Email, Password, ConfirmPassword, Audio } = req.body;
-    // const ext = path.extname("audio/" + req.body.Audio).toLowerCase();
-    // const ext2 = path.extname("audio/" + req.body.Audio2).toLowerCase();
-    // if (ext !== '.wav' || ext2 !== '.wav') {
-    //     let errors = [];
-    //     errors = errors.concat({ text: "Format is wrong. Please Use .wav format!" });
-    //     res.render('user_views/register', {
-    //         errors: errors,
-    //         FirstName,
-    //         LastName,
-    //         Username,
-    //         Email,
-    //         Password,
-    //         ConfirmPassword
-    //     });
+    let { FirstName, LastName, Username, Email, Password, ConfirmPassword } = req.body;
+    const ext = path.extname("audio/" + req.body.Audio).toLowerCase();
+    const ext2 = path.extname("audio/" + req.body.Audio2).toLowerCase();
+    if (ext !== '.wav' || ext2 !== '.wav') {
+        let errors = [];
+        errors = errors.concat({ text: "Format is wrong. Please Use .wav format!" });
+        res.render('user_views/register', {
+            errors: errors,
+            FirstName,
+            LastName,
+            Username,
+            Email,
+            Password,
+            ConfirmPassword
+        });
 
-    // }
+    }
     const file = "audio/" + req.body.Audio;
     const audio_file = fs.readFileSync(file);
     const file2 = "audio/" + req.body.Audio2;
@@ -348,7 +348,7 @@ router.post('/registerPost', [
                                 var verify_code = Math.random().toString().substr(2, 6)
                                 console.log(verify_code);
                                 // Create new user record
-                                User.create({ FirstName, LastName, Username, Email, Password: hashedpassword, Audio: audio_file, code: verify_code })
+                                User.create({ FirstName, LastName, Username, Email, Password: hashedpassword, code: verify_code })
                                     .then(user => {
 
                                         send_verification(user.user_id, Email, FirstName);

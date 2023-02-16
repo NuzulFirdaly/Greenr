@@ -6,6 +6,9 @@ const profupload = require('../helpers/imageUploads');
 const User = require('../models/User');
 const alertMessage = require('../helpers/messenger');
 const ensureAuthenticated = require('../helpers/auth');
+const OrderDetails = require('../models/OrderDetails')
+const Orders = require('../models/Orders')
+const sequelize = require('../config/DBConfig')
 
 router.get('/viewProfile/:id', async(req, res) => {
     var id = req.params.id;
@@ -19,7 +22,6 @@ router.get('/viewProfile/:id', async(req, res) => {
                 tutor_id = id;
                 var courses = await CourseListing.findAll({ where: { userUserId: tutor_id }, raw: true })
                 res.render('user/viewProfile', {
-                    layout: 'userFunctions',
                     tutor: tutor.dataValues,
                     coursesarray: courses,
                     // extra: extra.dataValues,
@@ -28,7 +30,6 @@ router.get('/viewProfile/:id', async(req, res) => {
 
             } else {
                 res.render('user/viewProfile', {
-                    layout: 'userFunctions',
                     tutor: tutor.dataValues,
                     // extra: extra.dataValues,
                     // affiliation
@@ -40,7 +41,6 @@ router.get('/viewProfile/:id', async(req, res) => {
             tutor_id = id;
             var courses = await CourseListing.findAll({ where: { userUserId: tutor_id }, raw: true })
             res.render('user/viewProfile', {
-                layout: 'userFunctions',
                 tutor: tutor.dataValues,
                 coursesarray: courses,
                 // extra: extra.dataValues,
@@ -49,7 +49,6 @@ router.get('/viewProfile/:id', async(req, res) => {
 
         } else {
             res.render('user/viewProfile', {
-                layout: 'userFunctions',
                 tutor: tutor.dataValues,
                 // extra: extra.dataValues,
                 // affiliation
@@ -69,25 +68,63 @@ router.get('/Settings', ensureAuthenticated, async(req, res) => {
                     where: { userUserId: tutor_id },
                     raw: true
                 })
-                .then((courses) => {
-                    var cart = Object.keys(req.session.cart).length;
+                .then(async(courses) => {
                     console.log(courses);
-                    res.render('user/Settings', {
-                        layout: 'userFunctions',
-                        user: req.user.dataValues,
-                        coursesarray: courses,
-                        cart: cart
-                            // extra: extra.dataValues,
-                            // affiliation
-                    })
+                    await Orders.findAll({
+                            where: { BuyerId: req.user.dataValues.user_id },
+                            include: {
+                                model: OrderDetails,
+                                include: {
+                                    model: CourseListing,
+                                }
+                            },
+                            raw: true
+                        })
+                        .then((data) => {
+
+                            totalGHG = 0
+                            data.forEach((item, index, arr) => { totalGHG += arr[index]['order_details.quantity'] * arr[index]['order_details.course_listing.GHG'] })
+                            console.log("this is settings", totalGHG)
+
+                            res.render('user/Settings', {
+
+                                user: req.user.dataValues,
+                                coursesarray: courses,
+                                totalGHG: totalGHG
+                                    // extra: extra.dataValues,
+                                    // affiliation
+                            })
+                        })
+                        //loop thrrough each order details get order_details.quantity * order_details.course_listing.GHG
+
                 });
         } else {
-            res.render('user/Settings', {
-                layout: 'userFunctions',
-                user: req.user.dataValues,
-                // extra: extra.dataValues,
-                // affiliation
-            });
+            await Orders.findAll({
+                    where: { BuyerId: req.user.dataValues.user_id },
+                    include: {
+                        model: OrderDetails,
+                        include: {
+                            model: CourseListing,
+                        }
+                    },
+                    raw: true
+                })
+                .then((data) => {
+
+                    totalGHG = 0
+                    data.forEach((item, index, arr) => { totalGHG += arr[index]['order_details.quantity'] * arr[index]['order_details.course_listing.GHG'] })
+                    console.log("this is settings", totalGHG)
+
+                    res.render('user/Settings', {
+
+                        user: req.user.dataValues,
+                        totalGHG: totalGHG
+                            // extra: extra.dataValues,
+                            // affiliation
+                    });
+                })
+
+
         }
     }
 });
@@ -108,7 +145,7 @@ router.get('/editProfile', ensureAuthenticated, async(req, res) => {
 
                         console.log(courses);
                         res.render('user/editProfile', {
-                            layout: 'userFunctions',
+
                             user: req.user.dataValues,
                             coursesarray: courses,
                             // extra: extra.dataValues,
@@ -126,7 +163,7 @@ router.get('/editProfile', ensureAuthenticated, async(req, res) => {
 
                         console.log(courses);
                         res.render('user/editProfile', {
-                            layout: 'userFunctions',
+
                             user: req.user.dataValues,
                             coursesarray: courses,
                             // extra: extra.dataValues,
@@ -137,9 +174,8 @@ router.get('/editProfile', ensureAuthenticated, async(req, res) => {
 
         } else {
             res.render('user/editProfile', {
-                layout: 'userFunctions',
+
                 user: req.user.dataValues,
-                extra: extra.dataValues
             });
         }
     }
