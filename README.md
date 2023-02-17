@@ -47,9 +47,16 @@ db_password = "password for the user connection"
 aspect_extract_service_address = "address to the aspect extraction service"
 absa_service_address = "address to the absa service"
 recommendation_system_address = "address to the recommendation service"
+register_audio_api = 'address to train the two audio files'
+predict_speaker_api = 'address to predict the audio'
+CLIENT_ID = 'YOUR CLIENT ID'
+CLEINT_SECRET = 'YOUR CLIENT SECRET'
+REDIRECT_URI = 'https://developers.google.com/oauthplayground'
+REFRESH_TOKEN = 'YOUR REFRESH TOKEN'
+
 
 ```
->we might also be retiring our paypal sandbox and google auth credentials. Please generate new ones and update them in index.js for paypal credentials and  main.js for google api credentials
+>we might also be retiring our paypal sandbox and google auth credentials. Please generate new ones and update them in index.js for paypal credentials and admin.js and main.js for google API credentials
 
 # 3. Features
 ##  Nuzul
@@ -81,6 +88,40 @@ recommendation_system_address = "address to the recommendation service"
 - Product listing |  Sell
 - Payment with Paypal
 -  Intellitick Chatbot
+
+##  Saran
+
+> AI Features
+### **Speaker Recongition**
+
+Used Siamese neural network for speaker recongition which is a type of deep learning architecture used to compare two inputs and predict if they are similar or not.
+I have trained the model using 50 audio files whhich are sampled to 16000hz and 1 second from 5 different speaker.
+
+- At registration page, users have to give two audio files which will be used train the model. One of the audio files will be saved into the database.
+
+ The python code used for training the model. ![](/readME_Images/train.png)
+ 
+ - At the TWO-FA page, user have to upload an audio file to verify. Using the model to predict whether the audio is similar to the audio file saved in the databse under the user.
+ 
+  The python code used to predict two different audio:. ![](/readME_Images/predict.png)
+  
+  
+  > Other notable features
+- User register their audio file
+- users have to verify their email before login.
+- users can reset their password if they forgot by using a link send to their email
+- admin delete specific user (notification will be sent to the removed user).
+- admin able to email specific user. 
+- admin approving the sellers after requested by the buyer to be seller (notification will be send to the user) 
+- admin can choose not to approve the user to be a seller ( notification send to the user). 
+- all the email is done by using google api
+
+  
+ 
+
+
+
+
 
 ##  Nigel
 -Image classification model to detect if its a Samsung fridge or LG fridge,
