@@ -108,15 +108,15 @@ I have trained the model using 50 audio files whhich are sampled to 16000hz and 
   
   > Other notable features
 - User register their audio file
-- users have to verify their email before login.
-- users can reset their password if they forgot by using a link send to their email.
+- Users have to verify their email before login.
+- Users can reset their password if they forgot by using a link send to their email.
 - Admin only can access the admin pages when she is logged in; other users can access the admin pages
 (404 page will be returned if anyone manually  enter the admin pages links) 
-- admin delete specific user (notification will be sent to the removed user).
-- admin able to email specific user. 
-- admin approving the sellers after requested by the buyer to be seller (notification will be send to the user) 
-- admin can choose not to approve the user to be a seller ( notification send to the user). 
-- all the email is done by using google api
+- Admin delete specific user (notification will be sent to the removed user).
+- Admin able to email specific user. 
+- Admin approving the sellers after requested by the buyer to be seller (notification will be send to the user) 
+- Admin can choose not to approve the user to be a seller ( notification send to the user). 
+- All the email is done by using google api
 
   
 ##  Nigel
