@@ -128,3 +128,13 @@ http://greenr-fridge-brand.ceadcbb5fbbwbbc5.southeastasia.azurecontainer.io
 -file upload feature whereby users can upload a picture of a fridge to detect if it is a samsung fridge or lg fridge
 -after the model detects the brand of the fridge, it redirects to the product listing page with the identified brand 
 
+##  Samuel
+
+> AI Feature
+### **Image classification on LG Fridge Models**
+- Utilized a pretrained VGG16 model
+- Images are scraped from the offical LG website
+- User will upload a picture of a LG fridge and it will be able to detect the fridge model through the function /filepredict
+
+
+
