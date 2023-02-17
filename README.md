@@ -47,9 +47,16 @@ db_password = "password for the user connection"
 aspect_extract_service_address = "address to the aspect extraction service"
 absa_service_address = "address to the absa service"
 recommendation_system_address = "address to the recommendation service"
+register_audio_api = 'address to train the two audio files'
+predict_speaker_api = 'address to predict the audio'
+CLIENT_ID = 'YOUR CLIENT ID'
+CLEINT_SECRET = 'YOUR CLIENT SECRET'
+REDIRECT_URI = 'https://developers.google.com/oauthplayground'
+REFRESH_TOKEN = 'YOUR REFRESH TOKEN'
+
 
 ```
->we might also be retiring our paypal sandbox and google auth credentials. Please generate new ones and update them in index.js for paypal credentials and  main.js for google api credentials
+>we might also be retiring our paypal sandbox and google auth credentials. Please generate new ones and update them in index.js for paypal credentials and admin.js and main.js for google API credentials
 
 # 3. Features
 ##  Nuzul
