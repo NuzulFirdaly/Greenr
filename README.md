@@ -83,9 +83,13 @@ recommendation_system_address = "address to the recommendation service"
 -  Intellitick Chatbot
 
 ##  Nigel
-Image classification model to detect if its a Samsung fridge or LG fridge,
-pre trained using vgg16
+-Image classification model to detect if its a Samsung fridge or LG fridge,
+-My dataset was gotten from online images, carousell and the Samsung and LG websites
+-pre trained using vgg16
+-model and api functions are dockerised and put on azure container, this is the main link -
+http://greenr-fridge-brand.ceadcbb5fbbwbbc5.southeastasia.azurecontainer.io 
+-the functions /filepredict is to predict using file upload and /camerapredict is to predict using camera
 -webcam feature whereby users can turn it on to detect if it is a samsung fridge or lg fridge
 -file upload feature whereby users can upload a picture of a fridge to detect if it is a samsung fridge or lg fridge
--after the model detects the brand of the fridge, it redirects to the product listing page.
+-after the model detects the brand of the fridge, it redirects to the product listing page with the identified brand 
 

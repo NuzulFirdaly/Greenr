@@ -12,7 +12,7 @@ const form = new FormData()
 const fs = require('fs');
 const { response } = require('express');
 
-
+//Nigels codes
 router.get('/fileorcamera', (req, res) => {
     console.log("going into the file or camera page")
     res.render('fridge/fileorcamera');
