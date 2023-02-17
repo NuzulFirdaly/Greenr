@@ -82,6 +82,40 @@ recommendation_system_address = "address to the recommendation service"
 - Payment with Paypal
 -  Intellitick Chatbot
 
+##  Saran
+
+> AI Features
+### **Speaker Recongition**
+
+Used Siamese neural network for speaker recongition which is a type of deep learning architecture used to compare two inputs and predict if they are similar or not.
+I have trained the model using 50 audio files whhich are sampled to 16000hz and 1 second from 5 different speaker.
+
+- At registration page, users have to give two audio files which will be used train the model. One of the audio files will be saved into the database.
+
+ The python code used for training the model. ![](/readME_Images/train_same.jpg)
+ 
+ - At the TWO-FA page, user have to upload an audio file to verify. Using the model to predict whether the audio is similar to the audio file saved in the databse under the user.
+ 
+  The python code used to predict two different audio. ![](/readME_Images/predict_audio.jpg)
+  
+  
+  > Other notable features
+- User register their audio file
+- users have to verify their email before login.
+- users can reset their password if they forgot by using a link send to their email
+- admin delete specific user (notification will be sent to the removed user).
+- admin able to email specific user. 
+- admin approving the sellers after requested by the buyer to be seller (notification will be send to the user) 
+- admin can choose not to approve the user to be a seller ( notification send to the user). 
+- all the email is done by using google api
+
+  
+ 
+
+
+
+
+
 ##  Nigel
 Image classification model to detect if its a Samsung fridge or LG fridge,
 pre trained using vgg16
