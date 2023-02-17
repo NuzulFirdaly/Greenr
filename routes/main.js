@@ -192,7 +192,7 @@ router.post('/voice', async function (req, res) {
                 }).then(response =>{
                     console.log(response.data);
                     if (response.data == 'yes') {
-                        // if the audio is similiar to the one saved in database move to next page
+                        // if the audio is similar to the one saved in database move to next page
                         res.redirect("/twofa/" + user.user_id);
                     }
                     else if (response.data == 'no') {
