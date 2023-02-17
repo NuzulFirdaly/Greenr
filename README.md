@@ -82,4 +82,10 @@ recommendation_system_address = "address to the recommendation service"
 - Payment with Paypal
 -  Intellitick Chatbot
 
+##  Nigel
+Image classification model to detect if its a Samsung fridge or LG fridge,
+pre trained using vgg16
+-webcam feature whereby users can turn it on to detect if it is a samsung fridge or lg fridge
+-file upload feature whereby users can upload a picture of a fridge to detect if it is a samsung fridge or lg fridge
+-after the model detects the brand of the fridge, it redirects to the product listing page.
 
