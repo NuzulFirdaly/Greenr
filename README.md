@@ -117,12 +117,6 @@ I have trained the model using 50 audio files whhich are sampled to 16000hz and 
 - all the email is done by using google api
 
   
- 
-
-
-
-
-
 ##  Nigel
 -Image classification model to detect if its a Samsung fridge or LG fridge,
 -My dataset was gotten from online images, carousell and the Samsung and LG websites
