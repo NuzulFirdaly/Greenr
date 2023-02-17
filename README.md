@@ -99,7 +99,7 @@ I have trained the model using 50 audio files whhich are sampled to 16000hz and 
 
 - At registration page, users have to give two audio files which will be used train the model. One of the audio files will be saved into the database.
 
- The python code used for training the model. ![](/readME_Images/image.png)
+ The python code used for training the model. ![](/readME_Images/train.png)
  
  - At the TWO-FA page, user have to upload an audio file to verify. Using the model to predict whether the audio is similar to the audio file saved in the databse under the user.
  
