@@ -35,18 +35,13 @@ const oAuth2Client = new google.auth.OAuth2(
 
 oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
-
+// get the page the user details will be displayed
 async function users(req, res) {
     try {
+        // check whether the user is admin, if not return the not found page
         if (req.user.AccountTypeID != 2) {
             res.render('404')
         }
-        
-        
-        
-            // const total = await ModelUser.count({
-            //     raw: true
-            // });
             const customer = await ModelUser.findAndCountAll({
                 where: {
                     AccountTypeID:0
@@ -66,7 +61,6 @@ async function users(req, res) {
             raw: true
         });
             return res.render("admin/users", {
-             
                 customer: customer.count,
                 seller: seller.count,
                 manager: manager.count,
@@ -81,49 +75,10 @@ async function users(req, res) {
 
 }
 
-router.get("/email", email);
-async function email(req, res) {
-    try {
-        if(req.user.AccountTypeID != 2){
-            res.render("404")
-        }
-        // let user = req.user.user_id;
-        // console.log(user);
-        // if (req.user.role == 'manager') {
-        req.user.AccountTypeID =2;
-        
-        const total = await ModelUser.count({
-            raw: true
-        });
-        const customer = await ModelUser.findAndCountAll({
-            where: {
-                role: "customer"
-            }
-        });
-        const manager = await ModelUser.findAndCountAll({
-            where: {
-                role: "admin"
-            }
-        });
-        const users = await ModelUser.findAll({
-            raw: true
-        });
-        return res.render("admin/email_user", {
-            total: total,
-            customer: customer.count,
-            manager: manager.count,
-            user: users
-        })
-      
-    }
-    catch (error) {
-        console.log(error)
-        return res.render('404');;
-    };
-}
-
+// get to the page where the admin can choose to approve the seller
 router.get('/approve', async function (req, res) {
     try{
+    // check whether the user is admin, if not return the not found page
     if (req.user.AccountTypeID != 2) {
         res.render('404')
     }
@@ -143,6 +98,7 @@ router.get('/approve', async function (req, res) {
         return res.render('404');;
     };
 });
+// when the admin choose not to approve the buyer to be seller
 router.get('/approve/delete/:uuid', async function (req, res) {
     if (req.user.AccountTypeID != 2) {
         res.render('404')
@@ -174,6 +130,7 @@ router.get('/approve/delete/:uuid', async function (req, res) {
     });
     
 });
+// Notify the user through email 
 async function send_delete(name, email ) {
     const accessToken = await oAuth2Client.getAccessToken();
     const transport = nodemailer.createTransport({
@@ -276,6 +233,8 @@ async function send_delete(name, email ) {
 
     });
 }
+
+// If the admin approve the seller
 router.get("/approve/:uuid", async function (req, res) {
     // console.log(pInstList)
     const id = req.params.uuid;
@@ -310,7 +269,7 @@ router.get("/approve/:uuid", async function (req, res) {
 
     });
 });
-
+// Notify the seller that he or she can be a seller
 async function notify_seller(name, email) {
     const accessToken = await oAuth2Client.getAccessToken();
     const transport = nodemailer.createTransport({
@@ -413,6 +372,7 @@ async function notify_seller(name, email) {
     });
 }
 
+// The admin can remove the user from the database
 router.get('/Users/Delete/:uuid', async function (req, res) {
     // console.log(pInstList)
     const id = req.params.uuid;
@@ -438,6 +398,7 @@ router.get('/Users/Delete/:uuid', async function (req, res) {
 
 });
 
+// Notify the user if her or his account is removed 
 async function send_delete_user(name, email) {
     const accessToken = await oAuth2Client.getAccessToken();
     const transport = nodemailer.createTransport({
@@ -539,8 +500,14 @@ async function send_delete_user(name, email) {
 		`
     });
 }
+
+// Get to the page where admin can email a spcific user
 router.get('/email/:uuid', async function (req, res) {
-    
+     // check whether the user is admin, if not return the not found page
+     try{
+    if (req.user.AccountTypeID != 2) {
+        res.render("404")
+    }
     const id = req.params.uuid;
     const user = await ModelUser.findByPk(id);
     console.log(req.params.uuid);
@@ -550,20 +517,30 @@ router.get('/email/:uuid', async function (req, res) {
         name:name,
         email: user.Email
     })
+}
+    catch (error) {
+             console.log(error)
+             return res.render('404');;
+         };
 
 });
+
+// After submitted by the admin, email will be sent to the user
 router.post('/email', async function (req, res) {
-    // console.log(pInstList)
-    // const id = req.params.uuid;
-    // const user = await ModelUser.findByPk();
-    // console.log(req.params.uuid);
-   
+   try{
+       if (req.user.AccountTypeID != 2) {
+           res.render("404")
+       }
     const user = await ModelUser.findOne({ where: { Email:req.body.email }, raw: true });
     console.log(user);
     console.log(req.body);
     var name = user.FirstName + ' ' + user.LastName;
     send_email_user(name, user.Email, req.body.subject, req.body.input);
     return res.redirect("/admin/users");
+   }
+   catch{
+
+   }
 });
 async function send_email_user(name, email, subject, msg) {
     const accessToken = await oAuth2Client.getAccessToken();

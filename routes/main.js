@@ -48,22 +48,21 @@ router.get('/', (req, res) => {
     }).catch(err => console.log(err));
 });
 
-
+// Two-FA Page
 router.get('/voice-recongition', async function (req, res) {
     console.log("going into login page");
     const id = req.user.user_id;
-    // const payload = JWT.verify(token, 'the-key');
-    // uuid = payload.uuid;
+
     console.log(id);
     const Email  = await User.findOne({ where: { user_id: id }, raw: true })
-    // console.log(user);
+
     res.render('user_views/login', {
         Email:Email.Email
     });
   
 });
-// login with email
 
+// login with email
 router.get('/login', (req, res) => {
     
     console.log("going into login page");
@@ -150,12 +149,14 @@ const FormData = require('form-data');
 let request = require('request');
 const axios = require('axios');
 const console = require('console');
+// After audio file submitted
 router.post('/voice', async function (req, res) {
     const form = new FormData();
     console.log(req.body);
     const user = await User.findOne({ where: { Email: req.body.Email }, raw: true });
     console.log(user);
     const ext = path.extname("audio/" + req.body.audio).toLowerCase();
+    // check whether the audio file is wav format
     if (ext !== '.wav') {
         let errors = [];
         errors = errors.concat({ text: "Format is wrong. Please Use .wav format!" });
@@ -191,9 +192,11 @@ router.post('/voice', async function (req, res) {
                 }).then(response =>{
                     console.log(response.data);
                     if (response.data == 'yes') {
+                        // if the audio is similiar to the one saved in database move to next page
                         res.redirect("/twofa/" + user.user_id);
                     }
                     else if (response.data == 'no') {
+                        // if the audio is predicted wrong, return to the same provide error msg
                         console.log('Print Error');
                         errors = errors.concat({ text: "Invalid!!!" });
                         // alertMessage(res, 'danger', 'Invalid Voice', 'fa fa-exclamation-circle', true);
@@ -211,6 +214,7 @@ router.post('/voice', async function (req, res) {
         catch (e) { console.log(e, "getFileError") }
 }});
 
+// Activate 2FA true in database
 router.get('/twofa/:id', async function (req, res) {
     const uuid = req.params.id
     const user = await User.findByPk(uuid);
@@ -297,6 +301,7 @@ router.post('/registerPost', [
     const audio_file = fs.readFileSync(file);
     const file2 = "audio/" + req.body.Audio2;
     const audio_file2 = fs.readFileSync(file2);
+    // send two audio file to train
     train(audio_file, audio_file2);
     console.log(audio_file);
     const validatorErrors = validationResult(req);
@@ -365,7 +370,7 @@ router.post('/registerPost', [
             });
     }
 });
-
+// training the two audio file
 async function train(audio1, audio2) {
     console.log("training the audio files")
     const form = new FormData();
@@ -388,12 +393,14 @@ async function train(audio1, audio2) {
                 console.log("Done training")
             })
 };
+
+// get this page if the user forgot password
 router.get("/forgot-password", (req, res, next) => {
     console.log("Forgot password page accessed.");
     return res.render('user/forgot_password');
 });
 
-
+// Once the users submitted their email, send a link to their email
 router.post("/forgot-password", async function (req, res, next) {
     let errors = [];
     try {
@@ -428,7 +435,7 @@ router.post("/forgot-password", async function (req, res, next) {
     }
 
 });
-
+// sending email using google api
 async function send_resetlink(name, email, id) {
     const accessToken = await oAuth2Client.getAccessToken();
     const transport = nodemailer.createTransport({
@@ -537,7 +544,7 @@ async function send_resetlink(name, email, id) {
 		`
     });
 }
-
+// Once the user clicked on the reset link, redirect them to the page where they can reset password.
 router.get("/reset-password/:token", async function (req, res, next) {
     const token = req.params.token;
     console.log('password reseting page accesed')
@@ -563,6 +570,7 @@ router.get("/reset-password/:token", async function (req, res, next) {
     }
 });
 
+// After the user reset the password, update the password in the database.
 router.post("/reset-password/:id", async function (req, res, next) {
     let errors = [];
     const id = req.params.id;
@@ -612,6 +620,7 @@ const oAuth2Client = new google.auth.OAuth2(
 
 oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
+// sending email verification link using google api
 async function send_verification(uid, email, name) {
     const accessToken = await oAuth2Client.getAccessToken();
     const transport = nodemailer.createTransport({
