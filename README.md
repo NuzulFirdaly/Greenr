@@ -96,7 +96,7 @@ I have trained the model using 50 audio files whhich are sampled to 16000hz and 
  
  - At the TWO-FA page, user have to upload an audio file to verify. Using the model to predict whether the audio is similar to the audio file saved in the databse under the user.
  
-  The python code used to predict two different audio. ![](/readME_Images/predict.png)
+  The python code used to predict two different audio:. ![](/readME_Images/predict.png)
   
   
   > Other notable features
