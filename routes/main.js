@@ -8,6 +8,8 @@ const regexPwd = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&
 fs = require('fs');
 const path = require('path');
 /* models */
+const dotenv = require("dotenv")
+dotenv.config()
 
 const User = require('../models/User');
 // console.log("Retrieve messenger helper flash");
@@ -181,7 +183,7 @@ router.post('/voice', async function (req, res) {
         console.log(form);
         try {
             let errors = [];
-            await axios.post("http://saran-greenr-speaker-recongition.chhba7cyd9ekdwc5.southeastasia.azurecontainer.io/predict", form,
+            await axios.post(process.env.predict_speaker_api, form,
                 {
                     headers: {
                         'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
@@ -376,7 +378,7 @@ async function train(audio1, audio2) {
         filename: 'temp.wav'
     });
     console.log(form);
-    await axios.post("http://saran-greenr-speaker-recongition.chhba7cyd9ekdwc5.southeastasia.azurecontainer.io/same", form,
+    await axios.post(process.env.register_audio_api, form,
             {
                 headers: {
                     'Content-Type': `multipart/form-data; boundary=${form._boundary}`,
@@ -597,11 +599,11 @@ router.post("/reset-password/:id", async function (req, res, next) {
     }
 });
 
-    // google api
-const CLIENT_ID = '288378853501-ma7eu9kd529v7ttoa2q4oo4q0uoiq914.apps.googleusercontent.com';
-const CLEINT_SECRET = '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';
-const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
-const REFRESH_TOKEN = '1//04GTcJVcVlA1qCgYIARAAGAQSNwF-L9IrOrpPxfwmzjJB7ryuTVaubJYu66iGdSNskSjzg72RzvglTls4S_A3LUuj1z0Jq7dVL4I';
+// google api
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLEINT_SECRET = process.env.CLEINT_SECRET;
+const REDIRECT_URI = process.env.REDIRECT_URI;
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const oAuth2Client = new google.auth.OAuth2(
         CLIENT_ID,
         CLEINT_SECRET,

@@ -19,11 +19,14 @@ const { cookie } = require('express-validator');
 //express validator
 const { body, validationResult } = require('express-validator');
 const { use } = require('passport');
+const dotenv = require("dotenv")
+
+dotenv.config()
 // google api
-const CLIENT_ID = '288378853501-ma7eu9kd529v7ttoa2q4oo4q0uoiq914.apps.googleusercontent.com';
-const CLEINT_SECRET = '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';
-const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
-const REFRESH_TOKEN = '1//04GTcJVcVlA1qCgYIARAAGAQSNwF-L9IrOrpPxfwmzjJB7ryuTVaubJYu66iGdSNskSjzg72RzvglTls4S_A3LUuj1z0Jq7dVL4I';
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLEINT_SECRET = process.env. CLEINT_SECRET;
+const REDIRECT_URI = process.env.REDIRECT_URI;
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const oAuth2Client = new google.auth.OAuth2(
     CLIENT_ID,
     CLEINT_SECRET,

@@ -120,6 +120,7 @@ async function generate_root_account(database, options) {
             Audio: audio1,
             Password: hashedpassword,
             twofa: false
+            
         };
         //	Find for existing account with the same id, create or update
         var account = await User.findOne({ where: { "user_id": root_parameters.user_id } });
