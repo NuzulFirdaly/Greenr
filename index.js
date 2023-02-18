@@ -38,6 +38,8 @@ const rateRoute = require("./routes/ratereview");
 const paymentRoute = require('./routes/payment');
 const fridgeRoute = require('./routes/classifyfridge');
 const admin = require('./routes/admin.js');
+const modelRoute = require('./routes/classifymodel');
+
 
 
 //mysql init
@@ -317,6 +319,8 @@ app.use("/user", userRoute);
 app.use("/shop", shopRoute);
 app.use("/rate", rateRoute);
 app.use("/admin", admin);
+app.use("/model", modelRoute);
+
 app.use("/payment", paymentRoute);
 app.use("/fridge", fridgeRoute);
 
