@@ -6,6 +6,13 @@
 
 >Introduction about Greenr
 
+Problem statement:
+How can we develop a tool to help individuals track and reduce their overall carbon footprint through their daily commute, consumption, and communication in a consolidated fashion?
+
+Solution:
+Green e-commerce application that will revolutionize shopping habits. Users will be incentivised to make purchases that are more sustainable. Users are also able to track their carbon footprint (CO2 emission per kwh based on country) of home appliances
+
+
 # 2. How to use our app
 ## Pre-requisites
 
@@ -32,9 +39,9 @@ The following are our docker images that we have published on docker hub categor
 Nuzul
 - [Aspect Extraction Model Service](https://hub.docker.com/repository/docker/nuzulfirdaly/aspect-extract) -> When pullling this docker image, please specify the **:fixed** tag
 
-- [Aspect Based Sentiment Analysis Model Service]()
+- [Aspect Based Sentiment Analysis Model Service](https://hub.docker.com/r/nuzulfirdaly/absa-server-image)
 
-- [Recommendation System Service]() -> When pulling this docker image, you will have to configure the environment variable to allow it to access the MySQL server 
+- [Recommendation System Service](https://hub.docker.com/r/nuzulfirdaly/recommendation-system) -> When pulling this docker image, you will have to configure the environment variable to allow it to access the MySQL server 
 ## Change Environment Variable & and other credentials
 
 After deploying the containers above, you will have to create a .env file in the project folder and add the following environment variables
@@ -44,11 +51,16 @@ db_host = "ip address of mysql server"
 db_database = "database name"
 db_username =  "user connection name"
 db_password = "password for the user connection"
+
+//nuzul's services
 aspect_extract_service_address = "address to the aspect extraction service"
 absa_service_address = "address to the absa service"
 recommendation_system_address = "address to the recommendation service"
+
+//saran's service
 register_audio_api = 'address to train the two audio files'
 predict_speaker_api = 'address to predict the audio'
+//for google auth
 CLIENT_ID = 'YOUR CLIENT ID'
 CLEINT_SECRET = 'YOUR CLIENT SECRET'
 REDIRECT_URI = 'https://developers.google.com/oauthplayground'
